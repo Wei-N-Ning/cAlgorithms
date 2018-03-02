@@ -5,12 +5,16 @@
 #ifndef CCISOLUTIONSC_CCIHASHTABLE_H
 #define CCISOLUTIONSC_CCIHASHTABLE_H
 
-void *NewHashTable();
+typedef struct cciHashTable {
+    int __;
+} cciHashTable_t;
 
-ISetInt(void *hashTable, int key, int value);
+cciHashTable_t *NewHashTable();
 
-int IGetInt(void *hashTable, int key);
+void ISetInt(cciHashTable_t *hashTable, int key, int value);
 
-DeleteHashTable(void *hashTable);
+int IGetInt(cciHashTable_t *hashTable, int key);
+
+void DeleteHashTable(cciHashTable_t *hashTable);
 
 #endif //CCISOLUTIONSC_CCIHASHTABLE_H

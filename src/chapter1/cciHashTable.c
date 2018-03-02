@@ -3,19 +3,21 @@
 //
 
 #include "cciHashTable.h"
+#include <stdlib.h>
 
-void *NewHashTable() {
-    return (void *)0;
+cciHashTable_t *NewHashTable() {
+    cciHashTable_t *tb = (cciHashTable_t *)malloc(sizeof(cciHashTable_t));
+    return tb;
 }
 
-ISetInt(void *hashTable, int key, int value) {
+void ISetInt(cciHashTable_t *hashTable, int key, int value) {
     ;
 }
 
-int IGetInt(void *hashTable, int key) {
+int IGetInt(cciHashTable_t *hashTable, int key) {
     return 0;
 }
 
-DeleteHashTable(void *hashTable) {
-    ;
+void DeleteHashTable(cciHashTable_t *hashTable) {
+    free(hashTable);
 }

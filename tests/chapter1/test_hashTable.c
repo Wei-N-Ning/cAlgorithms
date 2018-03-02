@@ -9,8 +9,17 @@
 int main(int argc, char **argv) {
     InitializeTinyTests();
 
-    NewTinyTest("Place Holder") ((void) {
-        NewHashTable();
+    NewTinyTest("CreateAndDeleteHashTable") ((void) {
+        cciHashTable_t *tb = NewHashTable();
+        AssertTrue(tb);
+        DeleteHashTable(tb);
+    });
+
+    NewTinyTest("SetGetIntKeyValuePairs") ((void) {
+        cciHashTable_t *tb = NewHashTable();
+        ISetInt(tb, 123, 456);
+//        AssertEqual(456, IGetInt(tb, 123));
+        DeleteHashTable(tb);
     });
 
     RunTinyTests();
