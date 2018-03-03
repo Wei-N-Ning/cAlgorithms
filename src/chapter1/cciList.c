@@ -37,14 +37,19 @@ cciListNode_t *createNode() {
 
 // prev n next
 // prev   next
-void deleteNode(cciListNode_t *n) {
-    if (n->prev) {
-        n->prev->next = n->next;
+void deleteNode(cciList_t *l, cciListNode_t *prev, cciListNode_t *n, cciListNode_t *next) {
+    if (prev) {
+        prev->next = next;
+    } else {
+        l->head = next;
     }
-    if (n->next) {
-        n->next->prev = n->prev;
+    if (next) {
+        next->prev = prev;
+    } else {
+        l->tail = prev;
     }
     free(n);
+    l->size--;
 }
 
 CCILIST_ERROR validateIndex(cciList_t *l, int index) {
@@ -108,5 +113,14 @@ void InsertInt(cciList_t *l, int index, int value) {
         newNode = createNode();
         newNode->value = value;
         insert(l, prev, newNode, prev->next);
+    }
+}
+
+void Remove(cciList_t *l, int index) {
+    cciListNode_t *n = NULL;
+    l->errCode = validateIndex(l, index);
+    if (!l->errCode) {
+        n = node(l, index);
+        deleteNode(l, n->prev, n, n->next);
     }
 }

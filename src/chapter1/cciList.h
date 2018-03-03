@@ -8,6 +8,7 @@
 typedef enum CCILIST_ERROR {
     CCILIST_NO_ERROR,
     CCILIST_INDEX_ERROR,
+    CCILIST_VALUE_NOTFOUND,
 } CCILIST_ERROR;
 
 typedef struct cciList {
@@ -26,5 +27,7 @@ void AppendInt(cciList_t *l, int v);
 int GetInt(cciList_t *l, int index);
 
 void InsertInt(cciList_t *l, int index, int value);
+
+void Remove(cciList_t *l, int index);
 
 #endif //CCISOLUTIONSC_CCILIST_H
