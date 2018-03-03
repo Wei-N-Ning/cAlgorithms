@@ -9,39 +9,39 @@
 #define MAXNUMTESTFUNCS 1024
 #endif
 
-#define __TestFunc(function_body) \
+#define impl_TestFunc(function_body) \
 ({ \
     void __fn__ function_body \
       __fn__; \
 })
 
-#define NewTinyTest(function_name) __TestFuncIdx++; __TestNames[__TestFuncIdx]=function_name; __TestFuncs[__TestFuncIdx] = __TestFunc
+#define NewTinyTest(function_name) impl_TestFuncIdx++; impl_TestNames[impl_TestFuncIdx]=function_name; impl_TestFuncs[impl_TestFuncIdx] = impl_TestFunc
 #define AssertTrue(actual) (assert(actual))
 #define AssertEqual(expected, actual) (assert(expected == actual))
 
-typedef void (*__TestFunc_t)(void);
-__TestFunc_t __TestFuncs[MAXNUMTESTFUNCS] = {};
-char *__TestNames[MAXNUMTESTFUNCS] = {};
-int __TestFuncIdx = -1;
+typedef void (*impl_TestFunc_t)(void);
+impl_TestFunc_t impl_TestFuncs[MAXNUMTESTFUNCS] = {};
+char *impl_TestNames[MAXNUMTESTFUNCS] = {};
+int impl_TestFuncIdx = -1;
 
 void InitializeTinyTests() {
     for (int i=0; i < MAXNUMTESTFUNCS; ++i) {
-        __TestFuncs[i] = NULL;
-        __TestNames[i] = "\0";
+        impl_TestFuncs[i] = NULL;
+        impl_TestNames[i] = NULL;
     }
 }
 
 void RunTinyTests() {
     clock_t before = clock(), after;
     double msec = 0.0;
-    for (int i=0; i <= __TestFuncIdx; ++i) {
-        printf("TinyTest: %s......", __TestNames[i]);
-        __TestFuncs[i]();
+    for (int i=0; i <= impl_TestFuncIdx; ++i) {
+        printf("TinyTest: %s......", impl_TestNames[i]);
+        impl_TestFuncs[i]();
         printf("PASSED\n");
     }
     after = clock();
     msec = after - before;
-    printf("\nSummary: %d tests, %fs (%fms)\n", __TestFuncIdx + 1, msec/CLOCKS_PER_SEC, msec);
+    printf("\nSummary: %d tests, %fs (%fms)\n", impl_TestFuncIdx + 1, msec/CLOCKS_PER_SEC, msec);
 }
 
 #endif //TINYCUNIT_H

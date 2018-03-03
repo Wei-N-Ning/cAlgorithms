@@ -4,6 +4,7 @@
 
 #include "cciList.h"
 #include <stdlib.h>
+#include <memory.h>
 
 typedef struct cciListNode {
     struct cciListNode *prev;
@@ -13,8 +14,7 @@ typedef struct cciListNode {
 
 cciList_t *NewList() {
     cciList_t *l = malloc(sizeof(cciList_t));
-    l->head = 0;
-    l->tail = 0;
+    memset(l, 0, sizeof(cciList_t));
     return l;
 }
 
@@ -30,7 +30,7 @@ void DeleteList(cciList_t *l) {
 
 cciListNode_t *createNode() {
     cciListNode_t *n = malloc(sizeof(cciListNode_t));
-    n->value = 0;
+    memset(n, 0, sizeof(cciListNode_t));
     return n;
 }
 
