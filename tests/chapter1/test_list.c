@@ -2,10 +2,28 @@
 // Created by wein on 3/3/18.
 //
 
-#include <stdio.h>
-
 #include <cciList.h>
 #include <tinyCUnit.h>
+
+void testRoundTripInt() {
+    int size = 20000;
+    int actual = 0;
+    double microsec = 0.0;
+    clock_t before, after;
+    printf("start integration test: integer round trip (problem size: %d)......", size);
+    before = clock();
+    cciList_t *l = NewList();
+    for (int i=0; i<size; ++i) {
+        AppendInt(l, i);
+    }
+//    for (int i=0; i<size; ++i) {
+//        actual = GetInt(l, i);
+//        assert(i == actual);
+//    }
+    after = clock();
+    microsec = after - before;
+    printf("DONE\n%f s (%f ms)\n", microsec/1000000, microsec/1000);
+}
 
 int main(int argc, char **argv) {
     InitializeTinyTests();
@@ -93,5 +111,7 @@ int main(int argc, char **argv) {
     });
 
     RunTinyTests();
+
+    testRoundTripInt();
     return 0;
 }
