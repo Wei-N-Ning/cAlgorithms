@@ -3,6 +3,7 @@
 //
 
 #include "cciList.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
 
@@ -34,6 +35,8 @@ cciListNode_t *createNode() {
     return n;
 }
 
+// prev n next
+// prev   next
 void deleteNode(cciListNode_t *n) {
     if (n->prev) {
         n->prev->next = n->next;
@@ -44,15 +47,66 @@ void deleteNode(cciListNode_t *n) {
     free(n);
 }
 
+CCILIST_ERROR validateIndex(cciList_t *l, int index) {
+    if (index < 0 || index > l->size - 1) {
+        return CCILIST_INDEX_ERROR;
+    }
+    return CCILIST_NO_ERROR;
+}
+
+cciListNode_t *node(cciList_t *l, int index) {
+    cciListNode_t *curr = l->head;
+    for (int i=0; i < index; ++i) {
+        curr = curr->next;
+    }
+    assert(curr); // should not happen
+    return curr;
+}
+
+// prev         next
+// prev newNode next
+void insert(cciList_t *l, cciListNode_t *prev, cciListNode_t *newNode, cciListNode_t *next) {
+    if (prev) {
+        prev->next = newNode;
+    } else {
+        l->head = newNode;
+    }
+    if (next) {
+        next->prev = newNode;
+    } else {
+        l->tail = newNode;
+    }
+    newNode->prev = prev;
+    newNode->next = next;
+    l->size++;
+}
+
 void AppendInt(cciList_t *l, int v) {
     cciListNode_t *n = createNode();
     n->value = v;
     if (l->size == 0) {
-        l->head = n;
+        insert(l, NULL, n, NULL);
     } else {
-        n->prev = l->tail;
-        l->tail->next = n;
+        insert(l, l->tail, n, NULL);
     }
-    l->tail = n;
-    l->size++;
+}
+
+int GetInt(cciList_t *l, int index) {
+    l->errCode = validateIndex(l, index);
+    if (!l->errCode) {
+        return node(l, index)->value;
+    }
+    return 0;
+}
+
+void InsertInt(cciList_t *l, int index, int value) {
+    cciListNode_t *prev = NULL;
+    cciListNode_t *newNode = NULL;
+    l->errCode = validateIndex(l, index);
+    if (!l->errCode) {
+        prev = node(l, index);
+        newNode = createNode();
+        newNode->value = value;
+        insert(l, prev, newNode, prev->next);
+    }
 }

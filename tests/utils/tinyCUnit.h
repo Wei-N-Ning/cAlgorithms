@@ -41,7 +41,7 @@ void RunTinyTests() {
     }
     after = clock();
     msec = after - before;
-    printf("\nSummary: %d tests, %fs (%fms)\n", impl_TestFuncIdx + 1, msec/CLOCKS_PER_SEC, msec);
+    printf("\nSummary: %d tests, %fs (%fus)\n", impl_TestFuncIdx + 1, msec/CLOCKS_PER_SEC, msec);
 }
 
 #endif //TINYCUNIT_H
