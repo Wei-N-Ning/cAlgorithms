@@ -9,16 +9,30 @@
 int main(int argc, char **argv) {
     InitializeTinyTests();
 
-    NewTinyTest("CreateAndDeleteHashTable") ((void) {
+    NewTinyTest("create and delete hash table") ((void) {
         cciHashTable_t *tb = NewHashTable();
         AssertTrue(tb);
         DeleteHashTable(tb);
     });
 
-    NewTinyTest("SetGetIntKeyValuePairs") ((void) {
+    NewTinyTest("set value, get value from key") ((void) {
         cciHashTable_t *tb = NewHashTable();
-        ISetInt(tb, 123, 456);
-//        AssertEqual(456, IGetInt(tb, 123));
+        SSetInt(tb, "there", 1330);
+        SSetInt(tb, "there is", 1331);
+        SSetInt(tb, "there is a", 1332);
+        SSetInt(tb, "there is a cow", 1337);
+        AssertEqual(1330, SGetInt(tb, "there"));
+        AssertEqual(1331, SGetInt(tb, "there is"));
+        AssertEqual(1332, SGetInt(tb, "there is a"));
+        AssertEqual(1337, SGetInt(tb, "there is a cow"));
+        DeleteHashTable(tb);
+    });
+
+    NewTinyTest("given invalid key, expect errCode") ((void) {
+        cciHashTable_t *tb = NewHashTable();
+        SSetInt(tb, "there is a cow", 1337);
+        SGetInt(tb, "there is a coew");
+        AssertEqual(CCIHASHTABLE_KEY_NOTFOUND, tb->errCode);
         DeleteHashTable(tb);
     });
 
