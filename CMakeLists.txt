@@ -20,7 +20,9 @@ add_library(cciChapter1
     src/chapter1/cciList.c
     src/chapter1/cciList.h
     src/chapter1/cciArrayList.c
-    src/chapter1/cciArrayList.h)
+    src/chapter1/cciArrayList.h
+    src/chapter1/cciBitArray.c
+    src/chapter1/cciBitArray.h)
 target_include_directories(cciChapter1
     PUBLIC
     src/chapter1)
@@ -45,3 +47,7 @@ add_executable(cciArrayListTests
 target_link_libraries(cciArrayListTests cciChapter1 tinyCUnit)
 add_test(NAME "CCI::Chapter1::ArrayListTests" COMMAND cciArrayListTests)
 
+add_executable(cciBitArrayTests
+    tests/chapter1/test_bitArray.c)
+target_link_libraries(cciBitArrayTests cciChapter1 tinyCUnit)
+add_test(NAME "CCI::Chapter1::BitArrayTests" COMMAND cciBitArrayTests)
