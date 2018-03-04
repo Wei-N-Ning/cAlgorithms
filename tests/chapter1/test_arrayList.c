@@ -131,7 +131,23 @@ void UnitTests() {
     RunTinyTests();
 }
 
+void EmplaceBackBenchmark() {
+    clock_t before;
+    cciArrayList_t *al = AlNew();
+    AlEmplaceBack(al, 1);
+    AlEmplaceBack(al, 2);
+    AlEmplaceBack(al, 3);
+    AlEmplaceBack(al, 4);
+    before = clock();
+    for (int i=0; i <= 100000; ++i) {
+        AlEmplaceBack(al, i);
+    }
+    printf("\nEmplaceBack() took: %f us\n", (double)(clock() - before));
+    AlDelete(al);
+}
+
 int main(int argc, char **argv) {
     UnitTests();
+    EmplaceBackBenchmark();
     return 0;
 }
