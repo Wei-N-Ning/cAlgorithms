@@ -14,9 +14,14 @@ typedef unsigned int BitSlot;
 typedef struct {
     BitSlot *store;
     size_t size;
+    size_t slots;
 } cciBitArray_t;
 
 cciBitArray_t *BaNew(unsigned int initialBit, size_t numBits);
+
+cciBitArray_t *CreateFromUInt(unsigned int value);
+
+void Output(cciBitArray_t *ba, BitSlot *o, size_t numBits);
 
 void BaDelete(cciBitArray_t *ba);
 
