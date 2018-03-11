@@ -51,3 +51,15 @@ add_executable(cciBitArrayTests
     tests/chapter1/test_bitArray.c)
 target_link_libraries(cciBitArrayTests cciChapter1 tinyCUnit)
 add_test(NAME "CCI::Chapter1::BitArrayTests" COMMAND cciBitArrayTests)
+
+
+# ---- chapter N ----
+include(tinyCUnit.cmake)
+add_tinytest_executable(test_routeBetweenNodes
+    tests/chapterN/test_routeBetweenNodes.c)
+
+add_tinytest_executable(test_paintFill
+    tests/chapterN/test_paintFill.c)
+
+add_tinytest_executable(test_buildOrder
+    tests/chapterN/test_buildOrder.c)
