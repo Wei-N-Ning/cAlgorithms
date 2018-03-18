@@ -28,19 +28,23 @@ cciBinTreeNode_t *createMockTree() {
 }
 
 cciBinTreeNode_t *search(cciBinTreeNode_t *n, int x) {
-    return Search(n, newInt(x), NULL);
+    return BinTreeSearch(n, newInt(x), NULL);
 }
 
 cciBinTreeNode_t *findMin(cciBinTreeNode_t *n) {
-    return FindMin(n, NULL);
+    return BinTreeMin(n, NULL);
 }
 
 cciBinTreeNode_t *findMax(cciBinTreeNode_t *n) {
-    return FindMax(n, NULL);
+    return BinTreeMax(n, NULL);
 }
 
 cciBinTreeNode_t *insert(cciBinTreeNode_t *n, int x) {
-    return Insert(n, newInt(x), NULL);
+    return BinTreeInsert(n, newInt(x), NULL);
+}
+
+cciBinTreeNode_t *remove_(cciBinTreeNode_t *n, int x) {
+    return BinTreeRemove(n, newInt(x), NULL);
 }
 
 void test_searchExpectNotFound() {
@@ -111,7 +115,7 @@ static void countNode(cciBinTreeNode_t *n, void *state) {
 void test_traverseUseVisitorExpectTotalNodesVisited() {
     cciBinTreeNode_t *top = createMockTree();
     int count = 0;
-    cciBinTreeNodeVisitor_t v = CreateVisitor(countNode, &count);
+    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(countNode, &count);
     Traverse(top, &v);
     assert(7 == count);
 }
@@ -129,14 +133,14 @@ static void collect(cciBinTreeNode_t *n, void *state) {
 }
 
 static int toString(cciBinTreeNode_t *n, char *o_s) {
-    cciBinTreeNodeVisitor_t v = CreateVisitor(collect, o_s);
+    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collect, o_s);
     return Traverse(n, &v);
 }
 
 void test_traverseAndCollect() {
     cciBinTreeNode_t *top = createMockTree();
     char s[64] = "\0";
-    cciBinTreeNodeVisitor_t v = CreateVisitor(collect, s);
+    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collect, s);
     Traverse(top, &v);
     assert(0 == strcmp("-34,2,9,13,45,114,145", s));
 }
@@ -163,6 +167,12 @@ void test_insertSameValueExpectNoNewNode() {
     assert(114 == GETINT(n->value));
     assert(7 == num);
     assert(0 == strcmp("-34,2,9,13,45,114,145", s));
+}
+
+void test_removeNonexistingNodeExpectNull() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *removed = remove_(top, 231);
+    assert(! removed);
 }
 
 int main(int argc, char **argv) {

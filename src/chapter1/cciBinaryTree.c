@@ -25,14 +25,14 @@ cciBinTreeNode_t *CreateBinTreeNode() {
     return n;
 }
 
-cciBinTreeNodeVisitor_t CreateVisitor(VisitorFunc func, void *state) {
+cciBinTreeNodeVisitor_t CreateBinTreeVisitor(VisitorFunc func, void *state) {
     cciBinTreeNodeVisitor_t v;
     v.state = state;
     v.func = func;
     return v;
 }
 
-cciBinTreeNode_t *Search(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
+cciBinTreeNode_t *BinTreeSearch(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
     int cmp;
     if (! func) {
         func = CompareI;  // default comparison function
@@ -45,9 +45,9 @@ cciBinTreeNode_t *Search(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func
         return aNode;
     }
     if (cmp < 0) {
-        return Search(aNode->left, v, func);
+        return BinTreeSearch(aNode->left, v, func);
     } else {
-        return Search(aNode->right, v, func);
+        return BinTreeSearch(aNode->right, v, func);
     }
     return NULL;
 }
@@ -63,24 +63,24 @@ void CloseFactory() {
     nodeIndex = -1;
 }
 
-cciBinTreeNode_t *FindMin(cciBinTreeNode_t *aNode, CompareFunc func) {
+cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode, CompareFunc func) {
     if (! func) {
         func = CompareI;
     }
     if (! aNode->left) {
         return aNode;
     }
-    return FindMin(aNode->left, func);
+    return BinTreeMin(aNode->left, func);
 }
 
-cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func) {
+cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func) {
     if (! func) {
         func = CompareI;
     }
     if (! aNode->right) {
         return aNode;
     }
-    return FindMax(aNode->right, func);
+    return BinTreeMax(aNode->right, func);
 }
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
@@ -96,7 +96,7 @@ int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
     return total;
 }
 
-cciBinTreeNode_t *Insert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
+cciBinTreeNode_t *BinTreeInsert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
     int cmp;
     if (! aNode) {
         return NULL;
@@ -114,14 +114,18 @@ cciBinTreeNode_t *Insert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func
             aNode->left->value = v;
             return aNode->left;
         }
-        return Insert(aNode->left, v, func);
+        return BinTreeInsert(aNode->left, v, func);
     } else {
         if (! aNode->right) {
             aNode->right = CreateBinTreeNode();
             aNode->right->value = v;
             return aNode->right;
         }
-        return Insert(aNode->right, v, func);
+        return BinTreeInsert(aNode->right, v, func);
     }
+    return NULL;
+}
+
+cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
     return NULL;
 }

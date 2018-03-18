@@ -24,20 +24,26 @@ typedef struct CCIBinTreeNodeVisitor {
 
 cciBinTreeNode_t *CreateBinTreeNode();
 
-cciBinTreeNodeVisitor_t CreateVisitor(VisitorFunc func, void *state);
+cciBinTreeNodeVisitor_t CreateBinTreeVisitor(VisitorFunc func, void *state);
 
-cciBinTreeNode_t *Search(
+cciBinTreeNode_t *BinTreeSearch(
     cciBinTreeNode_t *aNode,
     cciValue_t v,
     CompareFunc func  // typedef in cciValue.h
 );
 
-cciBinTreeNode_t *FindMin(cciBinTreeNode_t *aNode, CompareFunc func);
-cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func);
+cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode, CompareFunc func);
+cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func);
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor);
 
-cciBinTreeNode_t *Insert(
+cciBinTreeNode_t *BinTreeInsert(
+    cciBinTreeNode_t *aNode,
+    cciValue_t v,
+    CompareFunc func
+);
+
+cciBinTreeNode_t *BinTreeRemove(
     cciBinTreeNode_t *aNode,
     cciValue_t v,
     CompareFunc func
