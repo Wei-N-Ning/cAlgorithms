@@ -12,6 +12,7 @@
 typedef struct CCIBinTreeNode {
     struct CCIBinTreeNode *left;
     struct CCIBinTreeNode *right;
+    struct CCIBinTreeNode *parent;
     cciValue_t value;
 } cciBinTreeNode_t;
 
@@ -22,7 +23,7 @@ typedef struct CCIBinTreeNodeVisitor {
     VisitorFunc func;
 } cciBinTreeNodeVisitor_t;
 
-cciBinTreeNode_t *CreateBinTreeNode();
+cciBinTreeNode_t *CreateBinTreeNode(cciBinTreeNode_t *parent);
 
 cciBinTreeNodeVisitor_t CreateBinTreeVisitor(VisitorFunc func, void *state);
 
@@ -43,6 +44,13 @@ cciBinTreeNode_t *BinTreeInsert(
     CompareFunc func
 );
 
+int BinTreeInsertNode(
+    cciBinTreeNode_t *aNode,
+    cciBinTreeNode_t *newNode,
+    CompareFunc func
+);
+
+// return the node removed to the caller
 cciBinTreeNode_t *BinTreeRemove(
     cciBinTreeNode_t *aNode,
     cciValue_t v,

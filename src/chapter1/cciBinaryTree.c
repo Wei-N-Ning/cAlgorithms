@@ -8,12 +8,12 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#define MAX_NUM_NODES 1024
+#define MAX_NUM_NODES 2048
 
 static cciBinTreeNode_t *nodePool = NULL;
 static ssize_t nodeIndex = 0;
 
-cciBinTreeNode_t *CreateBinTreeNode() {
+cciBinTreeNode_t *CreateBinTreeNode(cciBinTreeNode_t *parent) {
     assert(
         nodePool &&
         (nodeIndex != -1) &&
@@ -21,6 +21,7 @@ cciBinTreeNode_t *CreateBinTreeNode() {
     cciBinTreeNode_t *n = nodePool + nodeIndex++;
     n->left = NULL;
     n->right = NULL;
+    n->parent = parent;
     RESET(n->value);
     return n;
 }
@@ -96,36 +97,57 @@ int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
     return total;
 }
 
-cciBinTreeNode_t *BinTreeInsert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
+static cciBinTreeNode_t *_insert(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, cciValue_t v, CompareFunc func) {
+    cciBinTreeNode_t *this = NULL;
     int cmp;
+    // parent is a leaf; this is a new left OR right branch to be created
+    if ((*slot) == NULL) {
+        this = CreateBinTreeNode(parent);
+        this->value = v;
+        this->parent = parent;
+        (*slot) = this;
+        return this;
+    }
+    cmp = func(v, (*slot)->value);
+    if (cmp == 0) {
+        return (*slot);
+    }
+    if (cmp < 0) {
+        return _insert(&((*slot)->left), (*slot), v, func);
+    }
+    return _insert(&((*slot)->right), (*slot), v, func);
+}
+
+cciBinTreeNode_t *BinTreeInsert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
     if (! aNode) {
         return NULL;
     }
     if (! func) {
         func = CompareI;
     }
-    cmp = func(v, aNode->value);
-    if (cmp == 0) {
-        return aNode;
-    }
-    if (cmp < 0) {
-        if (! aNode->left) {
-            aNode->left = CreateBinTreeNode();
-            aNode->left->value = v;
-            return aNode->left;
-        }
-        return BinTreeInsert(aNode->left, v, func);
-    } else {
-        if (! aNode->right) {
-            aNode->right = CreateBinTreeNode();
-            aNode->right->value = v;
-            return aNode->right;
-        }
-        return BinTreeInsert(aNode->right, v, func);
-    }
-    return NULL;
+    return _insert(&aNode, aNode->parent, v, func);
 }
 
-cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
-    return NULL;
+static int _insertNode(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, cciBinTreeNode_t *newNode, CompareFunc func) {
+    int cmp;
+    if ((*slot) == NULL) {
+        (*slot) = newNode;
+        newNode->parent = parent;
+        return 1;
+    }
+    cmp = func(newNode->value, (*slot)->value);
+    if (cmp == 0) {
+        return 0;
+    }
+    if (cmp < 0) {
+        return _insertNode((&(*slot)->left), (*slot), newNode, func);
+    }
+    return _insertNode((&(*slot)->right), (*slot), newNode, func);
+}
+
+int BinTreeInsertNode(cciBinTreeNode_t *aNode, cciBinTreeNode_t *newNode, CompareFunc func) {
+    if (! func) {
+        func = CompareI;
+    }
+    return _insertNode(&aNode, aNode->parent, newNode, func);
 }
