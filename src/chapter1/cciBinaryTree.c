@@ -194,6 +194,17 @@ int Depth(cciBinTreeNode_t *aNode) {
     return height;
 }
 
+// using macro is also fine BUT,
+// if the macro is defined as MAXOF(x,y) ((x)>(y)?(x):(y)) THEN,
+// MAXOF(Height(aNode->left), Height(aNode->right)) is expanded to:
+// Height(aNode->left)>Height(aNode->right)?Height(aNode->left):Height(aNode->right)
+static int _maxof(int x, int y) {
+    return x>y?x:y;
+}
+
 int Height(cciBinTreeNode_t *aNode) {
+    if (aNode) {
+        return 1 + _maxof(Height(aNode->left), Height(aNode->right));
+    }
     return 0;
 }

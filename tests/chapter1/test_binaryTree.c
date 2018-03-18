@@ -322,6 +322,7 @@ void test_expectHeight() {
     //        33
     cciBinTreeNode_t *n = createMockTreeFromArray(groups1, 8);
     assert(6 == Height(n));
+    assert(1 == Height(search(n, 33)));
 }
 
 int main(int argc, char **argv) {
