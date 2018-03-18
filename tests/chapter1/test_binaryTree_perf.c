@@ -20,12 +20,17 @@ void generateWorkload(size_t num, cciValue_t *o_arr) {
 // arr one by one
 void doInsert(cciValue_t *arr, size_t num, cciBinTreeNode_t *o_t) {
     for (int i=0; i<num; ++i) {
-        BinTreeInsert(o_t, arr[i], NULL);
+        BinTreeInsert(o_t, arr[i], CompareI);
     }
 }
 
+static void touchNode(cciBinTreeNode_t *n, void *state) {
+    uint64_t dontCare = n->value.store.i;
+}
+
 void doTraverse(cciBinTreeNode_t *t) {
-    Traverse(t, NULL);
+    cciBinTreeNodeVisitor_t visitor = CreateBinTreeVisitor(touchNode, NULL);
+    Traverse(t, &visitor);
 }
 
 int main(int argc, char **argv) {

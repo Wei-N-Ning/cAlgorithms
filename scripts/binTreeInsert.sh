@@ -1,15 +1,31 @@
 #!/usr/bin/env bash
 
+# Samples: 76  of event 'cycles'
+# Event count (approx.): 32792291
+#
+# Overhead  Command          Shared Object      Symbol
+# ........  ...............  .................  ......................
+#
+#    55.35%  cciBinaryTreePe  cciBinaryTreePerf  [.] _insert
+#    23.17%  cciBinaryTreePe  cciBinaryTreePerf  [.] CompareI
+#    10.00%  cciBinaryTreePe  cciBinaryTreePerf  [.] Traverse
+#     5.74%  cciBinaryTreePe  cciBinaryTreePerf  [.] doInsert
+#     2.87%  cciBinaryTreePe  cciBinaryTreePerf  [.] CreateBinTreeNode
+#     1.44%  cciBinaryTreePe  [kernel]           [k] 0xffffffffbe9b84b7
+#     1.44%  cciBinaryTreePe  cciBinaryTreePerf  [.] touchNode
+#     0.00%  perf             [kernel]           [k] 0xffffffffbe867d36
+
+
 function generateData() {
     echo "
 10 2.000000 1.000000
-100 12.000000 1.000000
-200 24.000000 3.000000
-500 72.000000 7.000000
-1000 167.000000 15.000000
-5000 1163.000000 80.000000
-10000 2682.000000 198.000000
-20000 6155.000000 432.000000
+100 12.000000 2.000000
+200 23.000000 4.000000
+500 72.000000 9.000000
+1000 165.000000 21.000000
+5000 1133.000000 94.000000
+10000 2598.000000 222.000000
+20000 6065.000000 519.000000
 " > /tmp/_
 }
 
