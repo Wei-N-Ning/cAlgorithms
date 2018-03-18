@@ -18,8 +18,8 @@ typedef struct CCIBinTreeNode {
 cciBinTreeNode_t *CreateBinTreeNode();
 
 cciBinTreeNode_t *Search(
-    cciBinTreeNode_t *root,
-    const cciValue_t v,
+    cciBinTreeNode_t *aNode,
+    cciValue_t v,
     CompareFunc func  // typedef in cciValue.h
 );
 

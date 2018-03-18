@@ -22,18 +22,28 @@ cciBinTreeNode_t *createMockTree() {
     top->left->right = createNode(9);
     top->right = createNode(114);
     top->right->left = createNode(45);
-    top->right->left = createNode(145);
+    top->right->right = createNode(145);
     return top;
+}
+
+cciBinTreeNode_t *search(cciBinTreeNode_t *n, int x) {
+    return Search(n, newInt(x), NULL);
 }
 
 void test_searchExpectNotFound() {
     cciBinTreeNode_t *n = createMockTree();
-    assert(! Search(n, newInt(0xDEAD), NULL));
+    assert(! search(n, 0xDEAD));
 }
 
 void test_searchExpectFound() {
     cciBinTreeNode_t *n = createMockTree();
-    assert(Search(n, newInt(9), NULL));
+    assert(search(n, 13));
+    assert(search(n, 2));
+    assert(search(n, -34));
+    assert(search(n, 9));
+    assert(search(n, 114));
+    assert(search(n, 45));
+    assert(search(n, 145));
 }
 
 int main(int argc, char **argv) {

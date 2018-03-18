@@ -23,22 +23,22 @@ cciBinTreeNode_t *CreateBinTreeNode() {
     return n;
 }
 
-cciBinTreeNode_t *Search(cciBinTreeNode_t *root, const cciValue_t v, CompareFunc func) {
+cciBinTreeNode_t *Search(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
     int cmp;
     if (! func) {
         func = CompareI;  // default comparison function
     }
-    if (! root) {
+    if (! aNode) {
         return NULL;
     }
-    cmp = func(v, root->value);
+    cmp = func(v, aNode->value);
     if (cmp == 0) {
-        return root;
+        return aNode;
     }
     if (cmp < 0) {
-        return Search(root->left, v, func);
+        return Search(aNode->left, v, func);
     } else {
-        return Search(root->right, v, func);
+        return Search(aNode->right, v, func);
     }
     return NULL;
 }
