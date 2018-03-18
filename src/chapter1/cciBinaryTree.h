@@ -38,7 +38,10 @@ cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func);
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor);
 
+// root node has depth of 1
 int Depth(cciBinTreeNode_t *aNode);
+
+int Height(cciBinTreeNode_t *aNode);
 
 cciBinTreeNode_t *BinTreeInsert(
     cciBinTreeNode_t *aNode,

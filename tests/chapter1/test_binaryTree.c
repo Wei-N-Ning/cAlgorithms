@@ -312,6 +312,18 @@ void test_expectDepth() {
     assert(6 == Depth(search(n, 33)));
 }
 
+void test_expectHeight() {
+    int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
+    //            46
+    //    23
+    //  11  24
+    //1       26
+    //          37
+    //        33
+    cciBinTreeNode_t *n = createMockTreeFromArray(groups1, 8);
+    assert(6 == Height(n));
+}
+
 int main(int argc, char **argv) {
     InitFactory();
     RunTinyTests();

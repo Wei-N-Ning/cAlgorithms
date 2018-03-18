@@ -193,3 +193,7 @@ int Depth(cciBinTreeNode_t *aNode) {
     }
     return height;
 }
+
+int Height(cciBinTreeNode_t *aNode) {
+    return 0;
+}
