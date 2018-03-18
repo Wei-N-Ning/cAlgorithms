@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include <cciBinaryTree.h>
 #include <cciValue.h>
 #include <assert.h>
@@ -36,6 +37,10 @@ cciBinTreeNode_t *findMin(cciBinTreeNode_t *n) {
 
 cciBinTreeNode_t *findMax(cciBinTreeNode_t *n) {
     return FindMax(n, NULL);
+}
+
+cciBinTreeNode_t *insert(cciBinTreeNode_t *n, int x) {
+    return Insert(n, newInt(x), NULL);
 }
 
 void test_searchExpectNotFound() {
@@ -100,7 +105,6 @@ void test_traverseExpectTotalNodesVisited() {
 }
 
 static void countNode(cciBinTreeNode_t *n, void *state) {
-    printf("visiting node (%d)\n", GETINT(n->value));
     (*(int *)state)++;
 }
 
@@ -110,6 +114,55 @@ void test_traverseUseVisitorExpectTotalNodesVisited() {
     cciBinTreeNodeVisitor_t v = CreateVisitor(countNode, &count);
     Traverse(top, &v);
     assert(7 == count);
+}
+
+static void collect(cciBinTreeNode_t *n, void *state) {
+    int value = GETINT(n->value);
+    char *s = (char *)state;
+    size_t len = strlen(s);
+    s += len;
+    if (len) {
+        sprintf(s, ",%d", value);
+    } else {
+        sprintf(s, "%d", value);
+    }
+}
+
+static int toString(cciBinTreeNode_t *n, char *o_s) {
+    cciBinTreeNodeVisitor_t v = CreateVisitor(collect, o_s);
+    return Traverse(n, &v);
+}
+
+void test_traverseAndCollect() {
+    cciBinTreeNode_t *top = createMockTree();
+    char s[64] = "\0";
+    cciBinTreeNodeVisitor_t v = CreateVisitor(collect, s);
+    Traverse(top, &v);
+    assert(0 == strcmp("-34,2,9,13,45,114,145", s));
+}
+
+void test_insertExpectNewNode() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *n = insert(top, 31);
+    char s[64] = "\0";
+    int num;
+    num = toString(top, s);
+    assert(n);
+    assert(31 == GETINT(n->value));
+    assert(8 == num);
+    assert(0 == strcmp("-34,2,9,13,31,45,114,145", s));
+}
+
+void test_insertSameValueExpectNoNewNode() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *n = insert(top, 114);
+    char s[64] = "\0";
+    int num;
+    num = toString(top, s);
+    assert(n);
+    assert(114 == GETINT(n->value));
+    assert(7 == num);
+    assert(0 == strcmp("-34,2,9,13,45,114,145", s));
 }
 
 int main(int argc, char **argv) {

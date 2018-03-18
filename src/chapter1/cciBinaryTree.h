@@ -37,6 +37,12 @@ cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func);
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor);
 
+cciBinTreeNode_t *Insert(
+    cciBinTreeNode_t *aNode,
+    cciValue_t v,
+    CompareFunc func
+);
+
 ////////////////// utilities //////////////////
 
 // must call at the beginning of main()

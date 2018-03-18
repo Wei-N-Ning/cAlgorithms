@@ -96,3 +96,32 @@ int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
     return total;
 }
 
+cciBinTreeNode_t *Insert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
+    int cmp;
+    if (! aNode) {
+        return NULL;
+    }
+    if (! func) {
+        func = CompareI;
+    }
+    cmp = func(v, aNode->value);
+    if (cmp == 0) {
+        return aNode;
+    }
+    if (cmp < 0) {
+        if (! aNode->left) {
+            aNode->left = CreateBinTreeNode();
+            aNode->left->value = v;
+            return aNode->left;
+        }
+        return Insert(aNode->left, v, func);
+    } else {
+        if (! aNode->right) {
+            aNode->right = CreateBinTreeNode();
+            aNode->right->value = v;
+            return aNode->right;
+        }
+        return Insert(aNode->right, v, func);
+    }
+    return NULL;
+}
