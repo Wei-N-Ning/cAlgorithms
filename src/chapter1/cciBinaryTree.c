@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#define MAX_NUM_NODES 2048
+#define MAX_NUM_NODES 20000
 
 static cciBinTreeNode_t *nodePool = NULL;
 static ssize_t nodeIndex = 0;

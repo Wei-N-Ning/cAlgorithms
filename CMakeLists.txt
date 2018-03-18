@@ -68,3 +68,9 @@ add_tinytest_executable(cciBinaryTreeTests
 target_link_libraries(cciBinaryTreeTests cciChapter1)
 add_test(NAME "CCI::Chapter1::BinaryTree" COMMAND cciBinaryTreeTests)
 
+add_executable(cciBinaryTreePerf
+    tests/chapter1/test_binaryTree_perf.c)
+target_link_libraries(cciBinaryTreePerf cciChapter1)
+set_target_properties(cciBinaryTreePerf
+    PROPERTIES
+    CMAKE_C_FLAGS "-pg")
