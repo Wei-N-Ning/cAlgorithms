@@ -185,7 +185,7 @@ cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *top, cciValue_t v, CompareFunc
     return top;
 }
 
-int Height(cciBinTreeNode_t *aNode) {
+int Depth(cciBinTreeNode_t *aNode) {
     int height = 0;
     while (aNode) {
         aNode = aNode->parent;

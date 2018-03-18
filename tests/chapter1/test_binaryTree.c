@@ -278,8 +278,7 @@ static void minmax(int *arr, size_t num, int *o_min, int *o_max) {
     }
 }
 
-// balance factor: the ratio between the longest path and the shortest path
-void test_computeBalanceFactor() {
+void test_computeShortestAndLongestPaths() {
     int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
     //            46
     //    23
@@ -296,10 +295,10 @@ void test_computeBalanceFactor() {
     Traverse(t, &v);
     minmax(arr + 1, 8, &shortest, &longest);
     assert(6 == longest);
-    assert(1 == shortest);  // balance factor: 6.0 (unbalanced)
+    assert(1 == shortest);
 }
 
-void test_testHeight() {
+void test_expectDepth() {
     int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
     //            46
     //    23
@@ -308,9 +307,9 @@ void test_testHeight() {
     //          37
     //        33
     cciBinTreeNode_t *n = createMockTreeFromArray(groups1, 8);
-    assert(1 == Height(n));
-    assert(4 == Height(search(n, 1)));
-    assert(6 == Height(search(n, 33)));
+    assert(1 == Depth(n));
+    assert(4 == Depth(search(n, 1)));
+    assert(6 == Depth(search(n, 33)));
 }
 
 int main(int argc, char **argv) {
