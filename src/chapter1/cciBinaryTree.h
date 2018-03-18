@@ -23,6 +23,9 @@ cciBinTreeNode_t *Search(
     CompareFunc func  // typedef in cciValue.h
 );
 
+cciBinTreeNode_t *FindMin(cciBinTreeNode_t *aNode, CompareFunc func);
+cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func);
+
 /////// utilities
 
 // must call at the beginning of main()
