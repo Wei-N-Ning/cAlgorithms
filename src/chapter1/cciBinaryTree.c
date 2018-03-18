@@ -151,3 +151,36 @@ int BinTreeInsertNode(cciBinTreeNode_t *aNode, cciBinTreeNode_t *newNode, Compar
     }
     return _insertNode(&aNode, aNode->parent, newNode, func);
 }
+
+static void _remove(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, CompareFunc func) {
+    cciBinTreeNode_t *right = (*slot)->right;
+    cciBinTreeNode_t *left = (*slot)->left;
+    (*slot) = NULL;
+    if (right) {
+        BinTreeInsertNode(parent, right, func);
+    }
+    if (left) {
+        BinTreeInsertNode(parent, left, func);
+    }
+}
+
+cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *top, cciValue_t v, CompareFunc func) {
+    int cmp;
+    cciBinTreeNode_t *found = NULL;
+    if (! func) {
+        func = CompareI;
+    }
+    cmp = func(v, top->value);
+    if (cmp == 0) {
+        return NULL;
+    }
+    found = BinTreeSearch(top, v, func);
+    if (found) {
+        if (found == found->parent->left) {
+            _remove(&(found->parent->left), found->parent, func);
+        } else {
+            _remove(&(found->parent->right), found->parent, func);
+        }
+    }
+    return top;
+}

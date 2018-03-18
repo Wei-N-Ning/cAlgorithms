@@ -50,9 +50,9 @@ int BinTreeInsertNode(
     CompareFunc func
 );
 
-// return the node removed to the caller
+// return a new tree with the given node removed to the caller
 cciBinTreeNode_t *BinTreeRemove(
-    cciBinTreeNode_t *aNode,
+    cciBinTreeNode_t *top,
     cciValue_t v,
     CompareFunc func
 );

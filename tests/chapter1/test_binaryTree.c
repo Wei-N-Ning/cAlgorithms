@@ -57,6 +57,12 @@ cciBinTreeNode_t *batchInsert(cciBinTreeNode_t *n, const int *arr, size_t num) {
     }
 }
 
+void batchRemove(cciBinTreeNode_t *n, const int *arr, size_t num) {
+    for (int i=0; i<num; ++i) {
+        BinTreeRemove(n, newInt(arr[i]), NULL);
+    }
+}
+
 void test_searchExpectNotFound() {
     cciBinTreeNode_t *n = createMockTree();
     assert(! search(n, 0xDEAD));
@@ -212,6 +218,38 @@ void test_insertSubTreeExpectNewStrcture() {
     batchInsert(t3, groups2, 5);
     toString(t3, s);
     assert(0 == strcmp("1,2,8,10,11,17,23,24,26,33,37,46,4096", s));
+}
+
+void test_removeValueAtTopExpectEmptyTree() {
+    int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
+    cciBinTreeNode_t *t1 = createMockTreeFromArray(groups1, 8);
+    cciBinTreeNode_t *t2 = BinTreeRemove(t1, t1->value, NULL);
+    assert(! t2);
+}
+
+void test_removeValueExpectNewStructure() {
+    int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
+    char s[64] = "\0";
+    cciBinTreeNode_t *t1 = createMockTreeFromArray(groups1, 8);
+    toString(t1, s);
+    assert(0 == strcmp("1,11,23,24,26,33,37,46", s));
+    memset(s, 0, sizeof(s));
+    cciBinTreeNode_t *t2 = BinTreeRemove(t1, newInt(26), NULL);
+    toString(t2, s);
+    assert(0 == strcmp("1,11,23,24,33,37,46", s));
+}
+
+void test_insertRemoveRoundTrip() {
+    int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
+    int groups2[5] = {10, 8, 2, 17, 4096};
+    char s[64] = "\0";
+    cciBinTreeNode_t *t = createNode(0, NULL);
+    batchInsert(t, groups1, 8);
+    batchInsert(t, groups2, 5);
+    batchRemove(t, groups1, 7);  // left: 33
+    batchRemove(t, groups2, 4);  // left: 4096
+    toString(t, s);
+    assert(0 == strcmp("0,33,4096", s));
 }
 
 int main(int argc, char **argv) {
