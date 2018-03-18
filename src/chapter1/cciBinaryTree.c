@@ -53,3 +53,25 @@ void CloseFactory() {
     nodePool = NULL;
     nodeIndex = -1;
 }
+
+cciBinTreeNode_t *FindMin(cciBinTreeNode_t *aNode, CompareFunc func) {
+    if (! func) {
+        func = CompareI;
+    }
+    if (! aNode->left) {
+        return aNode;
+    }
+    return FindMin(aNode->left, func);
+}
+
+cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func) {
+    if (! func) {
+        func = CompareI;
+    }
+    if (! aNode->right) {
+        return aNode;
+    }
+    return FindMax(aNode->right, func);
+}
+
+

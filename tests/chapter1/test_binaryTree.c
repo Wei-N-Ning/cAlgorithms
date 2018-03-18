@@ -30,6 +30,14 @@ cciBinTreeNode_t *search(cciBinTreeNode_t *n, int x) {
     return Search(n, newInt(x), NULL);
 }
 
+cciBinTreeNode_t *findMin(cciBinTreeNode_t *n) {
+    return FindMin(n, NULL);
+}
+
+cciBinTreeNode_t *findMax(cciBinTreeNode_t *n) {
+    return FindMax(n, NULL);
+}
+
 void test_searchExpectNotFound() {
     cciBinTreeNode_t *n = createMockTree();
     assert(! search(n, 0xDEAD));
@@ -55,6 +63,34 @@ void test_searchInSubTree() {
     assert(search(top->right, 114));
     assert(search(top->right, 45));
     assert(search(top->right, 145));
+}
+
+void test_findMinExpectValue() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *found = findMin(top);
+    assert(found);
+    assert(-34 == GETINT(found->value));
+}
+
+void test_findMinFromSubTree() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *found = findMin(top->right);
+    assert(found);
+    assert(45 == GETINT(found->value));
+}
+
+void test_findMaxExpectValue() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *found = findMax(top);
+    assert(found);
+    assert(145 == GETINT(found->value));
+}
+
+void test_findMaxFromSubTree() {
+    cciBinTreeNode_t *top = createMockTree();
+    cciBinTreeNode_t *found = findMax(top->left);
+    assert(found);
+    assert(9 == GETINT(found->value));
 }
 
 int main(int argc, char **argv) {
