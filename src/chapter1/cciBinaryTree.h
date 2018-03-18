@@ -38,6 +38,8 @@ cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func);
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor);
 
+int Height(cciBinTreeNode_t *aNode);
+
 cciBinTreeNode_t *BinTreeInsert(
     cciBinTreeNode_t *aNode,
     cciValue_t v,
