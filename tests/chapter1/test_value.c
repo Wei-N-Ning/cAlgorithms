@@ -3,8 +3,6 @@
 //
 
 #include <math.h>
-#include <stddef.h>
-#include <stdio.h>
 
 #include <cciValue.h>
 
@@ -64,6 +62,21 @@ void test_roundTripMixedTypes() {
     assert('A' == GETCHAR(v));
     SETINT(v, -0xDEAD1001);
     assert(-0xDEAD1001 == GETINT(v));
+}
+
+void test_compareIntWithInt() {
+    assert(0 == ICOMPARE(newInt(1), newInt(1)));
+    assert(0 == ICOMPARE(newInt(2312), newInt(2312)));
+    assert(ICOMPARE(newInt(123), newInt(12)) > 0);
+    assert(ICOMPARE(newInt(12), newInt(121)) < 0);
+}
+
+void test_compareFloatWithFloat() {
+    assert(0 == ICOMPARE(newFloat(3.14), newFloat(3.14)));
+    assert(0 == ICOMPARE(newFloat(3.1415926535897f),
+                         newFloat(3.1415926535898f)));
+    assert(ICOMPARE(newFloat(123.123f), newFloat(12.231f)) > 0);
+    assert(CompareF(newFloat(-213.1323f), newFloat(121)) < 0);
 }
 
 int main(int argc, char **argv) {

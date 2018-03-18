@@ -26,7 +26,9 @@ add_library(cciChapter1
     src/chapter1/cciBitArray.c
     src/chapter1/cciBitArray.h
     src/chapter1/cciValue.c
-    src/chapter1/cciValue.h)
+    src/chapter1/cciValue.h
+    src/chapter1/cciBinaryTree.c
+    src/chapter1/cciBinaryTree.h)
 target_include_directories(cciChapter1
     PUBLIC
     src/chapter1)
@@ -60,3 +62,9 @@ add_tinytest_executable(cciValueTests
     tests/chapter1/test_value.c)
 target_link_libraries(cciValueTests cciChapter1)
 add_test(NAME "CCI::Chapter1::Value" COMMAND cciValueTests)
+
+add_tinytest_executable(cciBinaryTreeTests
+    tests/chapter1/test_binaryTree.c)
+target_link_libraries(cciBinaryTreeTests cciChapter1)
+add_test(NAME "CCI::Chapter1::BinaryTree" COMMAND cciBinaryTreeTests)
+
