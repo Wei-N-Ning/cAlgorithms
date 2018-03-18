@@ -93,6 +93,25 @@ void test_findMaxFromSubTree() {
     assert(9 == GETINT(found->value));
 }
 
+void test_traverseExpectTotalNodesVisited() {
+    cciBinTreeNode_t *top = createMockTree();
+    assert(7 == Traverse(top, NULL));
+    assert(3 == Traverse(top->left, NULL));
+}
+
+static void countNode(cciBinTreeNode_t *n, void *state) {
+    printf("visiting node (%d)\n", GETINT(n->value));
+    (*(int *)state)++;
+}
+
+void test_traverseUseVisitorExpectTotalNodesVisited() {
+    cciBinTreeNode_t *top = createMockTree();
+    int count = 0;
+    cciBinTreeNodeVisitor_t v = CreateVisitor(countNode, &count);
+    Traverse(top, &v);
+    assert(7 == count);
+}
+
 int main(int argc, char **argv) {
     InitFactory();
     RunTinyTests();

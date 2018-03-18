@@ -19,8 +19,17 @@ cciBinTreeNode_t *CreateBinTreeNode() {
         (nodeIndex != -1) &&
         (nodeIndex <= MAX_NUM_NODES));
     cciBinTreeNode_t *n = nodePool + nodeIndex++;
+    n->left = NULL;
+    n->right = NULL;
     RESET(n->value);
     return n;
+}
+
+cciBinTreeNodeVisitor_t CreateVisitor(VisitorFunc func, void *state) {
+    cciBinTreeNodeVisitor_t v;
+    v.state = state;
+    v.func = func;
+    return v;
 }
 
 cciBinTreeNode_t *Search(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
@@ -74,4 +83,16 @@ cciBinTreeNode_t *FindMax(cciBinTreeNode_t *aNode, CompareFunc func) {
     return FindMax(aNode->right, func);
 }
 
+int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
+    int total = 0;
+    if (aNode) {
+        total += 1;
+        total += Traverse(aNode->left, visitor);
+        if (visitor && visitor->func) {
+            visitor->func(aNode, visitor->state);
+        }
+        total += Traverse(aNode->right, visitor);
+    }
+    return total;
+}
 
