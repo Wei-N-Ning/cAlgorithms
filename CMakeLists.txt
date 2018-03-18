@@ -74,3 +74,10 @@ target_link_libraries(cciBinaryTreePerf cciChapter1)
 set_target_properties(cciBinaryTreePerf
     PROPERTIES
     CMAKE_C_FLAGS "-pg")
+
+add_executable(cciArrayListPerf
+    tests/chapter1/test_arrayList_perf.c)
+target_link_libraries(cciArrayListPerf cciChapter1)
+set_target_properties(cciArrayListPerf
+    PROPERTIES
+    CMAKE_C_FLAGS "-pg")
