@@ -136,7 +136,7 @@ void test_traverseUseVisitorExpectTotalNodesVisited() {
     assert(7 == count);
 }
 
-static void collect(cciBinTreeNode_t *n, void *state) {
+static void collectNodeValue(cciBinTreeNode_t *n, void *state) {
     int value = GETINT(n->value);
     char *s = (char *)state;
     size_t len = strlen(s);
@@ -149,14 +149,14 @@ static void collect(cciBinTreeNode_t *n, void *state) {
 }
 
 static int toString(cciBinTreeNode_t *n, char *o_s) {
-    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collect, o_s);
+    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collectNodeValue, o_s);
     return Traverse(n, &v);
 }
 
 void test_traverseAndCollect() {
     cciBinTreeNode_t *top = createMockTree();
     char s[64] = "\0";
-    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collect, s);
+    cciBinTreeNodeVisitor_t v = CreateBinTreeVisitor(collectNodeValue, s);
     Traverse(top, &v);
     assert(0 == strcmp("-34,2,9,13,45,114,145", s));
 }
@@ -250,6 +250,53 @@ void test_insertRemoveRoundTrip() {
     batchRemove(t, groups2, 4);  // left: 4096
     toString(t, s);
     assert(0 == strcmp("0,33,4096", s));
+}
+
+static void collectDistanceToRoot(cciBinTreeNode_t *n, void *state) {
+    int *index = (int *)state;
+    int *arr = index + 1;
+    int distance = 0;
+    cciBinTreeNode_t *temp = n;
+    while (temp) {
+        temp = temp->parent;
+        distance++;
+    }
+    arr[*index] = distance;
+    (*index) += 1;
+}
+
+static void minmax(int *arr, size_t num, int *o_min, int *o_max) {
+    for (int i=0; i<num; ++i) {
+        if (arr[i] > *o_max) {
+            *o_max = arr[i];
+            continue;
+        }
+        if (arr[i] < *o_min) {
+            *o_min = arr[i];
+            continue;
+        }
+    }
+}
+
+// balance factor: the ratio between the longest path and the shortest path
+void test_balanceFactor() {
+    int groups1[8] = {46, 23, 24, 11, 26, 37, 1, 33};
+    //            46
+    //    23
+    //  11  24
+    //1       26
+    //          37
+    //        33
+    // 5: 1
+    int arr[9] = {0};  // current index + distances
+    int longest = 1;
+    int shortest = 1;
+    cciBinTreeNode_t *t = createMockTreeFromArray(groups1, 8);
+    struct CCIBinTreeNodeVisitor v = CreateBinTreeVisitor(collectDistanceToRoot, arr);
+    Traverse(t, &v);
+    minmax(arr + 1, 8, &shortest, &longest);
+    assert(6 == longest);
+    assert(1 == shortest);  // balance factor: 6.0 (unbalanced)
 }
 
 int main(int argc, char **argv) {
