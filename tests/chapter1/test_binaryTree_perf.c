@@ -28,6 +28,11 @@ static void touchNode(cciBinTreeNode_t *n, void *state) {
     uint64_t dontCare = n->value.store.i;
 }
 
+// Beware that the complexity of this case is not simply O(logN);
+// it is rather closer to O(N logN) because the base size is also
+// increasing;
+// I should pin down the base size and insert only one item for
+// one round, then increase the base size for the next round
 void doTraverse(cciBinTreeNode_t *t) {
     cciBinTreeNodeVisitor_t visitor = CreateBinTreeVisitor(touchNode, NULL);
     Traverse(t, &visitor);
