@@ -81,3 +81,9 @@ target_link_libraries(cciArrayListPerf cciChapter1)
 set_target_properties(cciArrayListPerf
     PROPERTIES
     CMAKE_C_FLAGS "-pg")
+
+############### adm
+
+add_tinytest_executable(admHashStringTests
+    tests/adm/chapter3/hashString.c)
+add_test(NAME "ADM::Chapter3::HashString" COMMAND admHashStringTests)
