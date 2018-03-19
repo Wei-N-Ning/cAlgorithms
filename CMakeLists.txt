@@ -88,6 +88,13 @@ add_tinytest_executable(cciStackTests
     tests/chapter1/test_stack.c)
 target_link_libraries(cciStackTests cciChapter1)
 
+add_executable(cciStackPerf
+    tests/chapter1/test_stack_perf.c)
+target_link_libraries(cciStackPerf cciChapter1)
+set_target_properties(cciStackPerf
+    PROPERTIES
+    CMAKE_C_FLAGS "-pg")
+
 ############### adm
 
 add_tinytest_executable(admHashStringTests
