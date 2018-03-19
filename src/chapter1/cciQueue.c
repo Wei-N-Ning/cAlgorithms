@@ -4,6 +4,3 @@
 
 #include "cciQueue.h"
 
-struct CCIQueue {
-
-};

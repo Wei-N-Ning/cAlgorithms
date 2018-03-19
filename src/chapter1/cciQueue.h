@@ -6,8 +6,11 @@
 #define CCISOLUTIONSC_CCIQUEUE_H
 
 #include "cciValue.h"
+#include "cciList.h"
 
-typedef struct CCIQueue cciQueue_t;
+typedef struct CCIQueue {
+    cciList_t *l;
+} cciQueue_t;
 
 cciQueue_t *CreateCCIQueue();
 
