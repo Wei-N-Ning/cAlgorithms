@@ -15,7 +15,7 @@ void appendToCArray(size_t workload, int *arr) {
 
 void appendToArrayList(size_t workload, cciArrayList_t *al) {
     for (int i=0; i<workload; ++i) {
-        AlEmplaceBack(al, i);
+        AlEmplaceBack(al, newInt(i));
     }
 }
 
