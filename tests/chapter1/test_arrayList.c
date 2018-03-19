@@ -6,15 +6,15 @@
 #include <cciArrayList.h>
 
 void Prt(cciArrayList_t *al) {
-    for (int i=0; i < al->size; ++i) {
-        printf("%d, ", AlGetInt(al, i));
+    for (size_t i=0; i < al->size; ++i) {
+        printf("%d, ", GETINT(AlGet(al, i)));
     }
     printf("\n");
 }
 
 void AssertArrayList(cciArrayList_t *al, const int *expected) {
-    for (int i=0; i < al->size; ++i) {
-        if (AlGetInt(al, i) != expected[i]) {
+    for (size_t i=0; i < al->size; ++i) {
+        if (GETINT(AlGet(al, i)) != expected[i]) {
             printf("Unexpected array list members:\n");
             Prt(al);
             assert(0);
@@ -45,47 +45,47 @@ void UnitTests() {
 
     NewTinyTest("emplace back, expect value at back") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 11);
-        AssertEqual(11, AlBack(al));
+        AlEmplaceBack(al, newInt(11));
+        AssertEqual(11, GETINT(AlBack(al)));
         AlDelete(al);
     });
 
     NewTinyTest("emplace back, expect value at index") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 0xDE);
-        AlEmplaceBack(al, 0xAD);
-        AlEmplaceBack(al, 0xBE);
-        AlEmplaceBack(al, 0xEF);
-        AssertEqual(0xAD, AlGetInt(al, 1));
-        AssertEqual(0xBE, AlGetInt(al, 2));
+        AlEmplaceBack(al, newInt(0xDE));
+        AlEmplaceBack(al, newInt(0xAD));
+        AlEmplaceBack(al, newInt(0xBE));
+        AlEmplaceBack(al, newInt(0xEF));
+        AssertEqual(0xAD, GETINT(AlGet(al, 1)));
+        AssertEqual(0xBE, GETINT(AlGet(al, 2)));
         AlDelete(al);
     });
 
     NewTinyTest("get from invalid index, expect index error") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 0xDE);
-        AlEmplaceBack(al, 0xAD);
-        AlGetInt(al, 1001);
+        AlEmplaceBack(al, newInt(0xDE));
+        AlEmplaceBack(al, newInt(0xAD));
+        AlGet(al, 1001);
         AssertEqual(CCI_ARRAYLIST_INDEXERROR, al->errCode);
         AlDelete(al);
     });
 
     NewTinyTest("set value on invalid index, expect index error") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 0xDE);
-        AlEmplaceBack(al, 0xAD);
-        AlSetInt(al, 1001, 0xBEEF);
+        AlEmplaceBack(al, newInt(0xDE));
+        AlEmplaceBack(al, newInt(0xAD));
+        AlSet(al, 1001, newInt(0xBEEF));
         AssertEqual(CCI_ARRAYLIST_INDEXERROR, al->errCode);
         AlDelete(al);
     });
 
     NewTinyTest("append values, expect capacity increased") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 1);
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(1));
         AssertEqual(16, al->capacity);
         AlDelete(al);
     });
@@ -102,29 +102,29 @@ void UnitTests() {
 
     NewTinyTest("pop back, expect new back") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 2);
-        AlEmplaceBack(al, 3);
-        AlEmplaceBack(al, 4);
-        AssertEqual(4, AlBack(al));
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(2));
+        AlEmplaceBack(al, newInt(3));
+        AlEmplaceBack(al, newInt(4));
+        AssertEqual(4, GETINT(AlBack(al)));
         AlPopBack(al);
-        AssertEqual(3, AlBack(al));
+        AssertEqual(3, GETINT(AlBack(al)));
         AlPopBack(al);
-        AssertEqual(2, AlBack(al));
+        AssertEqual(2, GETINT(AlBack(al)));
         AlDelete(al);
     });
 
     NewTinyTest("insert, expect new values") ((void) {
         cciArrayList_t *al = AlNew();
-        AlEmplaceBack(al, 1);
-        AlEmplaceBack(al, 2);
-        AlEmplaceBack(al, 3);
-        AlEmplaceBack(al, 4);
-        AssertEqual(3, AlGetInt(al, 2));
-        AlInsertInt(al, 2, 1001);
+        AlEmplaceBack(al, newInt(1));
+        AlEmplaceBack(al, newInt(2));
+        AlEmplaceBack(al, newInt(3));
+        AlEmplaceBack(al, newInt(4));
+        AssertEqual(3, GETINT(AlGet(al, 2)));
+        AlInsert(al, 2, newInt(1001));
         AssertEqual(5, al->size);
-        AssertEqual(3, AlGetInt(al, 2));
-        AssertEqual(1001, AlGetInt(al, 3));
+        AssertEqual(3, GETINT(AlGet(al, 2)));
+        AssertEqual(1001, GETINT(AlGet(al, 3)));
         AlDelete(al);
     });
 
@@ -134,13 +134,13 @@ void UnitTests() {
 void EmplaceBackBenchmark() {
     clock_t before;
     cciArrayList_t *al = AlNew();
-    AlEmplaceBack(al, 1);
-    AlEmplaceBack(al, 2);
-    AlEmplaceBack(al, 3);
-    AlEmplaceBack(al, 4);
+    AlEmplaceBack(al, newInt(1));
+    AlEmplaceBack(al, newInt(2));
+    AlEmplaceBack(al, newInt(3));
+    AlEmplaceBack(al, newInt(4));
     before = clock();
     for (int i=0; i <= 100000; ++i) {
-        AlEmplaceBack(al, i);
+        AlEmplaceBack(al, newInt(i));
     }
     printf("\nEmplaceBack() took: %f us\n", (double)(clock() - before));
     AlDelete(al);

@@ -28,7 +28,9 @@ add_library(cciChapter1
     src/chapter1/cciValue.c
     src/chapter1/cciValue.h
     src/chapter1/cciBinaryTree.c
-    src/chapter1/cciBinaryTree.h)
+    src/chapter1/cciBinaryTree.h
+    src/chapter1/cciStack.c
+    src/chapter1/cciStack.h)
 target_include_directories(cciChapter1
     PUBLIC
     src/chapter1)
@@ -81,6 +83,10 @@ target_link_libraries(cciArrayListPerf cciChapter1)
 set_target_properties(cciArrayListPerf
     PROPERTIES
     CMAKE_C_FLAGS "-pg")
+
+add_tinytest_executable(cciStackTests
+    tests/chapter1/test_stack.c)
+target_link_libraries(cciStackTests cciChapter1)
 
 ############### adm
 

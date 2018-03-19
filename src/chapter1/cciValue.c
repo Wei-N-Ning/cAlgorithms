@@ -6,6 +6,13 @@
 
 #include <math.h>
 
+cciValue_t invalid() {
+    cciValue_t v;
+    v.type = CCI_INVALID;
+    v.store.i = 0;
+    return v;
+}
+
 cciValue_t newInt(int x) {
     cciValue_t v;
     SETINT(v, x);

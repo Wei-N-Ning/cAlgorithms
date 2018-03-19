@@ -7,12 +7,14 @@
 #define CCISOLUTIONSC_CCIVALUE_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #ifndef VTYPE
 #define VTYPE uint64_t
 #endif
 
 typedef enum {
+    CCI_INVALID,
     CCI_INT,
     CCI_FLOAT,
     CCI_CHAR,
@@ -26,6 +28,7 @@ typedef struct CCIValue {
         char c;
     } store;
     cciValueType_t type;
+    size_t sz;
 } cciValue_t;
 
 #define RESET(v) v.store.i=0;
@@ -37,6 +40,7 @@ typedef struct CCIValue {
 #define GETFLOAT(v) v.store.f
 #define GETCHAR(v) v.store.c
 
+cciValue_t invalid();
 cciValue_t newInt(int x);
 cciValue_t newFloat(float x);
 cciValue_t newChar(char x);

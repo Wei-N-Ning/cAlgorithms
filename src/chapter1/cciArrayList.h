@@ -5,15 +5,19 @@
 #ifndef CCISOLUTIONSC_CCIARRAYLIST_H
 #define CCISOLUTIONSC_CCIARRAYLIST_H
 
+#include "cciValue.h"
+
+#include <stddef.h>
+
 typedef enum {
     CCI_ARRAYLIST_NOERROR,
     CCI_ARRAYLIST_INDEXERROR,
 } CCI_ARRAYLIST_ERRORS;
 
 typedef struct {
-    int *store;
-    unsigned int capacity;
-    unsigned int size;
+    cciValue_t *store;
+    size_t capacity;
+    size_t size;
     CCI_ARRAYLIST_ERRORS errCode;
 } cciArrayList_t;
 
@@ -21,18 +25,18 @@ cciArrayList_t *AlNew();
 
 void AlDelete(cciArrayList_t *al);
 
-void AlSetInt(cciArrayList_t *al, int key, int value);
+void AlSet(cciArrayList_t *al, size_t index, cciValue_t value);
 
-int AlGetInt(cciArrayList_t *al, int key);
+cciValue_t AlGet(cciArrayList_t *al, size_t index);
 
-void AlEmplaceBack(cciArrayList_t *al, int value);
+void AlEmplaceBack(cciArrayList_t *al, cciValue_t value);
 
-int AlBack(cciArrayList_t *al);
+cciValue_t AlBack(cciArrayList_t *al);
 
-void AlReserve(cciArrayList_t *al, unsigned int newCapacity);
+void AlReserve(cciArrayList_t *al, size_t newCapacity);
 
-int AlPopBack(cciArrayList_t *al);
+cciValue_t AlPopBack(cciArrayList_t *al);
 
-void AlInsertInt(cciArrayList_t *al, int key, int value);
+void AlInsert(cciArrayList_t *al, size_t index, cciValue_t value);
 
 #endif //CCISOLUTIONSC_CCIARRAYLIST_H
