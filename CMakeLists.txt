@@ -30,7 +30,9 @@ add_library(cciChapter1
     src/chapter1/cciBinaryTree.c
     src/chapter1/cciBinaryTree.h
     src/chapter1/cciStack.c
-    src/chapter1/cciStack.h)
+    src/chapter1/cciStack.h
+    src/chapter1/cciQueue.c
+    src/chapter1/cciQueue.h)
 target_include_directories(cciChapter1
     PUBLIC
     src/chapter1)
@@ -40,10 +42,10 @@ add_executable(cciStringsTests
 add_test(NAME "CCI::Chapter1::StringsTests" COMMAND cciStringsTests)
 target_link_libraries(cciStringsTests cciChapter1 tinyCUnit)
 
-add_executable(cciHashTableTests
-    tests/chapter1/test_hashTable.c)
-add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
-target_link_libraries(cciHashTableTests cciChapter1 tinyCUnit)
+#add_executable(cciHashTableTests
+#    tests/chapter1/test_hashTable.c)
+#add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
+#target_link_libraries(cciHashTableTests cciChapter1 tinyCUnit)
 
 add_executable(cciListTests
     tests/chapter1/test_list.c)
@@ -94,6 +96,10 @@ target_link_libraries(cciStackPerf cciChapter1)
 set_target_properties(cciStackPerf
     PROPERTIES
     CMAKE_C_FLAGS "-pg")
+
+add_tinytest_executable(cciQueueTests
+    tests/chapter1/test_queue.c)
+target_link_libraries(cciQueueTests cciChapter1)
 
 ############### adm
 

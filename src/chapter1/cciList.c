@@ -3,6 +3,7 @@
 //
 
 #include "cciList.h"
+
 #include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -10,7 +11,7 @@
 typedef struct cciListNode {
     struct cciListNode *prev;
     struct cciListNode *next;
-    int value;
+    cciValue_t value;
 } cciListNode_t;
 
 cciList_t *NewList() {
@@ -29,15 +30,17 @@ void DeleteList(cciList_t *l) {
     free(l);
 }
 
-cciListNode_t *createNode() {
+static cciListNode_t *createNode() {
     cciListNode_t *n = malloc(sizeof(cciListNode_t));
-    memset(n, 0, sizeof(cciListNode_t));
+    n->prev = NULL;
+    n->next = NULL;
+    n->value = invalid();
     return n;
 }
 
 // prev n next
 // prev   next
-void deleteNode(cciList_t *l, cciListNode_t *prev, cciListNode_t *n, cciListNode_t *next) {
+static void deleteNode(cciList_t *l, cciListNode_t *prev, cciListNode_t *n, cciListNode_t *next) {
     if (prev) {
         prev->next = next;
     } else {
@@ -52,16 +55,16 @@ void deleteNode(cciList_t *l, cciListNode_t *prev, cciListNode_t *n, cciListNode
     l->size--;
 }
 
-CCILIST_ERROR validateIndex(cciList_t *l, int index) {
-    if (index < 0 || index > l->size - 1) {
-        return CCILIST_INDEX_ERROR;
+static CCILIST_ERROR validateIndex(cciList_t *l, size_t index) {
+    if (l->size && index <= (l->size - 1)) {
+        return CCILIST_NO_ERROR;
     }
-    return CCILIST_NO_ERROR;
+    return CCILIST_INDEX_ERROR;
 }
 
-cciListNode_t *node(cciList_t *l, int index) {
+static cciListNode_t *node(cciList_t *l, size_t index) {
     cciListNode_t *curr = l->head;
-    for (int i=0; i < index; ++i) {
+    for (size_t i=0; i < index; ++i) {
         curr = curr->next;
     }
     assert(curr); // should not happen
@@ -70,7 +73,7 @@ cciListNode_t *node(cciList_t *l, int index) {
 
 // prev         next
 // prev newNode next
-void insert(cciList_t *l, cciListNode_t *prev, cciListNode_t *newNode, cciListNode_t *next) {
+static void insert(cciList_t *l, cciListNode_t *prev, cciListNode_t *newNode, cciListNode_t *next) {
     if (prev) {
         prev->next = newNode;
     } else {
@@ -86,7 +89,7 @@ void insert(cciList_t *l, cciListNode_t *prev, cciListNode_t *newNode, cciListNo
     l->size++;
 }
 
-void AppendInt(cciList_t *l, int v) {
+void Append(cciList_t *l, cciValue_t v) {
     cciListNode_t *n = createNode();
     n->value = v;
     if (l->size == 0) {
@@ -96,15 +99,15 @@ void AppendInt(cciList_t *l, int v) {
     }
 }
 
-int GetInt(cciList_t *l, int index) {
+cciValue_t Get(cciList_t *l, size_t index) {
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {
         return node(l, index)->value;
     }
-    return 0;
+    return invalid();
 }
 
-void InsertInt(cciList_t *l, int index, int value) {
+void Insert(cciList_t *l, size_t index, cciValue_t value) {
     cciListNode_t *prev = NULL;
     cciListNode_t *newNode = NULL;
     l->errCode = validateIndex(l, index);
@@ -116,7 +119,7 @@ void InsertInt(cciList_t *l, int index, int value) {
     }
 }
 
-void Remove(cciList_t *l, int index) {
+void Remove(cciList_t *l, size_t index) {
     cciListNode_t *n = NULL;
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {
