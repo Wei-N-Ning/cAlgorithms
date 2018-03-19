@@ -33,6 +33,8 @@ static void touchNode(cciBinTreeNode_t *n, void *state) {
 // increasing;
 // I should pin down the base size and insert only one item for
 // one round, then increase the base size for the next round
+// I didn't commit the test but in this case the time taken was
+// much shorter (almost O(1))
 void doTraverse(cciBinTreeNode_t *t) {
     cciBinTreeNodeVisitor_t visitor = CreateBinTreeVisitor(touchNode, NULL);
     Traverse(t, &visitor);
