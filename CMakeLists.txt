@@ -107,8 +107,12 @@ set_target_properties(cciQueuePerf
 
 add_tinytest_executable(cciHashTableTests
     tests/chapter1/test_hashTable.c)
-target_link_libraries(cciHashTableTests cciChapter1 tinyCUnit)
+target_link_libraries(cciHashTableTests cciChapter1)
 add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
+
+add_executable(cciHashTablePerf
+    tests/chapter1/test_hashTable_perf.c)
+target_link_libraries(cciHashTablePerf cciChapter1)
 
 ############### adm
 

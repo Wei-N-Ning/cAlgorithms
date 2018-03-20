@@ -45,12 +45,24 @@ void DeleteHashTable(cciHashTable_t *tb) {
     free(tb);
 }
 
+// for reference only
+static unsigned int hashInt(unsigned int x) {
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+    return x;
+}
+
 static unsigned int hashString(const char *s) {
     unsigned int h = 5381;
     for (unsigned char c=*s; c != '\0'; c=*++s) {
         h = h * 33 + c;
     }
     return h;
+}
+
+size_t HashTableSize(cciHashTable_t *tb) {
+    return tb->size;
 }
 
 void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
@@ -103,4 +115,10 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key) {
         }
     }
     return invalid();
+}
+
+void HashTableDistri(cciHashTable_t *tb, size_t *buf) {
+    for (size_t i=0; i<tb->size; ++i) {
+        buf[i] = tb->slots[i].l->size ? 1 : 0;
+    }
 }

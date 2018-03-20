@@ -83,6 +83,7 @@ void test_whenKeysCollidedExpectSlotsDeallocated() {
     assert(! ISVALID(SGet(tb, "this")));
     assert(-8 == GETINT(SGet(tb, "them")));
     assert(25 == GETINT(SGet(tb, "that")));
+    DeleteHashTable(tb);
 }
 
 int main(int argc, char **argv) {
