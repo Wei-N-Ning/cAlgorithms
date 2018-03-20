@@ -1,5 +1,5 @@
 //
-// Created by wein on 3/3/18.
+// Created by wein on 3/20/18.
 //
 
 #include "cciHashTable.h"
@@ -7,16 +7,42 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef DEFAULTHASHTABLESIZE
-#define DEFAULTHASHTABLESIZE 16
-#endif
+#include "cciArrayList.h"
+#include "cciList.h"
 
-// for reference only
-static unsigned int hashInt(unsigned int x) {
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = (x >> 16) ^ x;
-    return x;
+// each element in the array holds a cciHashSlot, which
+// encapsulates a cciList (doubly linked list)
+// [ ] [ ] [ ] ...... [ ] [ ] [ ]
+//  |   |   |
+//  o   o   o
+//  o
+
+// key1->value1->key2->value2....
+typedef struct cciHashSlot {
+    cciList_t *l;
+} cciHashSlot_t;
+
+struct cciHashTable {
+    cciHashSlot_t *slots;
+    size_t size;
+};
+
+cciHashTable_t *NewHashTable(size_t size) {
+    cciHashTable_t *tb = malloc(sizeof(cciHashTable_t));
+    tb->slots = malloc(sizeof(cciHashSlot_t) * size);
+    for (size_t i=0; i<size; ++i) {
+        tb->slots[i].l = NewList();
+    }
+    tb->size = size;
+    return tb;
+}
+
+void DeleteHashTable(cciHashTable_t *tb) {
+    for (size_t i=0; i<tb->size; ++i) {
+        DeleteList(tb->slots[i].l);
+    }
+    free(tb->slots);
+    free(tb);
 }
 
 static unsigned int hashString(const char *s) {
@@ -27,50 +53,29 @@ static unsigned int hashString(const char *s) {
     return h;
 }
 
-static void initSlots(cciHashTable_t *tb) {
-    size_t size = DEFAULTHASHTABLESIZE;
-    tb->store = (cciList_t **)malloc(sizeof(cciList_t *) * size);
-    for (size_t i=0; i < size; ++i) {
-        tb->store[i] = NewList();
-    }
-    tb->size = size;
-}
-
-cciHashTable_t *NewHashTable() {
-    cciHashTable_t *tb = (cciHashTable_t *)malloc(sizeof(cciHashTable_t));
-    initSlots(tb);
-    return tb;
-}
-
-void DeleteHashTable(cciHashTable_t *hashTable) {
-    cciList_t *l = NULL;
-    for (int i=0; i < hashTable->size; ++i) {
-        l = hashTable->store[i];
-        DeleteList(l);
-        hashTable->store[i] = NULL;
-    }
-    free(hashTable->store);
-    free(hashTable);
-}
-
-static cciList_t *slot(cciHashTable_t *tb, const char *key) {
-    unsigned int h = hashString(key);
-    return tb->store[h % tb->size];
-}
-
 void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
-    cciList_t *l = slot(tb, key);
+    size_t index = hashString(key) % tb->size;
+    cciList_t *l = tb->slots[index].l;
+    cciValue_t svalue;
     if (! l->size) {
+        Append(l, newStr(key));
         Append(l, value);
         return;
+    }
+    for (size_t slotPos=0; slotPos<l->size; slotPos+=2) {
+        svalue = Get(l, slotPos);
+        if (strcmp(GETSTR(svalue), key) == 0) {
+            Set(l, slotPos+1, value);
+        }
     }
 }
 
 cciValue_t SGet(cciHashTable_t *tb, const char *key) {
-    cciList_t *l = slot(tb, key);
-    if (l->size == 0) {
-        tb->errCode = CCIHASHTABLE_KEY_NOTFOUND;
+    size_t index = hashString(key) % tb->size;
+    cciList_t *l = tb->slots[index].l;
+    if (! l->size) {
         return invalid();
     }
-    return Get(l, 0);
+    // TODO
+    return Get(l, 1);
 }

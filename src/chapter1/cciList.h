@@ -28,6 +28,8 @@ void Append(cciList_t *l, cciValue_t value);
 
 cciValue_t Get(cciList_t *l, size_t index);
 
+void Set(cciList_t *l, size_t index, cciValue_t value);
+
 void Insert(cciList_t *l, size_t index, cciValue_t value);
 
 void Remove(cciList_t *l, size_t index);

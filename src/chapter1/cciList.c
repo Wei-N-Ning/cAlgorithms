@@ -99,6 +99,11 @@ void Append(cciList_t *l, cciValue_t v) {
     }
 }
 
+void Set(cciList_t *l, size_t index, cciValue_t value) {
+    cciListNode_t *n = node(l, index);
+    n->value = value;
+}
+
 cciValue_t Get(cciList_t *l, size_t index) {
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {
