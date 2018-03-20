@@ -6,6 +6,7 @@
 #define CCISOLUTIONSC_CCIHASHTABLE_H
 
 #include "cciList.h"
+#include "cciValue.h"
 
 typedef enum CCIHASHTABLE_ERROR_CODE {
     CCIHASHTABLE_NOERROR,
@@ -14,7 +15,7 @@ typedef enum CCIHASHTABLE_ERROR_CODE {
 
 typedef struct cciHashTable {
     cciList_t **store;
-    int size;
+    size_t size;
     CCIHASHTABLE_ERROR_CODE errCode;
 } cciHashTable_t;
 
@@ -22,8 +23,8 @@ cciHashTable_t *NewHashTable();
 
 void DeleteHashTable(cciHashTable_t *hashTable);
 
-void SSetInt(cciHashTable_t *hashTable, const char *key, int value);
+void SSet(cciHashTable_t *hashTable, const char *key, cciValue_t value);
 
-int SGetInt(cciHashTable_t *hashTable, const char *key);
+cciValue_t SGet(cciHashTable_t *hashTable, const char *key);
 
 #endif //CCISOLUTIONSC_CCIHASHTABLE_H

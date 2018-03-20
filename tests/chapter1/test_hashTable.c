@@ -2,40 +2,48 @@
 // Created by wein on 3/3/18.
 //
 
-#include <cciHashTable.h>
-#include <tinyCUnit.h>
+#include <assert.h>
 
+#include <cciHashTable.h>
+#include <cciValue.h>
+
+void RunTinyTests();
+
+void test_createHashTable() {
+    cciHashTable_t *tb = NewHashTable();
+    assert(tb);
+    assert(! ISVALID(SGet(tb, "doom")));
+    DeleteHashTable(tb);
+}
+
+void test_setGetValue() {
+    cciHashTable_t *tb = NewHashTable();
+    SSet(tb, "doom.year", newInt(1993));
+    assert(ISVALID(SGet(tb, "doom.year")));
+    assert(1993 == GETINT(SGet(tb, "doom.year")));
+    DeleteHashTable(tb);
+}
+
+//void test_overrideExistingValue() {
+//    cciHashTable_t *tb = NewHashTable();
+//    SSet(tb, "doom.level", newInt(13));
+//    assert(13 == GETINT(SGet(tb, "doom.level")));
+//    SSet(tb, "doom.level", newInt(14));
+//    assert(14 == GETINT(SGet(tb, "doom.level")));
+//    DeleteHashTable(tb);
+//}
+
+//void test_acceptEmptyStringKey() {
+//    cciHashTable_t *tb = NewHashTable();
+//    SSet(tb, "", newInt(15));
+//    assert(ISVALID(SGet(tb, "")));
+//    assert(15 == GETINT(SGet(tb, "")));
+//    SSet(tb, "", newInt(16));
+//    assert(16 == GETINT(SGet(tb, "")));
+//    DeleteHashTable(tb);
+//}
 
 int main(int argc, char **argv) {
-    InitializeTinyTests();
-
-    NewTinyTest("create and delete hash table") ((void) {
-        cciHashTable_t *tb = NewHashTable();
-        AssertTrue(tb);
-        DeleteHashTable(tb);
-    });
-
-    NewTinyTest("set value, get value from key") ((void) {
-        cciHashTable_t *tb = NewHashTable();
-        SSetInt(tb, "there", 1330);
-        SSetInt(tb, "there is", 1331);
-        SSetInt(tb, "there is a", 1332);
-        SSetInt(tb, "there is a cow", 1337);
-        AssertEqual(1330, SGetInt(tb, "there"));
-        AssertEqual(1331, SGetInt(tb, "there is"));
-        AssertEqual(1332, SGetInt(tb, "there is a"));
-        AssertEqual(1337, SGetInt(tb, "there is a cow"));
-        DeleteHashTable(tb);
-    });
-
-    NewTinyTest("given invalid key, expect errCode") ((void) {
-        cciHashTable_t *tb = NewHashTable();
-        SSetInt(tb, "there is a cow", 1337);
-        SGetInt(tb, "there is a coew");
-        AssertEqual(CCIHASHTABLE_KEY_NOTFOUND, tb->errCode);
-        DeleteHashTable(tb);
-    });
-
     RunTinyTests();
     return 0;
 }

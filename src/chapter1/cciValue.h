@@ -39,6 +39,7 @@ typedef struct CCIValue {
 #define GETINT(v) (int)v.store.i
 #define GETFLOAT(v) v.store.f
 #define GETCHAR(v) v.store.c
+#define ISVALID(v) (v.type != CCI_INVALID)
 
 cciValue_t invalid();
 cciValue_t newInt(int x);

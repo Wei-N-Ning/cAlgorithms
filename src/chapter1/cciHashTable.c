@@ -3,21 +3,23 @@
 //
 
 #include "cciHashTable.h"
-#include "cciList.h"
+
 #include <stdlib.h>
+#include <string.h>
 
 #ifndef DEFAULTHASHTABLESIZE
-#define DEFAULTHASHTABLESIZE 1024
+#define DEFAULTHASHTABLESIZE 16
 #endif
 
-unsigned int hashInt(unsigned int x) {
+// for reference only
+static unsigned int hashInt(unsigned int x) {
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = (x >> 16) ^ x;
     return x;
 }
 
-unsigned int hashString(const char *s) {
+static unsigned int hashString(const char *s) {
     unsigned int h = 5381;
     for (unsigned char c=*s; c != '\0'; c=*++s) {
         h = h * 33 + c;
@@ -25,10 +27,10 @@ unsigned int hashString(const char *s) {
     return h;
 }
 
-void initSlots(cciHashTable_t *tb) {
-    int size = DEFAULTHASHTABLESIZE;
+static void initSlots(cciHashTable_t *tb) {
+    size_t size = DEFAULTHASHTABLESIZE;
     tb->store = (cciList_t **)malloc(sizeof(cciList_t *) * size);
-    for (int i=0; i < size; ++i) {
+    for (size_t i=0; i < size; ++i) {
         tb->store[i] = NewList();
     }
     tb->size = size;
@@ -51,21 +53,24 @@ void DeleteHashTable(cciHashTable_t *hashTable) {
     free(hashTable);
 }
 
-cciList_t *slot(cciHashTable_t *tb, const char *key) {
+static cciList_t *slot(cciHashTable_t *tb, const char *key) {
     unsigned int h = hashString(key);
     return tb->store[h % tb->size];
 }
 
-void SSetInt(cciHashTable_t *tb, const char *key, int value) {
+void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
     cciList_t *l = slot(tb, key);
-    AppendInt(l, value);
+    if (! l->size) {
+        Append(l, value);
+        return;
+    }
 }
 
-int SGetInt(cciHashTable_t *tb, const char *key) {
+cciValue_t SGet(cciHashTable_t *tb, const char *key) {
     cciList_t *l = slot(tb, key);
     if (l->size == 0) {
         tb->errCode = CCIHASHTABLE_KEY_NOTFOUND;
-        return 0;
+        return invalid();
     }
-    return GetInt(l, 0);
+    return Get(l, 0);
 }
