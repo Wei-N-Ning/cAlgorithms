@@ -7,6 +7,15 @@
 #include <cciValue.h>
 
 #include <assert.h>
+#include <memory.h>
+
+// use sliceSUT function to create a slice of the test string
+static const char *_SUT = "iddqd, there is no spoon, "
+    "but idkfa, there is a cow";
+static void *sliceSUT(const char *s, size_t len, char *o_s) {
+    memcpy(o_s, s, len);
+    o_s[len] = '\0';
+}
 
 void RunTinyTests();
 
@@ -77,6 +86,37 @@ void test_compareFloatWithFloat() {
                          newFloat(3.1415926535898f)));
     assert(ICOMPARE(newFloat(123.123f), newFloat(12.231f)) > 0);
     assert(CompareF(newFloat(-213.1323f), newFloat(121)) < 0);
+}
+
+void test_newStringValue() {
+    char str[8];
+    cciValue_t svalue = newStr(str);
+    sliceSUT(_SUT + 5, 7, str);
+    assert(str == GETSTR(svalue));
+}
+
+void test_overrideStringValue() {
+    char str1[8];
+    char str2[10];
+    cciValue_t svalue = newStr(str1);
+    sliceSUT(_SUT, 7, str1);
+    sliceSUT(_SUT + 4, 9, str2);
+    SETSTR(svalue, str2);
+    assert(str2 == GETSTR(svalue));
+}
+
+void test_compareStringValues() {
+    char str1[8];
+    char str2[10];
+    char str3[8];
+    cciValue_t s1 = newStr(str1);
+    cciValue_t s2 = newStr(str2);
+    cciValue_t s3 = newStr(str3);
+    sliceSUT(_SUT, 7, str1);
+    sliceSUT(_SUT + 4, 9, str2);
+    sliceSUT(_SUT, 7, str3);
+    assert(0 == CompareS(s1, s3));
+    assert(CompareS(s1, s2) > 0);
 }
 
 int main(int argc, char **argv) {

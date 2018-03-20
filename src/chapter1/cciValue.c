@@ -5,6 +5,8 @@
 #include "cciValue.h"
 
 #include <math.h>
+#include <string.h>
+#include <assert.h>
 
 cciValue_t invalid() {
     cciValue_t v;
@@ -31,6 +33,12 @@ cciValue_t newChar(char x) {
     return v;
 }
 
+cciValue_t newStr(char *x) {
+    cciValue_t v;
+    SETSTR(v, x);
+    return v;
+}
+
 int CompareI(cciValue_t lhs, cciValue_t rhs) {
     int delta = lhs.store.i - rhs.store.i;
     if (delta == 0) {
@@ -47,9 +55,9 @@ int CompareF(cciValue_t lhs, cciValue_t rhs) {
     return delta > 0 ? 1 : -1;
 }
 
-int Compare(cciValue_t lhs, cciValue_t rhs, cciValueType_t vt) {
-    if (lhs.type == CCI_FLOAT && rhs.type == CCI_FLOAT) {
-        return CompareF(lhs, rhs);
-    }
-    return CompareI(lhs, rhs);
+int CompareS(cciValue_t lhs, cciValue_t rhs) {
+    assert(lhs.type == CCI_STR && rhs.type == CCI_STR);
+    char *slhs = GETSTR(lhs);
+    char *srhs = GETSTR(rhs);
+    return strcmp(slhs, srhs);
 }
