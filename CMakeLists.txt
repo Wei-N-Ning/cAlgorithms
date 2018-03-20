@@ -110,9 +110,9 @@ add_tinytest_executable(cciHashTableTests
 target_link_libraries(cciHashTableTests cciChapter1)
 add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
 
-add_executable(cciHashTablePerf
-    tests/chapter1/test_hashTable_perf.c)
-target_link_libraries(cciHashTablePerf cciChapter1)
+add_executable(cciHashTableMetrics
+    tests/chapter1/test_hashTable_metrics.c)
+target_link_libraries(cciHashTableMetrics cciChapter1)
 
 ############### adm
 
