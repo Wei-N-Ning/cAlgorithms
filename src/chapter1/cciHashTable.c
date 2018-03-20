@@ -57,25 +57,50 @@ void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
     size_t index = hashString(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
-    if (! l->size) {
-        Append(l, newStr(key));
-        Append(l, value);
-        return;
-    }
-    for (size_t slotPos=0; slotPos<l->size; slotPos+=2) {
-        svalue = Get(l, slotPos);
-        if (strcmp(GETSTR(svalue), key) == 0) {
-            Set(l, slotPos+1, value);
+    if (l->size) {
+        for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
+            svalue = Get(l, slotPos);
+            if (strcmp(GETSTR(svalue), key) == 0) {
+                Set(l, slotPos + 1, value);
+                return;
+            }
         }
     }
+    Append(l, newStr(key));
+    Append(l, value);
 }
 
 cciValue_t SGet(cciHashTable_t *tb, const char *key) {
     size_t index = hashString(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
-    if (! l->size) {
-        return invalid();
+    cciValue_t svalue;
+    if (l->size) {
+        for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
+            svalue = Get(l, slotPos);
+            if (strcmp(GETSTR(svalue), key) == 0) {
+                return Get(l, slotPos+1);
+            }
+        }
     }
-    // TODO
-    return Get(l, 1);
+    return invalid();
+}
+
+// similar to Python's dict.pop() method
+cciValue_t SPop(cciHashTable_t *tb, const char *key) {
+    size_t index = hashString(key) % tb->size;
+    cciList_t *l = tb->slots[index].l;
+    cciValue_t k;
+    cciValue_t v;
+    if (l->size) {
+        for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
+            k = Get(l, slotPos);
+            if (strcmp(GETSTR(k), key) == 0) {
+                v = Get(l, slotPos+1);
+                Remove(l, slotPos);
+                Remove(l, slotPos); // slotPos now holds the value
+                return v;
+            }
+        }
+    }
+    return invalid();
 }

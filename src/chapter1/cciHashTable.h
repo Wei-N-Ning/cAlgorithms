@@ -17,4 +17,6 @@ void SSet(cciHashTable_t *tb, const char *key, cciValue_t value);
 
 cciValue_t SGet(cciHashTable_t *tb, const char *key);
 
+cciValue_t SPop(cciHashTable_t *tb, const char *key);
+
 #endif //CCISOLUTIONSC_CCIHASHTABLE_H
