@@ -21,8 +21,17 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key);
 
 size_t HashTableSize(cciHashTable_t *tb);
 
+typedef void (*callback_t)(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v);
+
+void Iterate(cciHashTable_t *tb, callback_t cb);
+
 //////// utility
 
-void HashTableDistri(cciHashTable_t *tb, size_t *buf);
+void Metrics(
+    cciHashTable_t *tb,
+    double *o_utilization,  // slots used
+    double *o_chainFactor,  // average length of the chain
+    double *o_collisionRate  // num collision / num slots used
+);
 
 #endif //CCISOLUTIONSC_CCIHASHTABLE_H

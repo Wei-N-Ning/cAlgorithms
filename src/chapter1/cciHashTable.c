@@ -117,8 +117,49 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key) {
     return invalid();
 }
 
-void HashTableDistri(cciHashTable_t *tb, size_t *buf) {
-    for (size_t i=0; i<tb->size; ++i) {
-        buf[i] = tb->slots[i].l->size ? 1 : 0;
+void Iterate(cciHashTable_t *tb, callback_t cb)  {
+    cciHashSlot_t *slot;
+    cciValue_t k;
+    cciValue_t v;
+    if (! cb) {
+        return;
     }
+    for (size_t i=0; i<tb->size; ++i) {
+        slot = tb->slots + i;
+        for (size_t pos=0; pos<slot->l->size; pos+=2) {
+            k = Get(slot->l, pos);
+            v = Get(slot->l, pos+1);
+            cb(i, pos, &k, &v);
+        }
+    }
+}
+
+void Metrics(
+    cciHashTable_t *tb,
+    double *o_utilization,
+    double *o_chainFactor,
+    double *o_collisionRate
+) {
+    size_t sizeTotal = HashTableSize(tb);
+    size_t sizeUtilized = 0;
+    size_t sizeCollision = 0;
+    size_t longestChain = 0;
+    size_t chainLength = 0;
+    long totalChainLength = 0;
+    for (size_t i=0; i<tb->size; ++i) {
+        chainLength = tb->slots[i].l->size / 2;
+        if (chainLength) {
+            sizeUtilized +=1;
+        }
+        if (chainLength > longestChain) {
+            longestChain = chainLength;
+        }
+        if (chainLength > 1) {
+            sizeCollision += 1;
+        }
+        totalChainLength += chainLength;
+    }
+    *o_utilization = (double)sizeUtilized / (double)sizeTotal;
+    *o_chainFactor = (double)longestChain / (double)sizeTotal;
+    *o_collisionRate = (double)sizeCollision / (double)sizeTotal;
 }

@@ -12,36 +12,53 @@ static const char *_SUT = "iddqd idkfa idnoclip iddt thereisnospoon"
     "whoisthedaddy thereisacow upupdowndownleftrightleftright ab"
     "giveall";
 
-static randomSliceSUT(char *o_s, size_t len) {
+static void randomSliceSUT(char *o_s, size_t len) {
     for (size_t i=0; i<len-1; i++) {
         o_s[i] = _SUT[rand() % strlen(_SUT)];
     }
     o_s[len-1] = '\0';
 }
 
+#define TOKEN_SIZE 10
+
+struct token {
+    char s[TOKEN_SIZE];
+};
+
 void populateTable(cciHashTable_t *tb) {
-    char token[5];
     size_t size = HashTableSize(tb);
+    struct token *tokens = malloc(sizeof(struct token) * size);
     for (size_t i=0; i<size; ++i) {
-        randomSliceSUT(token, 5);
-        SSet(tb, token, newFloat(3.5));
+        randomSliceSUT(tokens[i].s, TOKEN_SIZE);
+        SSet(tb, tokens[i].s, newFloat(3.5));
     }
+    free(tokens);
 }
 
-void printTable(cciHashTable_t *tb) {
+void printMetrics(cciHashTable_t *tb) {
     size_t size = HashTableSize(tb);
-    size_t *buf = malloc(sizeof(size_t) * size);
-    HashTableDistri(tb, buf);
-    for (size_t i=0; i<size; ++i) {
-        printf("%d %d\n", (int)i, (int)buf[i]);
-    }
-    free(buf);
+    double utilization = 0.0;
+    double chainFactor = 0.0;
+    double collisionRate = 0.0;
+    Metrics(tb, &utilization, &chainFactor, &collisionRate);
+    printf("%d %f %f %f\n", (int)size, utilization, chainFactor, collisionRate);
 }
 
 int main(int argc, char **argv) {
-    cciHashTable_t *tb = NewHashTable(50);
-    populateTable(tb);
-    printTable(tb);
-    DeleteHashTable(tb);
+    size_t numWorkloads = 10;
+    size_t workloads[255] = {
+        10, 50,
+        100, 500,
+        1000, 5000,
+        10000, 50000,
+        100000, 500000
+    };
+    cciHashTable_t *tb = NULL;
+    for (int i=0; i<numWorkloads; ++i) {
+        tb = NewHashTable(workloads[i]);
+        populateTable(tb);
+        printMetrics(tb);
+        DeleteHashTable(tb);
+    }
     return 0;
 }
