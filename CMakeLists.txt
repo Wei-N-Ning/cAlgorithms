@@ -114,6 +114,10 @@ add_executable(cciHashTableMetrics
     tests/chapter1/test_hashTable_metrics.c)
 target_link_libraries(cciHashTableMetrics cciChapter1)
 
+add_executable(cciHashTablePerf
+    tests/chapter1/test_hashTable_perf.c)
+target_link_libraries(cciHashTablePerf cciChapter1)
+
 ############### adm
 
 add_tinytest_executable(admHashStringTests
