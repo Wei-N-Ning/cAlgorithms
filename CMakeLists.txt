@@ -101,6 +101,13 @@ add_tinytest_executable(cciQueueTests
     tests/chapter1/test_queue.c)
 target_link_libraries(cciQueueTests cciChapter1)
 
+add_executable(cciQueuePerf
+    tests/chapter1/test_queue_perf.c)
+target_link_libraries(cciQueuePerf cciChapter1)
+set_target_properties(cciQueuePerf
+    PROPERTIES
+    CMAKE_C_FLAGS "-pg")
+
 ############### adm
 
 add_tinytest_executable(admHashStringTests

@@ -20,7 +20,7 @@ void Enqueue(cciQueue_t *qu, cciValue_t value);
 
 cciValue_t Dequeue(cciQueue_t *qu);
 
-cciValue_t Front(cciQueue_t *qu);
+cciValue_t CCIQueueFront(cciQueue_t *qu);
 
 int CCIQueueEmpty(cciQueue_t *qu);
 

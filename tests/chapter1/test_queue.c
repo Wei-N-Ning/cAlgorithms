@@ -18,7 +18,7 @@ void test_enqueueOneExpectElement() {
     cciQueue_t *qu = CreateCCIQueue();
     Enqueue(qu, newInt(23));
     assert(! CCIQueueEmpty(qu));
-    assert(23 == GETINT(Front(qu)));
+    assert(23 == GETINT(CCIQueueFront(qu)));
     DeleteCCIQueue(qu);
 }
 
@@ -28,7 +28,7 @@ void test_enqueueManyExpectElementsOrder() {
     Enqueue(qu, newInt(123));
     Enqueue(qu, newInt(2));
     Enqueue(qu, newInt(3));
-    assert(23 == GETINT(Front(qu)));
+    assert(23 == GETINT(CCIQueueFront(qu)));
     DeleteCCIQueue(qu);
 }
 
@@ -38,9 +38,9 @@ void test_dequeueOneExpectNewFront() {
     Enqueue(qu, newInt(2));
     Enqueue(qu, newInt(3));
     assert(123 == GETINT(Dequeue(qu)));
-    assert(2 == GETINT(Front(qu)));
+    assert(2 == GETINT(CCIQueueFront(qu)));
     assert(2 == GETINT(Dequeue(qu)));
-    assert(3 == GETINT(Front(qu)));
+    assert(3 == GETINT(CCIQueueFront(qu)));
     Dequeue(qu);
     // invalid value
     assert(0 == GETINT(Dequeue(qu)));

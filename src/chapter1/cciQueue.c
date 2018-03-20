@@ -22,12 +22,12 @@ void Enqueue(cciQueue_t *qu, cciValue_t value) {
 }
 
 cciValue_t Dequeue(cciQueue_t *qu) {
-    cciValue_t value = Front(qu);
+    cciValue_t value = CCIQueueFront(qu);
     Remove(qu->l, 0);
     return value;
 }
 
-cciValue_t Front(cciQueue_t *qu) {
+cciValue_t CCIQueueFront(cciQueue_t *qu) {
     if (! qu->l->size) {
         return invalid();
     }
