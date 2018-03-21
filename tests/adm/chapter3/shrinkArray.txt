@@ -1,0 +1,16 @@
+
+
+a) edge case with bad performance
+e
+d,e
+c,d,e
+b,c,d,e
+a,b,c,d,e
+a,  c,d,e
+a,    d,e
+a,      e
+
+
+b) find the middle point and converge the elements
+toward this middle point, leaving no holes; finally
+do memcpy

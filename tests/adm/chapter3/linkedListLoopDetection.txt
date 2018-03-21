@@ -1,0 +1,12 @@
+
+
+
+example
+a->b->c->d->e->f->g->c->d->e->f.......
+   b  c
+      c     e
+         d        g
+            e           d
+               f              f
+
+function detect(first, second)

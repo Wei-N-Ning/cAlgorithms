@@ -1,0 +1,31 @@
+
+function reverse(first, second)
+    if second && second->next
+        return reverse(second, second->next)
+    if ! second->next
+        second->next = first
+        return
+
+example:
+    a->b->c->d->e
+
+    1. a->b
+    2.    b->c
+    3.       c->d
+    4.          d->e
+    5.          e->d
+    6.       d->c
+    7.    c->b
+    8. b->a
+
+
+use non-recursive method
+
+function reverse(l)
+    Stack s
+    while l
+        s.push(l)
+        l = l->next
+    n = s.pop()
+    while s
+        n->next = s.pop()

@@ -1,0 +1,14 @@
+
+
+a) n nodes;
+
+for each node: (2 + 1) * pointerSize + 1 * dataSize
+therefore:
+n * (3 * 4 + 4) = 16n
+1/16
+
+b) n nodes
+
+for each non-leaf node: 2 * pointerSize
+for leaf node: 2 * pointerSize + 1 * dataSize
+n * 2 * pointerSize + n * log2(n)

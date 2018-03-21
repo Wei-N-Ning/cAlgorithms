@@ -1,0 +1,16 @@
+//
+// Created by wein on 3/21/18.
+//
+
+function detect() -> error
+    stack s
+    while line = readline()
+        for each ch in line
+            if ch == "("
+                s.push(ch)
+                continue
+            if ch == ")"
+                if s.size == 0
+                    return error(line.no, ch.no)
+                s.pop(ch)
+    return NULL
