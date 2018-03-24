@@ -37,24 +37,28 @@ target_include_directories(cciChapter1
     PUBLIC
     src/chapter1)
 
-add_executable(cciStringsTests
+add_tinytest_executable(cciStringsTests
     tests/chapter1/test_strings.c)
 add_test(NAME "CCI::Chapter1::StringsTests" COMMAND cciStringsTests)
-target_link_libraries(cciStringsTests cciChapter1 tinyCUnit)
+target_link_libraries(cciStringsTests cciChapter1)
 
-add_executable(cciListTests
+add_tinytest_executable(cciListTests
     tests/chapter1/test_list.c)
-target_link_libraries(cciListTests cciChapter1 tinyCUnit)
+target_link_libraries(cciListTests cciChapter1)
 add_test(NAME "CCI::Chapter1::ListTests" COMMAND cciListTests)
 
-add_executable(cciArrayListTests
+add_executable(cciListProf
+    tests/chapter1/test_list_prof.c)
+target_link_libraries(cciListProf cciChapter1)
+
+add_tinytest_executable(cciArrayListTests
     tests/chapter1/test_arrayList.c)
-target_link_libraries(cciArrayListTests cciChapter1 tinyCUnit)
+target_link_libraries(cciArrayListTests cciChapter1)
 add_test(NAME "CCI::Chapter1::ArrayListTests" COMMAND cciArrayListTests)
 
-add_executable(cciBitArrayTests
+add_tinytest_executable(cciBitArrayTests
     tests/chapter1/test_bitArray.c)
-target_link_libraries(cciBitArrayTests cciChapter1 tinyCUnit)
+target_link_libraries(cciBitArrayTests cciChapter1)
 add_test(NAME "CCI::Chapter1::BitArrayTests" COMMAND cciBitArrayTests)
 
 add_tinytest_executable(cciValueTests

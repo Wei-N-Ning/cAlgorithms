@@ -3,55 +3,52 @@
 //
 
 #include <cciBitArray.h>
-#include <tinyCUnit.h>
 
-void unitTests() {
-    InitializeTinyTests();
+#include <assert.h>
 
-    NewTinyTest("create delete bit array") ((void) {
-        cciBitArray_t *ba = BaNew(1, 119);
-        AssertEqual(119, ba->size);
-        AssertEqual(4, ba->slots);
-        BaDelete(ba);
-    });
+void RunTinyTests();
 
-    NewTinyTest("set bit, expect bit") ((void) {
-        cciBitArray_t *ba = BaNew(0, 23);
-        AssertEqual(0, BaGet(ba, 17));
-        BaSet(ba, 17, 1);
-        AssertEqual(1, BaGet(ba, 17));
-        BaSet(ba, 17, 0);
-        AssertEqual(0, BaGet(ba, 17));
-        BaDelete(ba);
-    });
+void test_createAndDelet() {
+    cciBitArray_t *ba = BaNew(1, 119);
+    assert(119 == ba->size);
+    assert(4 == ba->slots);
+    BaDelete(ba);
+}
 
-    NewTinyTest("create from uint, expect bits") ((void) {
-        BitSlot o;
-        cciBitArray_t *ba = CreateFromUInt(0b1001110000111010);
-        AssertEqual(0, BaGet(ba, 0));
-        AssertEqual(1, BaGet(ba, 1));
-        AssertEqual(0, BaGet(ba, 9));
-        AssertEqual(1, BaGet(ba, 10));
-        AssertEqual(1, BaGet(ba, 11));
-        AssertEqual(1, BaGet(ba, 11));
-        AssertEqual(1, BaGet(ba, 15));
-        Output(ba, &o, 0);
-        AssertEqual(0b1001110000111010, o);
-        BaDelete(ba);
-    });
+void test_setBitExpectBit() {
+    cciBitArray_t *ba = BaNew(0, 23);
+    assert(0 == BaGet(ba, 17));
+    BaSet(ba, 17, 1);
+    assert(1 == BaGet(ba, 17));
+    BaSet(ba, 17, 0);
+    assert(0 == BaGet(ba, 17));
+    BaDelete(ba);
+}
 
-    NewTinyTest("output, expect value") ((void ) {
-        BitSlot o;
-        cciBitArray_t *ba = CreateFromUInt(0b1001110000111010);
-        Output(ba, &o, 0);
-        AssertEqual(0b1001110000111010, o);
-        BaDelete(ba);
-    });
+void test_createFromUint() {
+    BitSlot o;
+    cciBitArray_t *ba = CreateFromUInt(0b1001110000111010);
+    assert(0 == BaGet(ba, 0));
+    assert(1 == BaGet(ba, 1));
+    assert(0 == BaGet(ba, 9));
+    assert(1 == BaGet(ba, 10));
+    assert(1 == BaGet(ba, 11));
+    assert(1 == BaGet(ba, 11));
+    assert(1 == BaGet(ba, 15));
+    Output(ba, &o, 0);
+    assert(0b1001110000111010 == o);
+    BaDelete(ba);
+}
 
-    RunTinyTests();
+void test_outputExpectValue() {
+    BitSlot o;
+    cciBitArray_t *ba = CreateFromUInt(0b1001110000111010);
+    Output(ba, &o, 0);
+    assert(0b1001110000111010 == o);
+    BaDelete(ba);
 }
 
 int main(int argc, char **argv) {
-    unitTests();
+    RunTinyTests();
     return 0;
 }
