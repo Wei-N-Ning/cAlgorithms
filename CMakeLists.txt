@@ -10,7 +10,7 @@ add_library(tinyCUnit INTERFACE)
 target_include_directories(tinyCUnit
     INTERFACE
     tests/utils)
-include(tinyCUnit.cmake)
+include(cmake/tinyCUnit.cmake)
 
 # ---- chapter 1 ----
 
