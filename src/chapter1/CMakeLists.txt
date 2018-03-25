@@ -1,0 +1,22 @@
+add_library(cciChapter1
+    cciStrings.c
+    cciStrings.h
+    cciHashTable.c
+    cciHashTable.h
+    cciList.c
+    cciList.h
+    cciArrayList.c
+    cciArrayList.h
+    cciBitArray.c
+    cciBitArray.h
+    cciValue.c
+    cciValue.h
+    cciBinaryTree.c
+    cciBinaryTree.h
+    cciStack.c
+    cciStack.h
+    cciQueue.c
+    cciQueue.h)
+target_include_directories(cciChapter1
+    PUBLIC
+    .)
