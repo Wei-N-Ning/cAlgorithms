@@ -8,6 +8,7 @@
 
 #include <cciBinaryTree.h>
 #include <cciValue.h>
+#include <time.h>
 
 #define ARR_SIZE 255
 static int *arr = NULL;
@@ -118,7 +119,35 @@ void test_givenLastNodeExpectSuccessorNotFound() {
     assert(! successor(r, newInt(46)));
 }
 
+static void profEach(cciBinTreeNode_t *r, int *workload, size_t szWorkload) {
+    for (size_t i=0; i < szWorkload; ++i) {
+        successor(r, newInt(workload[i]));
+    }
+}
+
+static void profAll() {
+    InitFactory();
+    size_t szWorkloads[6] = {10, 100, 1000, 5000, 10000, 20000};
+    root = CreateBinTreeNode(NULL);
+    int *arr = malloc(sizeof(int) * 20000);
+    for (int i=0; i<20000; ++i) {
+        arr[i] = GETINT(BinTreeInsert(root, newInt(rand()), NULL)->value);
+    }
+    time_t start, end;
+    double msec;
+    for (int i=0; i<6; ++i) {
+        start = clock();
+        profEach(root, arr, szWorkloads[i]);
+        end = clock();
+        msec =  end - start;
+        printf("%d %f\n", (int)szWorkloads[i], msec);
+    }
+    free(arr);
+    CloseFactory();
+}
+
 int main(int argc, char **argv) {
     RunTinyTests();
+    profAll();
     return 0;
 }
