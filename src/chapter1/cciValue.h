@@ -19,6 +19,7 @@ typedef enum {
     CCI_FLOAT,
     CCI_CHAR,
     CCI_STR,
+    CCI_POINTER,
 } cciValueType_t;
 
 typedef struct CCIValue {
@@ -37,15 +38,18 @@ typedef struct CCIValue {
 #define SETFLOAT(v,x) v.store.i=0; v.store.f=x; v.type=CCI_FLOAT;
 #define SETCHAR(v,x) v.store.i=0; v.store.c=x; v.type=CCI_CHAR;
 #define SETSTR(v,x) v.store.i=0; v.store.s=x; v.type=CCI_STR;
+#define SETPOINTER(v,x) v.store.i=0; v.store.i=(uint64_t)x; v.type=CCI_POINTER;
 
 #define GETINT(v) (int)v.store.i
 #define GETFLOAT(v) v.store.f
 #define GETCHAR(v) v.store.c
 #define GETSTR(v) v.store.s
+#define GETPOINTER(v, t) (t *)(v.store.i)
 #define ISVALID(v) (v.type != CCI_INVALID)
 
 cciValue_t invalid();
 cciValue_t newInt(int x);
+cciValue_t newPointer(void *x);
 cciValue_t newFloat(float x);
 cciValue_t newChar(char x);
 cciValue_t newStr(char *s);

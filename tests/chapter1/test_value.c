@@ -3,6 +3,7 @@
 //
 
 #include <math.h>
+#include <stdlib.h>
 
 #include <cciValue.h>
 
@@ -117,6 +118,32 @@ void test_compareStringValues() {
     sliceSUT(_SUT, 7, str3);
     assert(0 == CompareS(s1, s3));
     assert(CompareS(s1, s2) > 0);
+}
+
+void test_roundTripPointer() {
+    const char *s = "doom";
+    const char *p = NULL;
+    cciValue_t v = newPointer(s);
+    p = GETPOINTER(v, const char);
+    assert(p == s);
+    assert(0 == strcmp(p, s));
+}
+
+typedef struct SUT {
+    int v;
+} sut_t;
+
+void test_roundTripStructPointer() {
+    cciValue_t values[3];
+    sut_t *this = NULL;
+    for (int i = 3; i--; ) {
+        SETPOINTER(values[i], malloc(sizeof(sut_t)));
+    }
+    for (int i = 3; i--; ) {
+        this = GETPOINTER(values[i], sut_t);
+        this->v = 100;
+    }
+    for (int i = 3; i--; free(GETPOINTER(values[i], sut_t))) ;
 }
 
 int main(int argc, char **argv) {

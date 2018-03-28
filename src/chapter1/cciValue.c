@@ -39,6 +39,12 @@ cciValue_t newStr(char *x) {
     return v;
 }
 
+cciValue_t newPointer(void *p) {
+    cciValue_t v;
+    SETPOINTER(v, p);
+    return v;
+}
+
 int CompareI(cciValue_t lhs, cciValue_t rhs) {
     int delta = lhs.store.i - rhs.store.i;
     if (delta == 0) {
