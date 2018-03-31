@@ -8,7 +8,8 @@
 
 #include <admHeap.h>
 
-void doAllWorks() {
+void heapsortTime() {
+    printf("heapsort time\n");
     int *arr = NULL;
     clock_t start, end;
     double msec;
@@ -24,7 +25,37 @@ void doAllWorks() {
     }
 }
 
+void heapCreationTime() {
+    printf("heap creation time\n");
+    printf("workload create-by-insert() create-by-heapify()\n");
+    admHeap_t *hp = NULL;
+    cciArrayList_t *al = NULL;
+    clock_t start, end;
+    double timeInsert;
+    double timeHeapify;
+    for (size_t workload=9; workload < 3000000; workload *= 6) {
+
+        hp = CreateAdmHeap(16);
+        start = clock();
+        for (size_t i=workload; i--; AdmHeapInsert(hp, newInt(random()))) ;
+        end = clock();
+        timeInsert = end - start;
+        DeleteAdmHeap(hp);
+
+        al = AlNew();
+        for (size_t i=workload; i--; AlEmplaceBack(al, newInt(random()))) ;
+        start = clock();
+        Heapify(al);
+        end = clock();
+        timeHeapify = end - start;
+        AlDelete(al);
+
+        printf("%d %f %f\n", (int)workload, timeInsert, timeHeapify);
+    }
+}
+
 int main(int argc, char **argv) {
-    doAllWorks();
+    heapsortTime();
+    heapCreationTime();
     return 0;
 }
