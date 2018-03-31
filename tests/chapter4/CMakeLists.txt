@@ -8,7 +8,7 @@ target_link_libraries(isSubtreeTest cciChapter1)
 add_test(NAME "CCI::Chapter4::4.7 Is Subtree" COMMAND isSubtreeTest)
 
 add_tinytest_executable(findPathsBySumTest test_findPathsBySum.c)
-target_link_libraries(findPathsBySumTest cciChapter1)
+target_link_libraries(findPathsBySumTest cciChapter1 m)
 add_test(NAME "CCI::Chapter4::4.8 Find Paths by Sum" COMMAND findPathsBySumTest)
 
 add_tinytest_executable(successorOfBSTNode test_successor.c)

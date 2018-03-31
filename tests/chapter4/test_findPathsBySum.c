@@ -5,12 +5,15 @@
 // MY NOTE: is the binary tree constructed based on the values of the nodes? if not I need to reconstruct another
 // binary tree (N LogN) to simplify the problem
 
+#include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <cciBinaryTree.h>
 #include <cciQueue.h>
 #include <cciValue.h>
 #include <stdlib.h>
+#include <cciArrayList.h>
 
 void RunTinyTests();
 
@@ -61,57 +64,58 @@ void printPathBySum(cciBinTreeNode_t *n, int value) {
     DeleteCCIQueue(qu);
 }
 
-static void _binTreePrint(cciBinTreeNode_t *n) {
-    cciQueue_t *qu = CreateCCIQueue();
-    cciBinTreeNode_t *this = NULL;
-    int thisLevel = 1;
-    int lastLevel = 0;
-    char token;
-    Enqueue(qu, newPointer(n));
-    Enqueue(qu, newInt(thisLevel));
-    Enqueue(qu, newChar('O'));
-    while (! CCIQueueEmpty(qu)) {
-        this = GETPOINTER(Dequeue(qu), cciBinTreeNode_t);
-        thisLevel = GETINT(Dequeue(qu));
-        token = GETCHAR(Dequeue(qu));
+static void toStr(cciBinTreeNode_t *n, char *o_buf, size_t sz, size_t nodeWidth, size_t numChars) {
+    size_t idx = (size_t)(nodeWidth / 2.0) - (size_t)(numChars / 2.0);
+    for (size_t i=sz; i--; o_buf[i] = ' ') ;
+    if (n) {
+        idx += snprintf(o_buf + idx, sz, "%d", GETINT(n->value));
+        o_buf[idx] = ' ';
+        o_buf[0] = '[';
+        o_buf[nodeWidth - 1] = ']';
+    }
+    o_buf[nodeWidth] = '\0';
+}
 
-        if (thisLevel > lastLevel) {
-            printf("\n");
-            lastLevel = thisLevel;
-        }
-        if (this->parent) {
-            printf("%d/", GETINT(this->parent->value));
+static void _bfsPrint(cciArrayList_t *al, size_t nodeWidth, size_t numChars) {
+    cciArrayList_t *next = AlNew();
+    char arr[255];
+    size_t sz = 0;
+    for (size_t i=0; i < al->size; ++i) {
+        cciBinTreeNode_t *one = GETPOINTER(AlGet(al, i), cciBinTreeNode_t);
+        toStr(one, arr, 255, nodeWidth, numChars);
+        printf("%s", arr);
+        if (! one) {
+            AlEmplaceBack(next, newPointer(NULL));
+            AlEmplaceBack(next, newPointer(NULL));
         } else {
-            printf("/");
-        }
-        printf("%d ", GETINT(this->value));
-        if (this->left) {
-            Enqueue(qu, newPointer(this->left));
-            Enqueue(qu, newInt(Depth(this->left)));
-            Enqueue(qu, newChar('L'));
-        }
-        if (this->right) {
-            Enqueue(qu, newPointer(this->right));
-            Enqueue(qu, newInt(Depth(this->right)));
-            Enqueue(qu, newChar('R'));
+            sz += (one->left || one->right) ? 1 : 0;
+            AlEmplaceBack(next, newPointer(one->left));
+            AlEmplaceBack(next, newPointer(one->right));
         }
     }
-    DeleteCCIQueue(qu);
+    printf("\n");
+    AlDelete(al);
+    if (sz) {
+        _bfsPrint(next, (size_t)(nodeWidth / 2.0), numChars);
+    } else {
+        AlDelete(next);
+    }
+}
+
+static void _binTreePrint(cciBinTreeNode_t *n, size_t numChars) {
+    int height = Height(n);
+    cciArrayList_t *start = AlNew();
+    AlEmplaceBack(start, newPointer(n));
+    _bfsPrint(start, numChars * (size_t)pow(2, height), numChars);
 }
 
 void test_printBinaryTree() {
-    int groups1[8] = {46, 24, 22, 12, 16, 18, 1, 45};
-    //               46
-    //             24
-    //          22    45
-    //   12
-    //1      16
-    //     18
-    int arr[255];
-    for (int i=255; i--; arr[i] = rand() % 1000) ;
-    cciBinTreeNode_t *n = createMockTreeFromArray(arr, 255);
+    size_t sz = 8;
+    int arr[sz];
+    for (size_t i=sz; i--; arr[i] = rand() % 100) ;
+    cciBinTreeNode_t *n = createMockTreeFromArray(arr, sz);
     printf("\n");
-    _binTreePrint(n);
+    _binTreePrint(n, 3);
     printf("\n");
 }
 
