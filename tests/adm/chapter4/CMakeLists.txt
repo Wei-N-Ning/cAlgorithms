@@ -5,3 +5,6 @@ add_test(NAME "ADM::Chapter4::HeapTest" COMMAND admHeapTest)
 
 add_executable(admHeapProf test_heap_prof.c)
 target_link_libraries(admHeapProf admChapter4)
+
+add_tinytest_executable(admMergesortTest test_mergesort.c)
+target_link_libraries(admMergesortTest admChapter4)

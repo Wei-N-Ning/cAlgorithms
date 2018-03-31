@@ -1,6 +1,8 @@
 add_library(admChapter4
     admHeap.c
-    admHeap.h)
+    admHeap.h
+    admMergesort.c
+    admMergesort.h)
 target_include_directories(admChapter4
     PUBLIC
     .)
