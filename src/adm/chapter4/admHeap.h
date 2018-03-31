@@ -32,4 +32,6 @@ void AdmHeapsortInts(int *ins, size_t sz);
 
 void Heapify(cciArrayList_t *al);
 
+void AdmHeapsortAl(cciArrayList_t *al);
+
 #endif //CCISOLUTIONSC_ADMHEAP_H

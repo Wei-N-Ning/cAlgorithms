@@ -5,6 +5,7 @@
 #include "admHeap.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <cciArrayList.h>
 #include <assert.h>
@@ -42,7 +43,7 @@ int AdmParentIndex(const admHeap_t *pq, int idx) {
 
 int AdmLeftChildIndex(const admHeap_t *pq, int idx) {
     int num = (idx + 1) * 2 - 1;
-    if (num >= pq->al->size) {
+    if (num >= pq->size) {
         return ADM_HP_INVALID_INDEX;
     }
     return num;
@@ -73,13 +74,13 @@ static void bubbleUp(admHeap_t *pq, int idx) {
 void AdmHeapInsert(admHeap_t *pq, cciValue_t v) {
     AlEmplaceBack(pq->al, v);
     pq->size += 1;
-    bubbleUp(pq, pq->al->size - 1);
+    bubbleUp(pq, pq->size - 1);
 }
 
 static int _min(admHeap_t *pq, int lhs, int rhs) {
     cciValue_t l = AdmHeapGet(pq, lhs);
     cciValue_t r = AdmHeapGet(pq, rhs);
-    if (! ISVALID(r)) {
+    if (rhs > pq->size - 1) {
         return lhs;
     }
     if (GETINT(l) < GETINT(r)) {
@@ -124,8 +125,23 @@ void Heapify(cciArrayList_t *al) {
     admHeap_t *hp = malloc(sizeof(admHeap_t));
     hp->size = al->size;
     hp->al = al;
-    for (size_t i=al->size; i--; ) {
+    for (size_t i=hp->size; i--; ) {
         bubbleDown(hp, i);
+    }
+    hp->al = NULL;
+    hp->size = 0;
+    DeleteAdmHeap(hp);
+}
+
+void AdmHeapsortAl(cciArrayList_t *al) {
+    admHeap_t *hp = malloc(sizeof(admHeap_t));
+    cciValue_t tmp;
+    hp->size = al->size;
+    hp->al = al;
+    for (size_t i=hp->size; i--; bubbleDown(hp, i)) ;
+    for (size_t i=hp->size; i--; ) {
+        tmp = AdmHeapPop(hp);
+        AlEmplaceBack(al, tmp);
     }
     hp->al = NULL;
     hp->size = 0;
