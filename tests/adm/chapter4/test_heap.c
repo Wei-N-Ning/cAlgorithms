@@ -65,6 +65,15 @@ void test_heapsortInts() {
     assertIntSeqs(expected, arr, 7);
 }
 
+void test_heapify() {
+    cciArrayList_t *al = AlNew();
+    int arr[7] = {3, 1, 4, 15, 9, 26, 53};
+    for (size_t i=7; i--; AlEmplaceBack(al, newInt(arr[i]))) ;
+    Heapify(al);
+    for (size_t i=0; i < 7; printf("%d ", GETINT(AlGet(al, i))), i++) ;
+    AlDelete(al);
+}
+
 int main(int argc, char **argv) {
     RunTinyTests();
     return 0;

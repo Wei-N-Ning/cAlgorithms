@@ -26,7 +26,9 @@ void DeleteAdmHeap(admHeap_t *hp) {
     if (! hp) {
         return;
     }
-    AlDelete(hp->al);
+    if (hp->al) {
+        AlDelete(hp->al);
+    }
     free(hp);
 }
 
@@ -36,10 +38,6 @@ int AdmParentIndex(const admHeap_t *pq, int idx) {
         return ADM_HP_INVALID_INDEX;
     }
     return (int)(num / 2.0) - 1;
-}
-
-size_t AdmHeapSize(const admHeap_t *pq) {
-    return pq->size;
 }
 
 int AdmLeftChildIndex(const admHeap_t *pq, int idx) {
@@ -119,5 +117,17 @@ void AdmHeapsortInts(int *ins, size_t sz) {
     admHeap_t *hp = CreateAdmHeap(sz);
     for (size_t i=sz; i--; AdmHeapInsert(hp, newInt(ins[i]))) ;
     for (size_t i=sz; i--; ins[sz - 1 - i] = GETINT(AdmHeapPop(hp))) ;
+    DeleteAdmHeap(hp);
+}
+
+void Heapify(cciArrayList_t *al) {
+    admHeap_t *hp = malloc(sizeof(admHeap_t));
+    hp->size = al->size;
+    hp->al = al;
+    for (size_t i=al->size; i--; ) {
+        bubbleDown(hp, i);
+    }
+    hp->al = NULL;
+    hp->size = 0;
     DeleteAdmHeap(hp);
 }
