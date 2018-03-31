@@ -108,7 +108,13 @@ cciValue_t AdmHeapPop(admHeap_t *pq) {
     }
     cciValue_t r = AdmHeapGet(pq, 0);
     _swap(pq, 0, pq->size - 1);
-    AlPopBack(pq->al);
+
+    // not calling AlPopBack() for two good reasons:
+    // 1) bubbleUp(), bubbleDown() and _min() must be doing boundary checks only; in the previous implementations
+    // they were validating the cci value objects - this was problematic
+    // 2) the cci values that are swapped to the bottom form a natural sorted array - this can be directly returned to
+    // the caller; the order will be reversed hence min-heapsort should use max-bubbleUp/Down() functions
+
     pq->size -= 1;
     bubbleDown(pq, 0);
     return r;
@@ -135,14 +141,10 @@ void Heapify(cciArrayList_t *al) {
 
 void AdmHeapsortAl(cciArrayList_t *al) {
     admHeap_t *hp = malloc(sizeof(admHeap_t));
-    cciValue_t tmp;
     hp->size = al->size;
     hp->al = al;
     for (size_t i=hp->size; i--; bubbleDown(hp, i)) ;
-    for (size_t i=hp->size; i--; ) {
-        tmp = AdmHeapPop(hp);
-        AlEmplaceBack(al, tmp);
-    }
+    for (size_t i=hp->size; i--; AdmHeapPop(hp)) ;
     hp->al = NULL;
     hp->size = 0;
     DeleteAdmHeap(hp);
