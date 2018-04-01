@@ -178,6 +178,16 @@ void Heapify(cciArrayList_t *al) {
     admHeap_t *hp = malloc(sizeof(admHeap_t));
     hp->size = al->size;
     hp->al = al;
+
+    // reason for traversing from the tail:
+    // (ADM P127)
+    // consider the array in reverse order, starting from the last (nth) position.
+    // It represents a leaf of the tree and so dominates its nonexistent children.
+    // The same is the case for the last n/2 positions in the array, because all
+    // are leaves.
+    // If we continue to walk backwards through the array we will finally encounter
+    // an internal node with children. This element may not dominate its children,
+    // but its children represent well-formed (if small) heaps.
     for (size_t i=hp->size; i--; ) {
         bubbleDown(hp, i);
     }
@@ -193,6 +203,8 @@ void AdmHeapsortAl(cciArrayList_t *al, enum AdmHeapDirection dir) {
     hp->size = al->size;
     hp->al = al;
     if (dir == AdmHeapDirection_Descending) {
+
+        // see heapify() for more details
         for (size_t i=hp->size; i--; bubbleDown(hp, i)) ;
         for (size_t i=hp->size; i--; AdmHeapPop(hp)) ;
     } else {
@@ -203,3 +215,4 @@ void AdmHeapsortAl(cciArrayList_t *al, enum AdmHeapDirection dir) {
     hp->size = 0;
     DeleteAdmHeap(hp);
 }
+
