@@ -13,3 +13,6 @@ add_test(NAME "ADM::Chapter4::Mergesort" COMMAND admMergesortTest)
 add_executable(compareSortAlgo compare_sort_algo.c)
 target_link_libraries(compareSortAlgo admChapter4)
 
+add_tinytest_executable(admQuicksortTest test_quicksort.c)
+target_link_libraries(admQuicksortTest admChapter4)
+add_test(NAME "ADM::Chapter4::Quicksort" COMMAND admQuicksortTest)

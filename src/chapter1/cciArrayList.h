@@ -39,4 +39,6 @@ cciValue_t AlPopBack(cciArrayList_t *al);
 
 void AlInsert(cciArrayList_t *al, size_t index, cciValue_t value);
 
+void AlPrint(cciArrayList_t *al);
+
 #endif //CCISOLUTIONSC_CCIARRAYLIST_H

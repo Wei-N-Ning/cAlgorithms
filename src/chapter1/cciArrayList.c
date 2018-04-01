@@ -4,6 +4,7 @@
 
 #include "cciArrayList.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <memory.h>
 
 cciArrayList_t *AlNew() {
@@ -105,3 +106,7 @@ void AlInsert(cciArrayList_t *al, size_t pos, cciValue_t value) {
     AlSet(al, pos + 1, value);
 }
 
+void AlPrint(cciArrayList_t *al) {
+    for (size_t i=0; i < al->size; printf("%d ", GETINT(AlGet(al, i))), i++) ;
+    printf("\n");
+}
