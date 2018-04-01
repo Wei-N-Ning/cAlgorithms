@@ -17,7 +17,7 @@ static void _swap(cciArrayList_t *al, int from, int to) {
 // -------> j (linear scan)
 // --> i (placing the values lower than "pivot")
 // ..pivot
-int AdmPartition(cciArrayList_t *al, int lo, int hi) {
+int LomutoPartition(cciArrayList_t *al, int lo, int hi) {
     cciValue_t toCompare = AlGet(al, hi);
     int i = lo - 1;
     for (int j=lo; j < hi; ++j) {
@@ -30,15 +30,47 @@ int AdmPartition(cciArrayList_t *al, int lo, int hi) {
     return i + 1;
 }
 
-static void _quicksort(cciArrayList_t *al, int lo, int hi) {
+int HoarePartition(cciArrayList_t *al, int lo, int hi) {
+    cciValue_t toCompare = AlGet(al, lo);
+    int lhs = lo;
+    int rhs = hi;
+    while (1) {
+        while (lhs < rhs && GETINT(AlGet(al, lhs)) < GETINT(toCompare)) {
+            lhs += 1;
+        }
+        while (lhs < rhs && GETINT(AlGet(al, rhs)) > GETINT(toCompare)) {
+            rhs -= 1;
+        }
+        if (lhs == rhs) {
+            return lhs;
+        }
+        _swap(al, lhs, rhs);
+    }
+    return -1;
+}
+
+static void _quicksort_lomuto(cciArrayList_t *al, int lo, int hi) {
     int pivot = 0;
     if (lo < hi) {
-        pivot = AdmPartition(al, lo, hi);
-        _quicksort(al, lo, pivot - 1);
-        _quicksort(al, pivot + 1, hi);
+        pivot = LomutoPartition(al, lo, hi);
+        _quicksort_lomuto(al, lo, pivot - 1);
+        _quicksort_lomuto(al, pivot + 1, hi);
     }
 }
 
-void AdmQuicksort(cciArrayList_t *al) {
-    _quicksort(al, 0, al->size - 1);
+static void _quicksort_hoare(cciArrayList_t *al, int lo, int hi) {
+    int pivot = 0;
+    if (lo < hi) {
+        pivot = HoarePartition(al, lo, hi);
+        _quicksort_lomuto(al, lo, pivot - 1);
+        _quicksort_lomuto(al, pivot + 1, hi);
+    }
+}
+
+void AdmQuicksort(cciArrayList_t *al, enum PartitionScheme ps) {
+    if (ps == PartitionScheme_Lomuto) {
+        _quicksort_lomuto(al, 0, al->size - 1);
+    } else if (ps == PartitionScheme_Hoare) {
+        _quicksort_hoare(al, 0, al->size - 1);
+    }
 }
