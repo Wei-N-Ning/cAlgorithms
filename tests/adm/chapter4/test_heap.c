@@ -74,16 +74,28 @@ void test_heapify() {
     AlDelete(al);
 }
 
-static int assertAlOrdered(cciArrayList_t *al) {
+static int assertAlAscendingOrder(cciArrayList_t *al) {
     for (size_t i=0; i<al->size - 1; assert(GETINT(AlGet(al, i)) <= GETINT(AlGet(al, i + 1))), i++) ;
 }
 
 void test_heapsortArrayList() {
     cciArrayList_t *al = AlNew();
+    // empty
+    AdmHeapsortAl(al, AdmHeapDirection_Ascending);
+    assert(0 == al->size);
+
+    // one element
+    AlEmplaceBack(al, newInt(1));
+    AdmHeapsortAl(al, AdmHeapDirection_Ascending);
+    assert(1 == al->size);
+    assert(ISVALID(AlGet(al, 0)));
+    AlPopBack(al);
+
+    // many element
     int arr[7] = {3, 1, 4, 15, 9, 26, 53};
     for (size_t i=7; i--; AlEmplaceBack(al, newInt(arr[i]))) ;
-    AdmHeapsortAl(al);
-    for (size_t i=0; i < 7; printf("%d ", GETINT(AlGet(al, i))), i++) ;
+    AdmHeapsortAl(al, AdmHeapDirection_Ascending);
+    assertAlAscendingOrder(al);
     AlDelete(al);
 }
 

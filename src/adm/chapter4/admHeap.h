@@ -11,6 +11,11 @@
 
 #define ADM_HP_INVALID_INDEX (-1)
 
+enum AdmHeapDirection {
+    AdmHeapDirection_Ascending,
+    AdmHeapDirection_Descending,
+};
+
 struct AdmHeap;
 typedef struct AdmHeap admHeap_t;
 
@@ -32,6 +37,6 @@ void AdmHeapsortInts(int *ins, size_t sz);
 
 void Heapify(cciArrayList_t *al);
 
-void AdmHeapsortAl(cciArrayList_t *al);
+void AdmHeapsortAl(cciArrayList_t *al, enum AdmHeapDirection dir);
 
 #endif //CCISOLUTIONSC_ADMHEAP_H

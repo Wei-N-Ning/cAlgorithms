@@ -71,6 +71,17 @@ static void bubbleUp(admHeap_t *pq, int idx) {
     }
 }
 
+static void bubbleUp_max(admHeap_t *pq, int idx) {
+    int parentIndex = AdmParentIndex(pq, idx);
+    if (ADM_HP_INVALID_INDEX == parentIndex) {
+        return;
+    }
+    if (GETINT(AdmHeapGet(pq, parentIndex)) < GETINT(AdmHeapGet(pq, idx))) {
+        _swap(pq, parentIndex, idx);
+        bubbleUp(pq, parentIndex);
+    }
+}
+
 void AdmHeapInsert(admHeap_t *pq, cciValue_t v) {
     AlEmplaceBack(pq->al, v);
     pq->size += 1;
@@ -89,6 +100,18 @@ static int _min(admHeap_t *pq, int lhs, int rhs) {
     return rhs;
 }
 
+static int _max(admHeap_t *pq, int lhs, int rhs) {
+    cciValue_t l = AdmHeapGet(pq, lhs);
+    cciValue_t r = AdmHeapGet(pq, rhs);
+    if (rhs > pq->size - 1) {
+        return lhs;
+    }
+    if (GETINT(l) > GETINT(r)) {
+        return lhs;
+    }
+    return rhs;
+}
+
 static void bubbleDown(admHeap_t *pq, int parentIdx) {
     int childIdx = AdmLeftChildIndex(pq, parentIdx);
     if (childIdx == ADM_HP_INVALID_INDEX) {
@@ -99,6 +122,19 @@ static void bubbleDown(admHeap_t *pq, int parentIdx) {
     if (minIdx != parentIdx) {
         _swap(pq, minIdx, parentIdx);
         bubbleDown(pq, minIdx);
+    }
+}
+
+static void bubbleDown_max(admHeap_t *pq, int parentIdx) {
+    int childIdx = AdmLeftChildIndex(pq, parentIdx);
+    if (childIdx == ADM_HP_INVALID_INDEX) {
+        return;
+    }
+    int maxIdx = _max(pq, parentIdx, childIdx);
+    maxIdx = _max(pq, maxIdx, childIdx + 1);
+    if (maxIdx != parentIdx) {
+        _swap(pq, maxIdx, parentIdx);
+        bubbleDown_max(pq, maxIdx);
     }
 }
 
@@ -117,6 +153,17 @@ cciValue_t AdmHeapPop(admHeap_t *pq) {
 
     pq->size -= 1;
     bubbleDown(pq, 0);
+    return r;
+}
+
+cciValue_t AdmHeapPop_max(admHeap_t *pq) {
+    if (pq->size <= 0) {
+        return invalid();
+    }
+    cciValue_t r = AdmHeapGet(pq, 0);
+    _swap(pq, 0, pq->size - 1);
+    pq->size -= 1;
+    bubbleDown_max(pq, 0);
     return r;
 }
 
@@ -139,12 +186,19 @@ void Heapify(cciArrayList_t *al) {
     DeleteAdmHeap(hp);
 }
 
-void AdmHeapsortAl(cciArrayList_t *al) {
+// NOTE: use max-heap for ascending order, min-heap for descending order
+// see the implementation of AdmHeapPop()
+void AdmHeapsortAl(cciArrayList_t *al, enum AdmHeapDirection dir) {
     admHeap_t *hp = malloc(sizeof(admHeap_t));
     hp->size = al->size;
     hp->al = al;
-    for (size_t i=hp->size; i--; bubbleDown(hp, i)) ;
-    for (size_t i=hp->size; i--; AdmHeapPop(hp)) ;
+    if (dir == AdmHeapDirection_Descending) {
+        for (size_t i=hp->size; i--; bubbleDown(hp, i)) ;
+        for (size_t i=hp->size; i--; AdmHeapPop(hp)) ;
+    } else {
+        for (size_t i=hp->size; i--; bubbleDown_max(hp, i)) ;
+        for (size_t i=hp->size; i--; AdmHeapPop_max(hp)) ;
+    }
     hp->al = NULL;
     hp->size = 0;
     DeleteAdmHeap(hp);
