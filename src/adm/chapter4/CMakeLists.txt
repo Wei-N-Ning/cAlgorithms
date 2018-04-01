@@ -8,4 +8,7 @@ add_library(admChapter4
 target_include_directories(admChapter4
     PUBLIC
     .)
-target_link_libraries(admChapter4 cciChapter1)
+target_link_libraries(admChapter4
+    PUBLIC
+    cciChapter1
+    )

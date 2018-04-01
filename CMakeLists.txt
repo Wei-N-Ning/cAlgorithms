@@ -14,5 +14,7 @@ add_subdirectory(tests/chapter4)
 
 # ADM
 add_subdirectory(src/adm/chapter4)
+add_subdirectory(src/adm/chapter5)
 add_subdirectory(tests/adm/chapter3)
 add_subdirectory(tests/adm/chapter4)
+add_subdirectory(tests/adm/chapter5)
