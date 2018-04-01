@@ -1,0 +1,8 @@
+
+since the items are sorted by number already,
+
+create three queues for red, blues and yellows
+
+iterate over the numbers of enqueue the items to the corresponding queue
+
+dequeue following the order of the colors

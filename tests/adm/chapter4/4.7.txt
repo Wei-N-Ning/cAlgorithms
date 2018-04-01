@@ -1,0 +1,18 @@
+
+a)
+sort the bills and checks by telephone numbers
+traverse both arrays,
+for i-th iteration
+if the telephone numbers do no match,
+make note of the phone number from the bills array
+then move to i+1-th element in this array
+
+b)
+30 queues
+
+c)
+sort the checkout cards by ISBN or id
+linear iterate and count the frequency
+
+
+

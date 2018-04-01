@@ -1,0 +1,8 @@
+
+a) traverse S and book keep min, max; max - min
+
+b) S is sorted therefore the result is (last - first)
+
+c) sort S in nlogn then traverse from 0 to n-1, abs(S[i] - S[i + 1])
+
+d) traverse from 0 to n-1, abs(S[i] - S[i + 1])

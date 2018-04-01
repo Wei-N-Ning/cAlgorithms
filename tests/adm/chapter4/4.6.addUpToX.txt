@@ -1,0 +1,11 @@
+
+
+1. Sort S1; (n log n)
+2. Sort S2; (n log n)
+3. beg := S1[0]
+   end := S2[m-1]
+4. while (beg < n && end >=0 ) O(n)
+      if S1[beg] + S2[end] > sum then end--
+      else if S1[beg] + S2[end] < sum  beg++
+      else return (beg, end)
+   End Loop

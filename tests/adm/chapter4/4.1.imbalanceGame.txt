@@ -1,0 +1,19 @@
+
+sort 2n players by their rating (quicksort, in-place) - nlogn
+
+struct Player {
+    int id;
+    int rating;
+}
+
+int compare(struct Player *p);
+
+take the first n players for team A;
+take the second n players for team B;
+
+
+to change it to a fair game:
+
+keep the first part unchanged;
+take the first n/2 and the last n/2 players for team A;
+take the rest for team B;

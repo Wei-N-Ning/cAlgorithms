@@ -1,0 +1,6 @@
+
+given a set of n numbers, sort them in nlogn
+traverse the sorted numbers once, make note when:
+the adjacent numbers are different,
+book keep how many time the previous number has occurred,
+compare it with the known most frequent number

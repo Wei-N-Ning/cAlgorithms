@@ -1,0 +1,4 @@
+
+> sort the sequence in nlogn
+> pop the elements off the head and tail repeatedly
+
