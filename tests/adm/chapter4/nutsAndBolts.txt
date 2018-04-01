@@ -1,0 +1,7 @@
+
+Given nuts in array list A;
+Given bolts in array list B;
+
+create a binary search tree out of A (nlogn)
+for each bolt in B:
+    search for the matching nut in A (logn comparisons)
