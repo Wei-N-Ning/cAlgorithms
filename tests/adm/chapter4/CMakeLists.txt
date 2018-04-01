@@ -8,3 +8,7 @@ target_link_libraries(admHeapProf admChapter4)
 
 add_tinytest_executable(admMergesortTest test_mergesort.c)
 target_link_libraries(admMergesortTest admChapter4)
+
+add_executable(compareSortAlgo compare_sort_algo.c)
+target_link_libraries(compareSortAlgo admChapter4)
+
