@@ -7,6 +7,9 @@ set(CMAKE_C_FLAGS "-Wno-implicit-function-declaration")
 
 include(cmake/tinyCUnit.cmake)
 
+# one-off demo
+add_subdirectory(tests/oneoff)
+
 # CCI
 add_subdirectory(src/chapter1)
 add_subdirectory(tests/chapter1)

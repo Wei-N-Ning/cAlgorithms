@@ -25,7 +25,7 @@ struct Line {
 ///////////////////////////////////////////////////////////
 
 void ResetString(struct Line *l) {
-    for (int i=LINE_LENGTH+1; i--; ((char *)(l->data))[i]=0) ;
+    for (int i=LINE_LENGTH; i--; ((char *)(l->data))[i]=0) ;
 }
 
 int ReadString(const char *str, struct Line *l) {
@@ -35,7 +35,7 @@ int ReadString(const char *str, struct Line *l) {
 }
 
 int CheckString(struct Line *l) {
-    int nchars = 0;
+    size_t nchars = 0;
     if (! (nchars = strlen((char *)(l->data)))) {
         return 0;
     }
@@ -59,8 +59,10 @@ struct Line CreateString() {
 }
 
 void DeleteString(struct Line *l) {
-    free(l->data);
-    l->data = NULL;
+    if (l->data) {
+        free(l->data);
+        l->data = NULL;
+    }
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +88,7 @@ int main(int argc, char **argv) {
     int n = 0;
     struct Line l = CreateString();
     while (ReadLine(SUT, &l)) {
-        printf("<line>%s</line>", (char *)(l.data));
+        printf("(%s)\n", (char *)(l.data));
     }
     DeleteString(&l);
     return 0;
