@@ -2,6 +2,18 @@
 //    in a binary tree. Avoid storing additional nodes in a data structure. NOTE: This is not
 //necessarily a binary search tree.
 
+// first solution
+// simple but not efficient
+// let the root be R, those two subjects P,Q
+// check if R "covers" P and Q
+// that is, there is a path connecting R to the child node
+// if so, test R's left child then R's right child in
+// a greedy recursion, so that the child becomes parent
+// but when both children fail the test, return the current
+// parent node
+
+// second solution
+
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>

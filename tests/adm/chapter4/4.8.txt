@@ -1,0 +1,17 @@
+
+once S is sorted;
+
+if S_max < x/2, there is no solution;
+if S_min > x/2, there is no solution either;
+
+for each E in S if E <= x/2
+    let E' = Sum - E
+    test that E' is also in S
+
+because x/2 divide S to S1 and S2
+
+O = S1 * lgS2 < n * lgS2 < n * lgn
+
+O = (N - S2) * lgS2
+  = N * lgS2 - S2 * lgS2
+    Dominate

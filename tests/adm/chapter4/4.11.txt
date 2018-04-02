@@ -1,0 +1,16 @@
+
+divide and conquer;
+
+1)
+set a pivot, say the last Element, EL
+move all the Elements that are smaller than EL to the left;
+move all the Elements that are larger than EL to the right;
+EL either equals to the Element or not
+
+2)
+set a pivot, last Element, EL
+move all the Elements that are smaller than EL to the left;
+move all the Elements that are larger than EL to the right;
+for the left part, repeat the same operation;
+for the right part, repeat the same operation;
+if either part has more than n/2 elements, the Element at the center is the target

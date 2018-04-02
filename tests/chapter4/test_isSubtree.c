@@ -1,6 +1,12 @@
 //You have two very large binary trees: T1, with millions of nodes, and T2, with hun-
 //dreds of nodes. Create an algorithm to decide if T2 is a subtree of T1.
 
+// verdict:
+// instead of testing the ownership for each Node in sub tree,
+// I should implement a tree match subroutine that verifies
+// both the ownership and connectivity - (ownership alone is
+// not enough to guarantee subtree is part of the host-tree)
+
 #include <cciBinaryTree.h>
 #include <cciQueue.h>
 #include <cciValue.h>

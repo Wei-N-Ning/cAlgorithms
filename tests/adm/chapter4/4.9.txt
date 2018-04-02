@@ -1,0 +1,13 @@
+
+use the merge-sort merge() technique:
+
+sort A, B separately in-place;
+
+build QueueA, QueueB from A, B
+let resulting set be S
+
+if QueueA.front < QueueB.front
+    S.add(QueueA.deque)
+else
+    S.add(QueueB.deque)
+

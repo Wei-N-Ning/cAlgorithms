@@ -5,6 +5,9 @@
 // MY NOTE: is the binary tree constructed based on the values of the nodes? if not I need to reconstruct another
 // binary tree (N LogN) to simplify the problem
 
+// for each node N:
+//
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -64,59 +67,11 @@ void printPathBySum(cciBinTreeNode_t *n, int value) {
     DeleteCCIQueue(qu);
 }
 
-static void toStr(cciBinTreeNode_t *n, char *o_buf, size_t sz, size_t nodeWidth, size_t numChars) {
-    size_t idx = (size_t)(nodeWidth / 2.0) - (size_t)(numChars / 2.0);
-    for (size_t i=sz; i--; o_buf[i] = ' ') ;
-    if (n) {
-        idx += snprintf(o_buf + idx, sz, "%d", GETINT(n->value));
-        o_buf[idx] = ' ';
-        o_buf[0] = '[';
-        o_buf[nodeWidth - 1] = ']';
-    }
-    o_buf[nodeWidth] = '\0';
-}
-
-static void _bfsPrint(cciArrayList_t *al, size_t nodeWidth, size_t numChars) {
-    cciArrayList_t *next = AlNew();
-    char arr[255];
-    size_t sz = 0;
-    for (size_t i=0; i < al->size; ++i) {
-        cciBinTreeNode_t *one = GETPOINTER(AlGet(al, i), cciBinTreeNode_t);
-        toStr(one, arr, 255, nodeWidth, numChars);
-        printf("%s", arr);
-        if (! one) {
-            AlEmplaceBack(next, newPointer(NULL));
-            AlEmplaceBack(next, newPointer(NULL));
-        } else {
-            sz += (one->left || one->right) ? 1 : 0;
-            AlEmplaceBack(next, newPointer(one->left));
-            AlEmplaceBack(next, newPointer(one->right));
-        }
-    }
-    printf("\n");
-    AlDelete(al);
-    if (sz) {
-        _bfsPrint(next, (size_t)(nodeWidth / 2.0), numChars);
-    } else {
-        AlDelete(next);
-    }
-}
-
-static void _binTreePrint(cciBinTreeNode_t *n, size_t numChars) {
-    int height = Height(n);
-    cciArrayList_t *start = AlNew();
-    AlEmplaceBack(start, newPointer(n));
-    _bfsPrint(start, numChars * (size_t)pow(2, height), numChars);
-}
-
 void test_printBinaryTree() {
     size_t sz = 8;
     int arr[sz];
     for (size_t i=sz; i--; arr[i] = rand() % 100) ;
     cciBinTreeNode_t *n = createMockTreeFromArray(arr, sz);
-    printf("\n");
-    _binTreePrint(n, 3);
-    printf("\n");
 }
 
 int main(int argc, char **argv) {

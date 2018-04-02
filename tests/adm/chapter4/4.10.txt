@@ -1,0 +1,7 @@
+
+sort in nlogn
+
+brutal force solution is n^k (k-size permutation)
+but because S is sorted, the last choice can be logn using
+divide conquer, hence n^(k-) * logn
+
