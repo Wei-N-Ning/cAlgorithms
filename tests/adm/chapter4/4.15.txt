@@ -1,0 +1,13 @@
+
+a)
+brutal force: scan twice (n comparison * 2)
+
+heapify n keys, creating a max-heap ~ O(n)
+take the second largest element O(lgn * 2)
+O(n + lgn * 2)
+
+b)
+take the head element for the 3rd time (lgn)
+
+
+

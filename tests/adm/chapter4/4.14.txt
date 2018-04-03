@@ -1,0 +1,21 @@
+
+if all the arrays are sorted in ascending order
+
+> init an array with size n
+
+> init a max heap with size n; populate this heap (calling
+insert) with k elements popped off the end of all the
+arrays ~ O(k)
+
+do this for n times ~ O(n)
+
+    > for each array, compare the tail element (the largest in
+    this array) with the head element in the heap, if the
+    array element is larger, take it off and add it to the
+    heap, which becomes the new head element;
+    if not pop the head element ~ O(lgk)
+
+    > this element is add to the back of the array;
+    keep track of the tail position (decrement it each time)
+
+O(k + n*logk)

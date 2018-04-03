@@ -1,0 +1,19 @@
+
+a)
+max heap
+reason:
+O(n) for heapify-ing a given set of unsorted numbers;
+O(lgn) for on-going insertion
+O(1) for retrieving the maximum element
+
+b)
+max heap
+if using swap+bubbleUp, each deletion can cost O(lgn);
+on the other hand sorted array requires moving all the
+remaining elements, yielding an upper bound of O(n)
+
+c)
+max heap
+
+d)
+sorted array
