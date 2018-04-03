@@ -1,0 +1,13 @@
+
+a)
+n is known
+use binary search - log(n)
+
+b)
+n is not known
+start from 2, each time increase the number to 2**n, therefore
+the sequence of questions look like:
+>2? >4? >8? >16? ....
+once the number is known to sit between 2**(n-1) and 2**(n),
+use binary search to find it
+this will still yield log(n) upper bound

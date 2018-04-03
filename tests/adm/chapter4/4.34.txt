@@ -1,0 +1,12 @@
+
+
+there n integers, but m choices, n < m
+therefore there are m - n integers not included in the sequence
+
+treat the sequence as a binary tree;
+search for at maximum log(n) times to visit all the non-leaf
+integers;
+
+{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+{1, 2, 4, 5, 6, 8, 9}

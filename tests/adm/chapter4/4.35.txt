@@ -1,0 +1,27 @@
+
+create an array S that holds elements taken from the head and tail
+of each row, e.g.
+
+{r1_head, r1_tail, r2_head, r2_tail ... rn_head, rn_tail}
+
+this array is by definition sorted in ascending order
+
+binary search to determine x's position in this array:
+
+1) x is a head or tail -> bingo
+2) x > r(i)_tail and x < r(i+1)_head -> x is not in M
+3) x < r(i)_tail and x > r(i)_head
+    binary search x in row i
+
+num of comparison in worse case:
+exhaust S to find one row then exhaust that row only to find
+x is not there:
+len(S) + len(row)
+
+= 2 * len(column) + len(row)
+= 2m + n
+
+
+
+
+

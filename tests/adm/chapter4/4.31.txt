@@ -1,0 +1,13 @@
+
+
+1) A[k - 1]
+
+2) treating A as a binary tree, search for at maximum log(n) times
+ the height of the binary tree;
+to visit each non-leaf Element, each time, compare the parent with
+left & right children, verifying that:
+parent >= left >= right
+left child index = parent index * 2 + 1
+right child index = left child index + 1
+if any index > size - 1, bail out
+

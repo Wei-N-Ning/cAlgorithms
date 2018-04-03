@@ -1,0 +1,33 @@
+
+solution 1
+
+for each row
+    if head == 0 -> found
+    if tail == 0 -> found
+    if head > 0 and tail > 0 -> skip
+    if head < 0 and tail < 0 -> skip
+    if head < 0 and tail > 0 -> do binary search for 0
+
+n*log(n)
+
+solution 2
+
+for each row
+    if head == 0 -> found
+    if tail == 0 -> found
+    if head > 0 and tail > 0 -> skip
+    if head < 0 and tail < 0 -> skip
+    if head < 0 and tail > 0 -> mark row index in R
+
+for each column
+    if head == 0 -> found
+    if tail == 0 -> found
+    if head > 0 and tail > 0 -> skip
+    if head < 0 and tail < 0 -> skip
+    if head > 0 and tail < 0 -> mark column index in C
+
+in the sub matrix R x C
+for each R:
+    binary search for 0
+
+O(n)

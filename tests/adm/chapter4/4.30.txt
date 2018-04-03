@@ -1,0 +1,7 @@
+
+
+option 1. average performance is log(10000)
+13.28771237954945
+
+option 2. log(4000) * 60% + log(6000) * 40%
+12.19976928495055
