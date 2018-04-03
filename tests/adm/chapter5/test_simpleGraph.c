@@ -31,12 +31,6 @@ static const char *s_dumbGraph = \
 "B->D\n"
 "C->E\n";
 
-void xtest_initGraphFromString() {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph();
-    InitGraph(GraphIniterMode_string, s_dumbGraph, G);
-    DeleteAdmSimpleGraph(G);
-}
-
 int main(int argc, char **argv) {
     RunTinyTests();
     return 0;

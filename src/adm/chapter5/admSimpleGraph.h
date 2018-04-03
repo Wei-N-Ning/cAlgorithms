@@ -32,6 +32,4 @@ enum GraphIniterMode {
     GraphIniterMode_string,  // test friendly
 };
 
-int InitGraph(enum GraphIniterMode mode, const char *str, admSimpleGraph_t *o_G);
-
 #endif //CCISOLUTIONSC_ADMSIMPLEGRAPH_H

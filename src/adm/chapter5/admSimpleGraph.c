@@ -58,30 +58,3 @@ void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
 }
 
 ///////////////////////////////////////////////
-
-struct Line {
-    size_t start;
-    size_t end;
-
-    char buf[65];
-    size_t sz;
-};
-
-#define LINE_LENGTH 64
-
-int *ReadLine(const char *str, struct Line *l) {
-    return 0;
-}
-
-int InitGraph(enum GraphIniterMode mode, const char *str, admSimpleGraph_t *o_G) {
-    int result = 0;
-    char fromLabel = 0;
-    char toLabel = 0;
-    struct Line l;
-    memset(l.buf, 0, LINE_LENGTH + 1);
-    assert(mode == GraphIniterMode_string);
-    while (ReadLine(str, &l)) {
-        printf("%s\n", l.buf);
-    }
-    return 1;
-}
