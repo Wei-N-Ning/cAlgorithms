@@ -16,7 +16,7 @@ void RunTinyTests();
 // the assert statement will fail
 const char *SUT =\
 "A->B\n"
-"A->C\n"
+"A->Z\n"
 "B->D,D->F\n"
 "C->E,E->M\n";
 
@@ -38,7 +38,7 @@ struct MockLabel {
 };
 
 void test_interpretLineAsLabel() {
-    const char *str;
+    const char *str = NULL;
     struct MockLabel lb;
     struct AdmLine *l = AdmCreateStringReader();
     for (int i=0; AdmReadLine(SUT, l); ++i) {
@@ -48,6 +48,66 @@ void test_interpretLineAsLabel() {
             assert('A' == lb.first && 'B' == lb.second);
         } else if (i == 2) {
             assert('B' == lb.first && 'D' == lb.second);
+        }
+    }
+    AdmDeleteLine(l);
+}
+
+struct MockNode {
+    char label;
+    struct MockNode *to_;
+    struct MockNode *from_;
+};
+
+typedef struct MockNode mockNode_t;
+
+mockNode_t *CreateMockNode(const char lb, mockNode_t *to_, mockNode_t *from_) {
+    mockNode_t *n = malloc(sizeof(mockNode_t));
+    n->label = lb;
+    n->from_ = from_;
+    n->to_ = to_;
+    return n;
+}
+
+void DeleteMockNode(mockNode_t *n) {
+    free(n);
+}
+
+void test_interpretLineAsNodes() {
+    char fromLabel = 0;
+    char toLabel = 0;
+    const char *str = NULL;
+    mockNode_t *fromNode = NULL;
+    mockNode_t *toNode = NULL;
+    mockNode_t *tmp = NULL;
+    mockNode_t *nodeByLabel[0x7F];
+    memset(nodeByLabel, 0, sizeof(mockNode_t *) * 0x7F);
+    struct AdmLine *l = AdmCreateStringReader();
+    for (int i=0; AdmReadLine(SUT, l); ++i) {
+        str = AdmLineAsString(l);
+        if (sscanf(str, "%c->%c", &fromLabel, &toLabel) == 2) {
+            fromNode = nodeByLabel[fromLabel % 0x7F];
+            if (! fromNode) {
+                fromNode = CreateMockNode(fromLabel, NULL, NULL);
+                nodeByLabel[fromLabel % 0x7F] = fromNode;
+            }
+            toNode = nodeByLabel[toLabel % 0x7F];
+            if (! toNode) {
+                toNode = CreateMockNode(toLabel, NULL, fromNode);
+                nodeByLabel[toLabel % 0x7F] = toNode;
+            }
+            fromNode->to_ = toNode;
+        }
+    }
+    tmp = nodeByLabel['Z' % 0x7F];
+    assert('Z' == tmp->label);
+    assert('A' == tmp->from_->label);
+    tmp = nodeByLabel['C' % 0x7F];
+    assert('C' == tmp->label);
+    assert('E' == tmp->to_->label);
+    for (int i=0; i<0x7F; ++i) {
+        if (nodeByLabel[i]) {
+            DeleteMockNode(nodeByLabel[i]);
         }
     }
     AdmDeleteLine(l);
