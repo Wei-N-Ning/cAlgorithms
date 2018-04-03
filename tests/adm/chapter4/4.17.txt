@@ -1,0 +1,10 @@
+
+given S with size n
+a) n/2 + n/4 + n/8 + .... n / 2^h < n
+
+b) n/3 + n/9 + n/27 + .... n / 3^h < n/2
+
+
+
+
+

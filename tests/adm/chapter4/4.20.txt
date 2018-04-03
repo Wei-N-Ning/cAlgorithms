@@ -1,0 +1,10 @@
+
+find a non negative key;
+
+partition the arrange using the found key so that:
+> all the keys that produce a negative product with the pivot go the left
+> all the keys that produce a positive product with the pivot go the right
+
+O(n)
+
+

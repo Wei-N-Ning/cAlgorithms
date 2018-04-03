@@ -1,0 +1,21 @@
+
+solution 1
+
+create three Queues for those colors
+for each Element:
+    Examine() the color of the Element;
+    Enqueue() the element to the Queue representing its color
+call Dequeue() from red-white-blue queues
+
+(this will preserve the relative order within each color group)
+
+
+solution 2
+
+find a white Element;
+use this Element as pivot, 
+place all the red and white Elements to its left
+place all the blue Elements to its right
+
+(this does not necessarily preserve the relative order - e.g. the white group)
+
