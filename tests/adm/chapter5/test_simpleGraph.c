@@ -23,13 +23,27 @@ void test_createSimpleGraphExpectInitialState() {
     DeleteAdmSimpleGraph(G);
 }
 
+void test_deleteGraph() {
+    admSimpleGraph_t *G = CreateAdmSimpleGraph();
+    GetOrCreateAdmNode(G, "test");
+    assert(1 == AdmGraphSize(G));
+    DeleteAdmSimpleGraph(G);
+}
+
 ////////////////////////////////////////////////
 
 static const char *s_dumbGraph = \
-"A->B\n"
-"A->C\n"
-"B->D\n"
-"C->E\n";
+"WOLF3D->DOOM\n"
+"DOOM->DOOM2\n"
+"DOOM2->DOOM1.7\n"
+"DOOM2->QUAKE\n"
+"DOOM->BLAKESTONE\n";
+
+void test_createGraphFromString() {
+    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph);
+//    assert(6 == AdmGraphSize(G));
+    DeleteAdmSimpleGraph(G);
+}
 
 int main(int argc, char **argv) {
     RunTinyTests();

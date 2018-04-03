@@ -7,4 +7,5 @@ target_include_directories(admChapter5
 
 target_link_libraries(admChapter5
     PUBLIC
+    admUtilities
     admChapter4)
