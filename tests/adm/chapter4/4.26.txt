@@ -1,0 +1,9 @@
+
+a)
+partition the sequence into 0's and 1's
+the complexity is O(n); n-1 comparisons in the worst case
+if there exists a faster algorithm, then we can always skips certain comparisons which is not possible to produce an ordered sequence
+
+b)
+
+

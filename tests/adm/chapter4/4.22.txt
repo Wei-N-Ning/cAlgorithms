@@ -1,0 +1,19 @@
+
+solution 1
+
+create k Queues, 
+for each integer, Enqueue it to the corresponding Queue;
+call Dequeue in the order
+
+(this yields O(n) complexity, but require that k is not too large)
+
+
+solution 2
+
+partition the integers in k sub sequences starting with an arbitrary pivot;
+it will call the partition function logk times
+each time n comparisons
+
+
+
+

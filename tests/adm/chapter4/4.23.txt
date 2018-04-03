@@ -1,0 +1,6 @@
+
+the number of distinct integers in S is K
+aim for O(nlog(k))
+
+
+

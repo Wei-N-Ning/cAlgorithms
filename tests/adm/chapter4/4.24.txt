@@ -1,0 +1,16 @@
+
+scan array A and find the first Element that violate the order - it is the end of the sorted portion;
+
+for the remaining Elements, let K = n^1/2
+the time complexity for this step is (n^1/2)log(n^1/2)
+
+let f(n) = (n^1/2)/2log(n); g(n) = n
+prove that g(n) dominate f(n)
+
+n <-> (n^1/2)/2log(n)
+(n^1/2) <-> 1/2log(n)
+(n^1/2) <-> log(n)
+
+a linear term n dominates this term
+
+

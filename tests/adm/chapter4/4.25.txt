@@ -1,0 +1,10 @@
+
+let K = log(log(n))
+partition the array in K sub sequences - log(K)
+
+log(log(log(n))) <-> log(n)
+log(log(n)) <-> n
+
+the left hand side is completely dominated by the right hand side
+
+
