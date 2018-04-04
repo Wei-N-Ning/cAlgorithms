@@ -18,7 +18,7 @@ struct AdmSimpleNode {
     char label[MAX_LABEL_LENGTH];
     cciList_t *to;
     cciValue_t value;
-    int weight;
+    uint64_t weight;
 };
 
 admSimpleNode_t *CreateAdmSimpleNode() {
@@ -81,7 +81,22 @@ admSimpleGraph_t *CreateAdmSimpleGraph() {
     return G;
 }
 
-admSimpleNode_t * GetOrCreateAdmNode(admSimpleGraph_t *G, const char *label) {
+admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k) {
+    admSimpleNode_t *n = GETPOINTER(IGet(G->nodeByLabel, k), admSimpleNode_t);
+    if (n) {
+        return n;
+    }
+    if (G->size >= MAX_GRAPH_SIZE) {
+        return NULL;
+    }
+    n = CreateAdmSimpleNode();
+    n->weight = k;
+    SSet(G->nodeByLabel, n->label, newPointer(n));
+    G->size += 1;
+    return n;
+}
+
+admSimpleNode_t * GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label) {
     admSimpleNode_t *n = GETPOINTER(SGet(G->nodeByLabel, label), admSimpleNode_t);
     if (n) {
         return n;
@@ -100,12 +115,21 @@ admSimpleNode_t * GetOrCreateAdmNode(admSimpleGraph_t *G, const char *label) {
     return n;
 }
 
-admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, const char *label) {
+admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, uint64_t k) {
+    return GETPOINTER(IGet(G->nodeByLabel, k), admSimpleNode_t);
+}
+
+admSimpleNode_t *GetLabelledNode(admSimpleGraph_t *G, const char *label) {
     return GETPOINTER(SGet(G->nodeByLabel, label), admSimpleNode_t);
 }
 
 size_t AdmGraphSize(admSimpleGraph_t *G) {
     return G->size;
+}
+
+void AdmGraphIter(admSimpleGraph_t *G, void *callback) {
+    callback_t cb = (callback_t)callback;
+    Iterate(G->nodeByLabel, cb);
 }
 
 void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
@@ -143,14 +167,14 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf) {
         memset(label, 0, MAX_LABEL_LENGTH * 2);
         // directed
         if (extractLabels(AdmLineAsString(l), "->", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
-            this = GetOrCreateAdmNode(G, label);
-            to_ = GetOrCreateAdmNode(G, label + MAX_LABEL_LENGTH);
+            this = GetOrCreateLabelledNode(G, label);
+            to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
             Append(this->to, newPointer(to_));
         }
         // undirected
         else if (extractLabels(AdmLineAsString(l), "--", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
-            this = GetOrCreateAdmNode(G, label);
-            to_ = GetOrCreateAdmNode(G, label + MAX_LABEL_LENGTH);
+            this = GetOrCreateLabelledNode(G, label);
+            to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
             Append(this->to, newPointer(to_));
             Append(to_->to, newPointer(this));
         }
@@ -158,3 +182,5 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf) {
     AdmDeleteLine(l);
     return G;
 }
+
+

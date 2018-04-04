@@ -6,9 +6,10 @@
 #define CCISOLUTIONSC_ADMSIMPLEGRAPH_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define MAX_LABEL_LENGTH 16
-#define MAX_GRAPH_SIZE 128
+#define MAX_GRAPH_SIZE 4096
 
 struct AdmSimpleNode;
 typedef struct AdmSimpleNode admSimpleNode_t;
@@ -28,10 +29,14 @@ size_t AdmSNDegree(admSimpleNode_t *n);
 //////////////////////////////////////////////
 
 admSimpleGraph_t *CreateAdmSimpleGraph();
-admSimpleNode_t *GetOrCreateAdmNode(admSimpleGraph_t *G, const char *label);
-admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, const char *label);
+admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k);
+admSimpleNode_t *GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label);
+admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, uint64_t k);
+admSimpleNode_t *GetLabelledNode(admSimpleGraph_t *G, const char *label);
 void DeleteAdmSimpleGraph(admSimpleGraph_t *G);
 size_t AdmGraphSize(admSimpleGraph_t *G);
+
+void AdmGraphIter(admSimpleGraph_t *G, void *callback);
 
 //////////////// utilities ///////////////////
 
