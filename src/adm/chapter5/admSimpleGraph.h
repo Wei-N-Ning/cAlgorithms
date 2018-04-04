@@ -38,6 +38,11 @@ size_t AdmGraphSize(admSimpleGraph_t *G);
 
 void AdmGraphIter(admSimpleGraph_t *G, void *callback);
 
+//////////////// traversal ///////////////////
+
+typedef void (*admNodeVisitor_t)(admSimpleNode_t *n);
+void AdmGraphBFS(admSimpleNode_t *n, admNodeVisitor_t visitor);
+
 //////////////// utilities ///////////////////
 
 admSimpleGraph_t *CreateGraphFromString(const char *str);

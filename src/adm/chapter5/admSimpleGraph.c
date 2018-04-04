@@ -111,6 +111,7 @@ admSimpleNode_t * GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label
         sz = MAX_LABEL_LENGTH - 1;
     }
     memcpy(n->label, label, sz);
+    n->weight = 0;
     SSet(G->nodeByLabel, n->label, newPointer(n));
     G->size += 1;
     return n;
@@ -139,6 +140,12 @@ void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
         DeleteHashTable(G->nodeByLabel);
     }
     free(G);
+}
+
+///////////////////////////////////////////////
+
+void AdmGraphBFS(admSimpleNode_t *n, admNodeVisitor_t visitor) {
+    ;
 }
 
 ///////////////////////////////////////////////
