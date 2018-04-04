@@ -119,12 +119,13 @@ static void printKV(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) 
     printf("\n");
 }
 
-static void assertKV(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
+static void assertNumConns(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
     admSimpleNode_t *n = GETPOINTER((*v), admSimpleNode_t);
     assert(n);
+    assert(9 == AdmNumToNodes(n));
 }
 
-void test_createGraphWithRandomNodes() {
+void test_createGraphWithProceduralConnections() {
     size_t workload = 0x123;
     size_t nbuf = 32;
     admSimpleGraph_t *G = CreateAdmSimpleGraph();
@@ -143,7 +144,7 @@ void test_createGraphWithRandomNodes() {
             AdmConnectTo(n, arr[(idx + 1 + i) % workload]);
         }
     }
-    AdmGraphIter(G, assertKV);
+    AdmGraphIter(G, assertNumConns);
     assert(workload == AdmGraphSize(G));
     DeleteAdmSimpleGraph(G);
 }
