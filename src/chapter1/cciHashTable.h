@@ -14,11 +14,14 @@ cciHashTable_t *NewHashTable(size_t size);
 void DeleteHashTable(cciHashTable_t *tb);
 
 void SSet(cciHashTable_t *tb, const char *key, cciValue_t value);
-
 cciValue_t SGet(cciHashTable_t *tb, const char *key);
-
 cciValue_t SPop(cciHashTable_t *tb, const char *key);
 
+void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value);
+cciValue_t IGet(cciHashTable_t *tb, uint64_t key);
+cciValue_t IPop(cciHashTable_t *tb, uint64_t key);
+
+size_t HashTableNumKeys(cciHashTable_t *tb);
 size_t HashTableSize(cciHashTable_t *tb);
 
 typedef void (*callback_t)(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v);

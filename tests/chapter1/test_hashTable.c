@@ -4,6 +4,7 @@
 
 #include <cciHashTable.h>
 #include <assert.h>
+#include <stdlib.h>
 
 void RunTinyTests();
 
@@ -84,6 +85,27 @@ void test_whenKeysCollidedExpectSlotsDeallocated() {
     assert(-8 == GETINT(SGet(tb, "them")));
     assert(25 == GETINT(SGet(tb, "that")));
     DeleteHashTable(tb);
+}
+
+struct FooNode {};
+typedef struct FooNode fooNode_t;
+fooNode_t *CreateFooNode() { return malloc(sizeof(fooNode_t)); }
+void DeleteFooNode(fooNode_t *n) { free(n); }
+
+void test_usePointerForKey() {
+    fooNode_t *n1 = CreateFooNode();
+    fooNode_t *n2 = CreateFooNode();
+    cciHashTable_t *tb = NewHashTable(16);
+    ISet(tb, (uint64_t)n1, newInt(0xDEAD));
+    ISet(tb, (uint64_t)n2, newInt(0xBEEF));
+    assert(2 == HashTableNumKeys(tb));
+    assert(0xDEAD == GETINT(IGet(tb, (uint64_t)n1)));
+    assert(0xBEEF == GETINT(IPop(tb, (uint64_t)n2)));
+    assert(! ISVALID(IGet(tb, 0x123)));
+    assert(1 == HashTableNumKeys(tb));
+    DeleteHashTable(tb);
+    DeleteFooNode(n1);
+    DeleteFooNode(n2);
 }
 
 int main(int argc, char **argv) {
