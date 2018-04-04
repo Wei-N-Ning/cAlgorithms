@@ -13,17 +13,18 @@
 #include <cciList.h>
 #include <cciHashTable.h>
 #include <admReadline.h>
+#include <cciArrayList.h>
 
 struct AdmSimpleNode {
     char label[MAX_LABEL_LENGTH];
-    cciList_t *to;
+    cciArrayList_t *to;
     cciValue_t value;
     uint64_t weight;
 };
 
 admSimpleNode_t *CreateAdmSimpleNode() {
     admSimpleNode_t *n = malloc(sizeof(admSimpleNode_t));
-    n->to = NewList();
+    n->to = AlNew();
     n->value = invalid();
     memset(n->label, 0, MAX_LABEL_LENGTH);
     return n;
@@ -37,11 +38,11 @@ admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx) {
     if (idx > n->to->size - 1) {
         return NULL;
     }
-    return GETPOINTER(Get(n->to, idx), admSimpleNode_t);
+    return GETPOINTER(AlGet(n->to, idx), admSimpleNode_t);
 }
 
 int AdmConnectTo(admSimpleNode_t *this, admSimpleNode_t *to_) {
-    Append(this->to, newPointer(to_));
+    AlEmplaceBack(this->to, newPointer(to_));
     return 1;
 }
 
@@ -51,7 +52,7 @@ const char *AdmNodeLabel(admSimpleNode_t *n) {
 
 void DeleteAdmSimpleNode(admSimpleNode_t *n) {
     if (n->to) {
-        DeleteList(n->to);
+        AlDelete(n->to);
     }
     free(n);
 }
@@ -169,14 +170,14 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf) {
         if (extractLabels(AdmLineAsString(l), "->", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
             this = GetOrCreateLabelledNode(G, label);
             to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
-            Append(this->to, newPointer(to_));
+            AlEmplaceBack(this->to, newPointer(to_));
         }
         // undirected
         else if (extractLabels(AdmLineAsString(l), "--", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
             this = GetOrCreateLabelledNode(G, label);
             to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
-            Append(this->to, newPointer(to_));
-            Append(to_->to, newPointer(this));
+            AlEmplaceBack(this->to, newPointer(to_));
+            AlEmplaceBack(to_->to, newPointer(this));
         }
     }
     AdmDeleteLine(l);
