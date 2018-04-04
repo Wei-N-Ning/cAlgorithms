@@ -193,8 +193,8 @@ static int extractLabels(const char *str, const char *token, char *o_first, char
     return 1;
 }
 
-admSimpleGraph_t *CreateGraphFromString(const char *buf) {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph(MAX_GRAPH_SIZE);
+admSimpleGraph_t *CreateGraphFromString(const char *buf, size_t sz) {
+    admSimpleGraph_t *G = CreateAdmSimpleGraph((sz ? sz : MAX_GRAPH_SIZE));
     struct AdmLine *l = AdmCreateStringReader();
     char label[MAX_LABEL_LENGTH * 2];
     admSimpleNode_t *this = NULL;

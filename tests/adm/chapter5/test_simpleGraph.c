@@ -58,7 +58,7 @@ static const char *directedGraph = \
 "DOOM->BLAKESTONE\n";
 
 void test_createDirectedGraphFromString() {
-    admSimpleGraph_t *G = CreateGraphFromString(directedGraph);
+    admSimpleGraph_t *G = CreateGraphFromString(directedGraph, 8);
     admSimpleNode_t *n = NULL;
     assert(6 == AdmGraphSize(G));
 
@@ -85,7 +85,7 @@ static const char *undirectedGraph = \
 "HK416--m27IAR\n";
 
 void test_createUndirectedGraphFromString() {
-    admSimpleGraph_t *G = CreateGraphFromString(undirectedGraph);
+    admSimpleGraph_t *G = CreateGraphFromString(undirectedGraph, 8);
     admSimpleNode_t *n = NULL;
     assert(7 == AdmGraphSize(G));
 

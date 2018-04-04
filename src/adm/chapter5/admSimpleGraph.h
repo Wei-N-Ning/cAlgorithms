@@ -46,6 +46,6 @@ void AdmGraphBFS(admSimpleGraph_t *G, admSimpleNode_t *n, admNodeVisitor_t visit
 
 //////////////// utilities ///////////////////
 
-admSimpleGraph_t *CreateGraphFromString(const char *str);
+admSimpleGraph_t *CreateGraphFromString(const char *str, size_t sz);
 
 #endif //CCISOLUTIONSC_ADMSIMPLEGRAPH_H

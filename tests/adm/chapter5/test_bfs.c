@@ -18,7 +18,7 @@ static void addWeightVisitor(admSimpleNode_t *n) {
 }
 
 void test_minimalBFS() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph);
+    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "C");
     assert(0 == *AdmWeightHandle(GetLabelledNode(G, "C")));
     assert(0 == *AdmWeightHandle(GetLabelledNode(G, "D")));
