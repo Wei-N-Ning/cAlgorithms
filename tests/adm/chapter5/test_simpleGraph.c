@@ -3,6 +3,7 @@
 //
 
 #include <assert.h>
+#include <string.h>
 
 #include <admSimpleGraph.h>
 
@@ -13,6 +14,18 @@ void test_createSimpleNodeExpectInitialState() {
     assert(n);
     assert(! AdmSNDegree(n));
     DeleteAdmSimpleNode(n);
+}
+
+void test_connectionBetweenNodes() {
+    admSimpleNode_t *n1 = CreateAdmSimpleNode();
+    admSimpleNode_t *n2 = CreateAdmSimpleNode();
+    assert(0 == AdmNumToNodes(n1));
+    AdmConnectTo(n1, n2);
+    assert(1 == AdmNumToNodes(n1));
+    assert(n2 == AdmToNode(n1, 0));
+    assert(! AdmToNode(n1, 1));
+    DeleteAdmSimpleNode(n1);
+    DeleteAdmSimpleNode(n2);
 }
 
 ////////////////////////////////////////////////
@@ -41,7 +54,21 @@ static const char *s_dumbGraph = \
 
 void test_createGraphFromString() {
     admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph);
-//    assert(6 == AdmGraphSize(G));
+    admSimpleNode_t *n = NULL;
+    assert(6 == AdmGraphSize(G));
+
+    n = GetAdmNode(G, "WOLF3D");
+    assert(n);
+    assert(1 == AdmNumToNodes(n));
+    assert(! AdmToNode(n, 2));
+    assert(0 == strcmp("DOOM", AdmNodeLabel(AdmToNode(n, 0))));
+
+    n = GetAdmNode(G, "DOOM2");
+    assert(n);
+    assert(2 == AdmNumToNodes(n));
+    assert(0 == strcmp("DOOM1.7", AdmNodeLabel(AdmToNode(n, 0))));
+    assert(0 == strcmp("QUAKE", AdmNodeLabel(AdmToNode(n, 1))));
+
     DeleteAdmSimpleGraph(G);
 }
 
