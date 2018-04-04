@@ -36,13 +36,13 @@ void test_connectionBetweenNodes() {
 ////////////////////////////////////////////////
 
 void test_createSimpleGraphExpectInitialState() {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph();
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(1);
     assert(G);
     DeleteAdmSimpleGraph(G);
 }
 
 void test_deleteGraph() {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph();
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(1);
     GetOrCreateLabelledNode(G, "test");
     assert(1 == AdmGraphSize(G));
     DeleteAdmSimpleGraph(G);
@@ -128,7 +128,7 @@ static void assertNumConns(size_t index, size_t slotPos, cciValue_t *k, cciValue
 void test_createGraphWithProceduralConnections() {
     size_t workload = 0x123;
     size_t nbuf = 32;
-    admSimpleGraph_t *G = CreateAdmSimpleGraph();
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(0x123);
     admSimpleNode_t *n = NULL;
     admSimpleNode_t *arr[0x123];
     char buf[32];

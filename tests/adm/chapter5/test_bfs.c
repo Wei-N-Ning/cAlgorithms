@@ -13,12 +13,18 @@ const char *s_dumbGraph = \
 "C->D\n";
 
 static void addWeightVisitor(admSimpleNode_t *n) {
-    ;
+    uint64_t *weightHandle = AdmWeightHandle(n);
+    (*weightHandle)++;
 }
+
 void test_minimalBFS() {
     admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph);
     admSimpleNode_t *start = GetLabelledNode(G, "C");
-    AdmGraphBFS(start, addWeightVisitor);
+    assert(0 == *AdmWeightHandle(GetLabelledNode(G, "C")));
+    assert(0 == *AdmWeightHandle(GetLabelledNode(G, "D")));
+    AdmGraphBFS(G, start, addWeightVisitor);
+    assert(1 == *AdmWeightHandle(GetLabelledNode(G, "C")));
+    assert(1 == *AdmWeightHandle(GetLabelledNode(G, "D")));
     DeleteAdmSimpleGraph(G);
 }
 

@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <admReadline.h>
 #include <cciValue.h>
 #include <cciList.h>
 #include <cciHashTable.h>
-#include <admReadline.h>
 #include <cciArrayList.h>
+#include <cciQueue.h>
 
 struct AdmSimpleNode {
     char label[MAX_LABEL_LENGTH];
@@ -57,6 +58,10 @@ void DeleteAdmSimpleNode(admSimpleNode_t *n) {
     free(n);
 }
 
+uint64_t *AdmWeightHandle(admSimpleNode_t *n) {
+    return &n->weight;
+}
+
 size_t AdmSNDegree(admSimpleNode_t *n) {
     return n->to->size;
 }
@@ -75,10 +80,10 @@ static void killerVisitor(size_t index, size_t slotPos, cciValue_t *k, cciValue_
     }
 }
 
-admSimpleGraph_t *CreateAdmSimpleGraph() {
+admSimpleGraph_t *CreateAdmSimpleGraph(size_t sz) {
     admSimpleGraph_t *G = malloc(sizeof(admSimpleGraph_t));
     G->size = 0;
-    G->nodeByLabel = NewHashTable(MAX_GRAPH_SIZE);
+    G->nodeByLabel = NewHashTable(sz);
     return G;
 }
 
@@ -144,8 +149,31 @@ void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
 
 ///////////////////////////////////////////////
 
-void AdmGraphBFS(admSimpleNode_t *n, admNodeVisitor_t visitor) {
-    ;
+void AdmGraphBFS(admSimpleGraph_t *G, admSimpleNode_t *n, admNodeVisitor_t visitor) {
+    cciQueue_t *Q =  CreateCCIQueue();
+    cciHashTable_t *discovered = NewHashTable(AdmGraphSize(G));
+    cciHashTable_t *processed = NewHashTable(AdmGraphSize(G));
+    cciValue_t v;
+    admSimpleNode_t *this = NULL;
+    admSimpleNode_t *conn = NULL;
+    size_t nconns = 0;
+
+    Enqueue(Q, newPointer(n));
+    while (! CCIQueueEmpty(Q)) {
+        v = Dequeue(Q);
+        this = GETPOINTER(v, admSimpleNode_t);
+        visitor(this);
+
+        nconns = AdmNumToNodes(this);
+        for (size_t i=0; i<nconns; ++i) {
+            conn = AdmToNode(this, i);
+            Enqueue(Q, newPointer(conn));
+        }
+    }
+
+    DeleteCCIQueue(Q);
+    DeleteHashTable(discovered);
+    DeleteHashTable(processed);
 }
 
 ///////////////////////////////////////////////
@@ -166,7 +194,7 @@ static int extractLabels(const char *str, const char *token, char *o_first, char
 }
 
 admSimpleGraph_t *CreateGraphFromString(const char *buf) {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph();
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(MAX_GRAPH_SIZE);
     struct AdmLine *l = AdmCreateStringReader();
     char label[MAX_LABEL_LENGTH * 2];
     admSimpleNode_t *this = NULL;

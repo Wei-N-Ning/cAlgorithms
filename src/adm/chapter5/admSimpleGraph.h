@@ -23,12 +23,13 @@ admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx);
 int AdmConnectTo(admSimpleNode_t *this, admSimpleNode_t *to_);
 const char *AdmNodeLabel(admSimpleNode_t *n);
 void DeleteAdmSimpleNode(admSimpleNode_t *n);
+uint64_t *AdmWeightHandle(admSimpleNode_t *n);
 
 size_t AdmSNDegree(admSimpleNode_t *n);
 
 //////////////////////////////////////////////
 
-admSimpleGraph_t *CreateAdmSimpleGraph();
+admSimpleGraph_t *CreateAdmSimpleGraph(size_t sz);
 admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k);
 admSimpleNode_t *GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label);
 admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, uint64_t k);
@@ -41,7 +42,7 @@ void AdmGraphIter(admSimpleGraph_t *G, void *callback);
 //////////////// traversal ///////////////////
 
 typedef void (*admNodeVisitor_t)(admSimpleNode_t *n);
-void AdmGraphBFS(admSimpleNode_t *n, admNodeVisitor_t visitor);
+void AdmGraphBFS(admSimpleGraph_t *G, admSimpleNode_t *n, admNodeVisitor_t visitor);
 
 //////////////// utilities ///////////////////
 
