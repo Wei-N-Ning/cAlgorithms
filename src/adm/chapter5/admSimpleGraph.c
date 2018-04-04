@@ -141,10 +141,18 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf) {
     admSimpleNode_t *to_ = NULL;
     for (int i=0; AdmReadLine(buf, l); ++i) {
         memset(label, 0, MAX_LABEL_LENGTH * 2);
+        // directed
         if (extractLabels(AdmLineAsString(l), "->", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
             this = GetOrCreateAdmNode(G, label);
             to_ = GetOrCreateAdmNode(G, label + MAX_LABEL_LENGTH);
             Append(this->to, newPointer(to_));
+        }
+        // undirected
+        else if (extractLabels(AdmLineAsString(l), "--", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
+            this = GetOrCreateAdmNode(G, label);
+            to_ = GetOrCreateAdmNode(G, label + MAX_LABEL_LENGTH);
+            Append(this->to, newPointer(to_));
+            Append(to_->to, newPointer(this));
         }
     }
     AdmDeleteLine(l);

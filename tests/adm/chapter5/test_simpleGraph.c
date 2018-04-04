@@ -45,15 +45,15 @@ void test_deleteGraph() {
 
 ////////////////////////////////////////////////
 
-static const char *s_dumbGraph = \
+static const char *directedGraph = \
 "WOLF3D->DOOM\n"
 "DOOM->DOOM2\n"
 "DOOM2->DOOM1.7\n"
 "DOOM2->QUAKE\n"
 "DOOM->BLAKESTONE\n";
 
-void test_createGraphFromString() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph);
+void test_createDirectedGraphFromString() {
+    admSimpleGraph_t *G = CreateGraphFromString(directedGraph);
     admSimpleNode_t *n = NULL;
     assert(6 == AdmGraphSize(G));
 
@@ -68,6 +68,26 @@ void test_createGraphFromString() {
     assert(2 == AdmNumToNodes(n));
     assert(0 == strcmp("DOOM1.7", AdmNodeLabel(AdmToNode(n, 0))));
     assert(0 == strcmp("QUAKE", AdmNodeLabel(AdmToNode(n, 1))));
+
+    DeleteAdmSimpleGraph(G);
+}
+
+static const char *undirectedGraph = \
+"HK416--m4a1\n"
+"AK103--AKM\n"
+"m4a1--DDM4\n"
+"AKM--NorincoType56\n"
+"HK416--m27IAR\n";
+
+void test_createUndirectedGraphFromString() {
+    admSimpleGraph_t *G = CreateGraphFromString(undirectedGraph);
+    admSimpleNode_t *n = NULL;
+    assert(7 == AdmGraphSize(G));
+
+    n = GetAdmNode(G, "m4a1");
+    assert(n);
+    assert(2 == AdmNumToNodes(n));
+    assert(0 == strcmp("DDM4", AdmNodeLabel(AdmToNode(n, 1))));
 
     DeleteAdmSimpleGraph(G);
 }
