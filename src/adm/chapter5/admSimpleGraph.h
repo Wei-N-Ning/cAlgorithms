@@ -8,6 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <cciHashTable.h>
+
 #define MAX_LABEL_LENGTH 16
 #define MAX_GRAPH_SIZE 4096
 
@@ -50,10 +52,25 @@ void AdmGraphIter(admSimpleGraph_t *G, void *callback);
 
 typedef void (*admNodeVisitor_t)(admSimpleNode_t *n);
 typedef void (*admConnVisitor_t)(admSimpleEdge_t *e);
+// BFSTree:
+// optional;
+// to record the shortest path from n to every other node
+// in the tree
+//
+// nodeVisitor:
+// optional;
+// a visitor function that is called for every node visited;
+// use NULL if not interested
+//
+// connVisitor:
+// optional;
+// a visitor function that is called for every edge visited;
+// use NULL if not interested
 void AdmGraphBFS(admSimpleGraph_t *G,
                  admSimpleNode_t *n,
-                 admNodeVisitor_t visitor,
-                 admConnVisitor_t);
+                 cciHashTable_t *BFSTree,
+                 admNodeVisitor_t nodeVisitor,
+                 admConnVisitor_t connVisitor);
 
 //////////////// utilities ///////////////////
 

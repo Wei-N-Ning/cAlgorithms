@@ -200,6 +200,7 @@ void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
 
 void AdmGraphBFS(admSimpleGraph_t *G,
                  admSimpleNode_t *n,
+                 cciHashTable_t *BFSTree,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor) {
     cciQueue_t *Q =  CreateCCIQueue();
@@ -210,25 +211,32 @@ void AdmGraphBFS(admSimpleGraph_t *G,
     admSimpleNode_t *connected = NULL;
     size_t nconns = 0;
     Enqueue(Q, newPointer(n));
+    ISet(discovered, (uint64_t)n, newPointer(n));
+    if (BFSTree) {
+        ISet(BFSTree, (uint64_t)n, invalid());
+    }
     while (! CCIQueueEmpty(Q)) {
         v = Dequeue(Q);
         this = GETPOINTER(v, admSimpleNode_t);
         if (nodeVisitor) {
             nodeVisitor(this);
         }
-        ISet(discovered, (uint64_t)this, newPointer(this));
         nconns = AdmNumToNodes(this);
         for (size_t i=0; i<nconns; ++i) {
             conn = AdmEdge(this, i);
             connected = AdmEdgeTo(conn);
-            if (connVisitor) {
-                connVisitor(conn);
-            }
             if (ISVALID(IGet(discovered, (uint64_t)connected))) {
                 // circular dependency detected
                 continue;
             }
+            ISet(discovered, (uint64_t)connected, newPointer(connected));
+            if (connVisitor) {
+                connVisitor(conn);
+            }
             Enqueue(Q, newPointer(connected));
+            if (BFSTree) {
+                ISet(BFSTree, (uint64_t)connected, newPointer(this));
+            }
         }
     }
     DeleteCCIQueue(Q);
