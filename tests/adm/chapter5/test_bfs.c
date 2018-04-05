@@ -4,7 +4,12 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
+#include <admToStr.h>
 #include <admSimpleGraph.h>
 
 void RunTinyTests();
@@ -62,6 +67,41 @@ void test_expectShortestPathViaBFSTree() {
     v = IGet(BFSTree, (uint64_t)expected);
     assert(ISVALID(v));
     assert(start == GETPOINTER(v, admSimpleNode_t));
+    DeleteHashTable(BFSTree);
+    DeleteAdmSimpleGraph(G);
+}
+
+static admSimpleGraph_t *createGraph(size_t workload, admSimpleNode_t **start) {
+    size_t nbuf = 32;
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(workload);
+    admSimpleNode_t *n = NULL;
+    admSimpleNode_t **arr = malloc(workload * sizeof(admSimpleNode_t *));
+    char buf[32];
+    memset(buf, 0, nbuf);
+    for (uint64_t i=0; i<workload; ++i) {
+        BytesToUniqueString(i * 2 + 1, buf, nbuf);
+        n = GetOrCreateLabelledNode(G, buf);
+        arr[i] = n;
+    }
+    for (size_t i=0; i<workload; ++i) {
+        n = arr[i];
+        for (size_t idx = 0; idx<workload; idx = idx * 2 + 1) {
+            AdmConnectTo(n, arr[(idx + 1 + i) % workload]);
+        }
+    }
+    (*start) = arr[0];
+    free(arr);
+    return G;
+}
+
+// the procedurally generated graph is a non-trivial graph;
+// every node is connected to log(N) other nodes
+void test_getConnectedComponent() {
+    admSimpleNode_t *start = NULL;
+    admSimpleGraph_t *G = createGraph(0x34, &start);
+    cciHashTable_t *BFSTree = NewHashTable(0x34);
+    AdmGraphBFS(G, start, BFSTree, NULL, NULL);
+    assert(0x34 == HashTableNumKeys(BFSTree));
     DeleteHashTable(BFSTree);
     DeleteAdmSimpleGraph(G);
 }
