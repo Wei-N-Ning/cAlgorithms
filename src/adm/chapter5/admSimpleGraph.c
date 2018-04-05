@@ -21,29 +21,70 @@ struct AdmSimpleNode {
     cciArrayList_t *to;
     cciValue_t value;
     uint64_t weight;
+    void *preserved;
+};
+
+struct AdmSimpleEdge {
+    uint64_t weight;
+    admSimpleNode_t *from;
+    admSimpleNode_t *to;
+    void *preserved;
 };
 
 admSimpleNode_t *CreateAdmSimpleNode() {
     admSimpleNode_t *n = malloc(sizeof(admSimpleNode_t));
     n->to = AlNew();
     n->value = invalid();
+    n->preserved = NULL;
     memset(n->label, 0, MAX_LABEL_LENGTH);
     return n;
+}
+
+admSimpleEdge_t *CreateAdmSimpleEdge(admSimpleNode_t *from_, admSimpleNode_t *to_, size_t weight) {
+    admSimpleEdge_t *e = malloc(sizeof(admSimpleEdge_t));
+    e->weight = weight;
+    e->from = from_;
+    e->to = to_;
+    e->preserved = NULL;
+    return e;
+}
+
+admSimpleNode_t *AdmEdgeTo(admSimpleEdge_t *e) {
+    return e->to;
+}
+
+admSimpleNode_t *AdmEdgeFrom(admSimpleEdge_t *e) {
+    return e->from;
+}
+
+void DeleteAdmSimpleEdge(admSimpleEdge_t *e) {
+    free(e);
 }
 
 size_t AdmNumToNodes(admSimpleNode_t *n) {
     return n->to->size;
 }
 
-admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx) {
+admSimpleEdge_t *AdmEdge(admSimpleNode_t *n, size_t idx) {
+    cciValue_t v;
     if (idx > n->to->size - 1) {
         return NULL;
     }
-    return GETPOINTER(AlGet(n->to, idx), admSimpleNode_t);
+    v = AlGet(n->to, idx);
+    return GETPOINTER(v, admSimpleEdge_t);
+}
+
+admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx) {
+    admSimpleEdge_t *e = AdmEdge(n, idx);
+    if (e) {
+        return e->to;
+    }
+    return NULL;
 }
 
 int AdmConnectTo(admSimpleNode_t *this, admSimpleNode_t *to_) {
-    AlEmplaceBack(this->to, newPointer(to_));
+    admSimpleEdge_t *e = CreateAdmSimpleEdge(this, to_, 0);
+    AlEmplaceBack(this->to, newPointer(e));
     return 1;
 }
 
@@ -52,7 +93,15 @@ const char *AdmNodeLabel(admSimpleNode_t *n) {
 }
 
 void DeleteAdmSimpleNode(admSimpleNode_t *n) {
+    size_t sz = n->to->size;
+    cciValue_t v;
+    admSimpleEdge_t *e = NULL;
     if (n->to) {
+        for (size_t i=0; i<sz; ++i) {
+            v = AlGet(n->to, i);
+            e = GETPOINTER(v, admSimpleEdge_t);
+            DeleteAdmSimpleEdge(e);
+        }
         AlDelete(n->to);
     }
     free(n);
@@ -149,31 +198,41 @@ void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
 
 ///////////////////////////////////////////////
 
-void AdmGraphBFS(admSimpleGraph_t *G, admSimpleNode_t *n, admNodeVisitor_t visitor) {
+void AdmGraphBFS(admSimpleGraph_t *G,
+                 admSimpleNode_t *n,
+                 admNodeVisitor_t nodeVisitor,
+                 admConnVisitor_t connVisitor) {
     cciQueue_t *Q =  CreateCCIQueue();
     cciHashTable_t *discovered = NewHashTable(AdmGraphSize(G));
-    cciHashTable_t *processed = NewHashTable(AdmGraphSize(G));
     cciValue_t v;
     admSimpleNode_t *this = NULL;
-    admSimpleNode_t *conn = NULL;
+    admSimpleEdge_t *conn = NULL;
+    admSimpleNode_t *connected = NULL;
     size_t nconns = 0;
-
     Enqueue(Q, newPointer(n));
     while (! CCIQueueEmpty(Q)) {
         v = Dequeue(Q);
         this = GETPOINTER(v, admSimpleNode_t);
-        visitor(this);
-
+        if (nodeVisitor) {
+            nodeVisitor(this);
+        }
+        ISet(discovered, (uint64_t)this, newPointer(this));
         nconns = AdmNumToNodes(this);
         for (size_t i=0; i<nconns; ++i) {
-            conn = AdmToNode(this, i);
-            Enqueue(Q, newPointer(conn));
+            conn = AdmEdge(this, i);
+            connected = AdmEdgeTo(conn);
+            if (connVisitor) {
+                connVisitor(conn);
+            }
+            if (ISVALID(IGet(discovered, (uint64_t)connected))) {
+                // circular dependency detected
+                continue;
+            }
+            Enqueue(Q, newPointer(connected));
         }
     }
-
     DeleteCCIQueue(Q);
     DeleteHashTable(discovered);
-    DeleteHashTable(processed);
 }
 
 ///////////////////////////////////////////////
@@ -205,14 +264,14 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf, size_t sz) {
         if (extractLabels(AdmLineAsString(l), "->", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
             this = GetOrCreateLabelledNode(G, label);
             to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
-            AlEmplaceBack(this->to, newPointer(to_));
+            AdmConnectTo(this, to_);
         }
         // undirected
         else if (extractLabels(AdmLineAsString(l), "--", label, label + MAX_LABEL_LENGTH, MAX_LABEL_LENGTH - 1)) {
             this = GetOrCreateLabelledNode(G, label);
             to_ = GetOrCreateLabelledNode(G, label + MAX_LABEL_LENGTH);
-            AlEmplaceBack(this->to, newPointer(to_));
-            AlEmplaceBack(to_->to, newPointer(this));
+            AdmConnectTo(this, to_);
+            AdmConnectTo(to_, this);
         }
     }
     AdmDeleteLine(l);

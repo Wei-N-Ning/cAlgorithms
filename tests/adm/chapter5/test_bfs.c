@@ -3,6 +3,7 @@
 //
 
 #include <assert.h>
+#include <stdio.h>
 
 #include <admSimpleGraph.h>
 
@@ -17,14 +18,34 @@ static void addWeightVisitor(admSimpleNode_t *n) {
     (*weightHandle)++;
 }
 
-void test_minimalBFS() {
+static void printConnectionVisitor(admSimpleEdge_t *e) {
+    printf("%s->%s\n", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
+}
+
+void test_minimalBFSExpectNodesVisited() {
     admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "C");
     assert(0 == *AdmWeightHandle(GetLabelledNode(G, "C")));
     assert(0 == *AdmWeightHandle(GetLabelledNode(G, "D")));
-    AdmGraphBFS(G, start, addWeightVisitor);
+    AdmGraphBFS(G, start, addWeightVisitor, NULL);
     assert(1 == *AdmWeightHandle(GetLabelledNode(G, "C")));
     assert(1 == *AdmWeightHandle(GetLabelledNode(G, "D")));
+    DeleteAdmSimpleGraph(G);
+}
+
+const char *s_dumbGraphCircularDependency = \
+"A->B\n"
+"B->C\n"
+"A->C\n"
+"C->A\n"
+;
+
+void test_expectAllNodesVisitedOnlyOnce() {
+    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleNode_t *start = GetLabelledNode(G, "C");
+    AdmGraphBFS(G, start, addWeightVisitor, printConnectionVisitor);
+    assert(1 == *AdmWeightHandle(GetLabelledNode(G, "A")));
+    assert(1 == *AdmWeightHandle(GetLabelledNode(G, "C")));
     DeleteAdmSimpleGraph(G);
 }
 
