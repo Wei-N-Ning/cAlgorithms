@@ -1,0 +1,70 @@
+//
+// Created by wein on 4/5/18.
+//
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#include <admSimpleGraph.h>
+#include <admToStr.h>
+
+static admSimpleGraph_t *createGraph(size_t workload, admSimpleNode_t **start) {
+    size_t nbuf = 32;
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(workload);
+    admSimpleNode_t *n = NULL;
+    admSimpleNode_t **arr = malloc(workload * sizeof(admSimpleNode_t *));
+    char buf[32];
+    memset(buf, 0, nbuf);
+    for (uint64_t i=0; i<workload; ++i) {
+        BytesToUniqueString(i * 2 + 1, buf, nbuf);
+        n = GetOrCreateLabelledNode(G, buf);
+        arr[i] = n;
+    }
+    for (size_t i=0; i<workload; ++i) {
+        n = arr[i];
+        for (size_t idx = 0; idx<workload; idx = idx * 2 + 1) {
+            AdmConnectTo(n, arr[(idx + 1 + i) % workload]);
+        }
+    }
+    (*start) = arr[0];
+    free(arr);
+    return G;
+}
+
+static void _visitNode(admSimpleNode_t *n) {
+    ;
+}
+
+static void _visitConn(admSimpleEdge_t *e) {
+    ;
+}
+
+static void _BFS(admSimpleGraph_t *G, admSimpleNode_t *start) {
+    cciHashTable_t *BFSTree = NewHashTable(AdmGraphSize(G));
+    AdmGraphBFS(G, start, BFSTree, _visitNode, _visitConn);
+    DeleteHashTable(BFSTree);
+}
+
+int main(int argc, char **argv) {
+    size_t workloads[] = {10, 20, 50, 100, 500, 1000, 2000, 5000};
+    size_t workload = 0;
+    admSimpleGraph_t *G = NULL;
+    admSimpleNode_t *start = NULL;
+    clock_t s, e;
+    double msec;
+    printf("# NumElements Time\n");
+    for (size_t i=0; i<sizeof(workloads); ++i) {
+        workload = workloads[i];
+        G = createGraph(workload, &start);
+        s = clock();
+        _BFS(G, start);
+        e = clock();
+        msec = e - s;
+        printf("%d %f\n", (int)workload, msec);
+        DeleteAdmSimpleGraph(G);
+    }
+    return 0;
+}
