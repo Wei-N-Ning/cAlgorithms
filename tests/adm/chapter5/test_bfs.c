@@ -47,6 +47,9 @@ const char *s_dumbGraphCircularDependency = \
 "A->D\n"
 ;
 
+// C->A
+// C->D
+// A->B
 void test_expectAllNodesVisitedOnlyOnce() {
     admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "C");

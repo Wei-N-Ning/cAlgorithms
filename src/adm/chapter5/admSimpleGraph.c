@@ -15,6 +15,7 @@
 #include <cciHashTable.h>
 #include <cciArrayList.h>
 #include <cciQueue.h>
+#include <cciStack.h>
 
 struct AdmSimpleNode {
     char label[MAX_LABEL_LENGTH];
@@ -120,6 +121,7 @@ size_t AdmSNDegree(admSimpleNode_t *n) {
 struct AdmSimpleGraph {
     cciHashTable_t *nodeByLabel;
     size_t size;
+    size_t capacity;
 };
 
 static void killerVisitor(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
@@ -129,10 +131,10 @@ static void killerVisitor(size_t index, size_t slotPos, cciValue_t *k, cciValue_
     }
 }
 
-admSimpleGraph_t *CreateAdmSimpleGraph(size_t sz) {
+admSimpleGraph_t *CreateAdmSimpleGraph(size_t capacity) {
     admSimpleGraph_t *G = malloc(sizeof(admSimpleGraph_t));
     G->size = 0;
-    G->nodeByLabel = NewHashTable(sz);
+    G->nodeByLabel = NewHashTable(capacity);
     return G;
 }
 
@@ -140,9 +142,6 @@ admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k) {
     admSimpleNode_t *n = GETPOINTER(IGet(G->nodeByLabel, k), admSimpleNode_t);
     if (n) {
         return n;
-    }
-    if (G->size >= MAX_GRAPH_SIZE) {
-        return NULL;
     }
     n = CreateAdmSimpleNode();
     n->weight = k;
@@ -155,9 +154,6 @@ admSimpleNode_t * GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label
     admSimpleNode_t *n = GETPOINTER(SGet(G->nodeByLabel, label), admSimpleNode_t);
     if (n) {
         return n;
-    }
-    if (G->size >= MAX_GRAPH_SIZE) {
-        return NULL;
     }
     n = CreateAdmSimpleNode();
     size_t sz = strlen(label);
@@ -264,25 +260,50 @@ void AdmGraphDFS(admSimpleGraph_t *G,
                  admDFSState_t *DFSState,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor) {
-    size_t nconns = AdmNumToNodes(start);
+    size_t nconns = 0;
+    admSimpleNode_t *this = NULL;
     admSimpleNode_t *connected = NULL;
-    ISet(DFSState->Entries, (uint64_t)start, newInt(DFSState->time++));
-    if (nodeVisitor) {
-        nodeVisitor(start);
-    }
-    for (size_t i=0; i<nconns; ++i) {
-        connected = AdmToNode(start, i);
-        if (ISVALID(IGet(DFSState->Entries, (uint64_t)connected))) {
-            // circular dependency detected
-            continue;
+    cciArrayList_t *discovered = AlNew();  // makeshift stack
+    cciArrayList_t *toProcess = AlNew();  // to distinguish discovered from processed
+    AlReserve(discovered, AdmGraphSize(G));
+    AlReserve(toProcess, AdmGraphSize(G));
+    size_t numToProcess = 0;
+
+    cciValue_t v;
+    AlEmplaceBack(discovered, newPointer(start));
+
+    while(discovered->size) {
+        v = AlPopBack(discovered);
+        this = GETPOINTER(v, admSimpleNode_t);
+        ISet(DFSState->Entries, (uint64_t)this, newInt(DFSState->time++));
+        nconns = AdmNumToNodes(this);
+        for (size_t i=0; i<nconns; ++i) {
+            connected = AdmToNode(this, i);
+            v = IGet(DFSState->Entries, (uint64_t)connected);
+            if (ISVALID(v)) {
+                // circular dependency detected
+                continue;
+            }
+            if (connVisitor) {
+                connVisitor(AdmEdge(this, i));
+            }
+            ISet(DFSState->DFSTree, (uint64_t)connected, newPointer(this));
+            AlEmplaceBack(discovered, newPointer(connected));
         }
-        if (connVisitor) {
-            connVisitor(AdmEdge(start, i));
-        }
-        ISet(DFSState->DFSTree, (uint64_t)connected, newPointer(start));
-        AdmGraphDFS(G, connected, DFSState, nodeVisitor, connVisitor);
+        AlEmplaceBack(toProcess, newPointer(this));
     }
-    ISet(DFSState->Exits, (uint64_t)start, newInt(DFSState->time++));
+    numToProcess = toProcess->size;
+    for (size_t i=numToProcess; i--; ) {
+        v = AlGet(toProcess, i);
+        this = GETPOINTER(v, admSimpleNode_t);
+        if (nodeVisitor) {
+            nodeVisitor(this);
+        }
+        ISet(DFSState->Exits, (uint64_t)this, newInt(DFSState->time++));
+    }
+
+    AlDelete(toProcess);
+    AlDelete(discovered);
 }
 
 ///////////////////////////////////////////////
@@ -303,7 +324,7 @@ static int extractLabels(const char *str, const char *token, char *o_first, char
 }
 
 admSimpleGraph_t *CreateGraphFromString(const char *buf, size_t sz) {
-    admSimpleGraph_t *G = CreateAdmSimpleGraph((sz ? sz : MAX_GRAPH_SIZE));
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(sz);
     struct AdmLine *l = AdmCreateStringReader();
     char label[MAX_LABEL_LENGTH * 2];
     admSimpleNode_t *this = NULL;

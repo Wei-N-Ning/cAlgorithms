@@ -11,7 +11,6 @@
 #include <cciHashTable.h>
 
 #define MAX_LABEL_LENGTH 16
-#define MAX_GRAPH_SIZE 4096
 
 struct AdmSimpleNode;
 typedef struct AdmSimpleNode admSimpleNode_t;
@@ -38,7 +37,7 @@ size_t AdmSNDegree(admSimpleNode_t *n);
 
 //////////////////////////////////////////////
 
-admSimpleGraph_t *CreateAdmSimpleGraph(size_t sz);
+admSimpleGraph_t *CreateAdmSimpleGraph(size_t capacity);
 admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k);
 admSimpleNode_t *GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label);
 admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, uint64_t k);

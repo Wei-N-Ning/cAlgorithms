@@ -14,4 +14,5 @@ add_tinytest_executable(admSimpleGraphDFSTests test_dfs.c)
 target_link_libraries(admSimpleGraphDFSTests admChapter5)
 add_test(NAME "ADM::Chapter5::SimpleGraphDFSTests" COMMAND admSimpleGraphDFSTests)
 
-
+add_executable(admSimpleGraphDFSProf test_dfs_prof.c)
+target_link_libraries(admSimpleGraphDFSProf admChapter5)

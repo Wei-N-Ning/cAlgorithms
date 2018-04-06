@@ -1,6 +1,3 @@
-//
-// Created by wein on 4/5/18.
-//
 
 #include <stddef.h>
 #include <stdio.h>
@@ -42,14 +39,20 @@ static void _visitConn(admSimpleEdge_t *e) {
     ;
 }
 
-static void _BFS(admSimpleGraph_t *G, admSimpleNode_t *start) {
-    cciHashTable_t *BFSTree = NewHashTable(AdmGraphSize(G));
-    AdmGraphBFS(G, start, BFSTree, _visitNode, _visitConn);
-    DeleteHashTable(BFSTree);
+static void _DFS(admSimpleGraph_t *G, admSimpleNode_t *start, size_t sz) {
+    admDFSState_t *state = CreateDFSState(sz);
+    AdmGraphDFS(G, start, state, _visitNode, _visitConn);
+    DeleteDFSState(state);
 }
 
 int main(int argc, char **argv) {
-    size_t workloads[] = {10, 20, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000};
+    size_t workloads[] = {
+        100, 500, 1000, 5000,
+//        10000,
+//        50000,
+//        100000,
+//        500000
+    };
     size_t workload = 0;
     admSimpleGraph_t *G = NULL;
     admSimpleNode_t *start = NULL;
@@ -60,7 +63,7 @@ int main(int argc, char **argv) {
         workload = workloads[i];
         G = createGraph(workload, &start);
         s = clock();
-        _BFS(G, start);
+        _DFS(G, start, workload);
         e = clock();
         msec = e - s;
         printf("%d %f\n", (int)workload, msec);
