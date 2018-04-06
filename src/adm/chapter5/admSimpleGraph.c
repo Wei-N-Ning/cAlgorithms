@@ -243,6 +243,48 @@ void AdmGraphBFS(admSimpleGraph_t *G,
     DeleteHashTable(discovered);
 }
 
+admDFSState_t *CreateDFSState(size_t sz) {
+    admDFSState_t *state = malloc(sizeof(admDFSState_t));
+    state->DFSTree = NewHashTable(sz);
+    state->Entries = NewHashTable(sz);
+    state->Exits = NewHashTable(sz);
+    state->time = 0;
+    return state;
+}
+
+void DeleteDFSState(admDFSState_t *state) {
+    DeleteHashTable(state->DFSTree);
+    DeleteHashTable(state->Entries);
+    DeleteHashTable(state->Exits);
+    free(state);
+}
+
+void AdmGraphDFS(admSimpleGraph_t *G,
+                 admSimpleNode_t *start,
+                 admDFSState_t *DFSState,
+                 admNodeVisitor_t nodeVisitor,
+                 admConnVisitor_t connVisitor) {
+    size_t nconns = AdmNumToNodes(start);
+    admSimpleNode_t *connected = NULL;
+    ISet(DFSState->Entries, (uint64_t)start, newInt(DFSState->time++));
+    if (nodeVisitor) {
+        nodeVisitor(start);
+    }
+    for (size_t i=0; i<nconns; ++i) {
+        connected = AdmToNode(start, i);
+        if (ISVALID(IGet(DFSState->Entries, (uint64_t)connected))) {
+            // circular dependency detected
+            continue;
+        }
+        if (connVisitor) {
+            connVisitor(AdmEdge(start, i));
+        }
+        ISet(DFSState->DFSTree, (uint64_t)connected, newPointer(start));
+        AdmGraphDFS(G, connected, DFSState, nodeVisitor, connVisitor);
+    }
+    ISet(DFSState->Exits, (uint64_t)start, newInt(DFSState->time++));
+}
+
 ///////////////////////////////////////////////
 
 static int extractLabels(const char *str, const char *token, char *o_first, char *o_second, int size) {

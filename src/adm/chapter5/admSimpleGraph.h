@@ -72,6 +72,24 @@ void AdmGraphBFS(admSimpleGraph_t *G,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor);
 
+struct AdmDFSState {
+    cciHashTable_t *DFSTree;
+    cciHashTable_t *Entries;
+    cciHashTable_t *Exits;
+    size_t time;
+};
+
+typedef struct AdmDFSState admDFSState_t;
+
+admDFSState_t *CreateDFSState(size_t sz);
+void DeleteDFSState(admDFSState_t *state);
+
+void AdmGraphDFS(admSimpleGraph_t *G,
+                 admSimpleNode_t *start,
+                 admDFSState_t *DFSState,
+                 admNodeVisitor_t nodeVisitor,
+                 admConnVisitor_t connVisitor);
+
 //////////////// utilities ///////////////////
 
 admSimpleGraph_t *CreateGraphFromString(const char *str, size_t sz);
