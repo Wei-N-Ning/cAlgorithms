@@ -38,7 +38,7 @@ void test_minimalBFSExpectNodesVisited() {
     DeleteAdmSimpleGraph(G);
 }
 
-const char *s_dumbGraphCircularDependency = \
+const char *s_minimal = \
 "A->B\n"
 "B->C\n"
 "A->C\n"
@@ -51,7 +51,7 @@ const char *s_dumbGraphCircularDependency = \
 // C->D
 // A->B
 void test_expectAllNodesVisitedOnlyOnce() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "C");
     AdmGraphBFS(G, start, NULL, addWeightVisitor, printConnectionVisitor);
     assert(1 == *AdmWeightHandle(GetLabelledNode(G, "A")));
@@ -61,7 +61,7 @@ void test_expectAllNodesVisitedOnlyOnce() {
 
 void test_expectShortestPathViaBFSTree() {
     // expecting A->D
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     cciHashTable_t *BFSTree = NewHashTable(8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *expected = GetLabelledNode(G, "D");

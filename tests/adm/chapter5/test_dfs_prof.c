@@ -48,10 +48,10 @@ static void _DFS(admSimpleGraph_t *G, admSimpleNode_t *start, size_t sz) {
 int main(int argc, char **argv) {
     size_t workloads[] = {
         100, 500, 1000, 5000,
-//        10000,
-//        50000,
-//        100000,
-//        500000
+        10000,
+        50000,
+        100000,
+        500000
     };
     size_t workload = 0;
     admSimpleGraph_t *G = NULL;
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
         workload = workloads[i];
         G = createGraph(workload, &start);
         s = clock();
-        _DFS(G, start, workload);
+        _DFS(G, start, AdmGraphSize(G));
         e = clock();
         msec = e - s;
         printf("%d %f\n", (int)workload, msec);

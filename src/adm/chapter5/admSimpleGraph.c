@@ -224,8 +224,9 @@ void AdmGraphBFS(admSimpleGraph_t *G,
             if (ISVALID(IGet(discovered, (uint64_t)connected))) {
                 // circular dependency detected
                 continue;
+            } else {
+                ISet(discovered, (uint64_t)connected, newInt(1));
             }
-            ISet(discovered, (uint64_t)connected, newPointer(connected));
             if (connVisitor) {
                 connVisitor(conn);
             }
@@ -261,49 +262,55 @@ void AdmGraphDFS(admSimpleGraph_t *G,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor) {
     size_t nconns = 0;
+    size_t nnodes = AdmGraphSize(G);
     admSimpleNode_t *this = NULL;
+    admSimpleEdge_t *conn = NULL;
     admSimpleNode_t *connected = NULL;
-    cciArrayList_t *discovered = AlNew();  // makeshift stack
-    cciArrayList_t *toProcess = AlNew();  // to distinguish discovered from processed
-    AlReserve(discovered, AdmGraphSize(G));
-    AlReserve(toProcess, AdmGraphSize(G));
-    size_t numToProcess = 0;
+    cciArrayList_t *stackEarlyProcessing = AlNew();
+    cciArrayList_t *stackLateProcessing = AlNew();
+    cciHashTable_t *discovered = NewHashTable(AdmGraphSize(G));
 
-    cciValue_t v;
-    AlEmplaceBack(discovered, newPointer(start));
+    AlReserve(stackEarlyProcessing, nnodes);
+    AlReserve(stackLateProcessing, nnodes);
+    AlEmplaceBack(stackEarlyProcessing, newPointer(start));
+    ISet(discovered, (uint64_t)start, newInt(1));
 
-    while(discovered->size) {
-        v = AlPopBack(discovered);
-        this = GETPOINTER(v, admSimpleNode_t);
+    while(stackEarlyProcessing->size) {
+        this = GETPOINTER(AlPopBack(stackEarlyProcessing), admSimpleNode_t);
+        // early node visitor is called here
+
         ISet(DFSState->Entries, (uint64_t)this, newInt(DFSState->time++));
         nconns = AdmNumToNodes(this);
         for (size_t i=0; i<nconns; ++i) {
-            connected = AdmToNode(this, i);
-            v = IGet(DFSState->Entries, (uint64_t)connected);
-            if (ISVALID(v)) {
+            conn = AdmEdge(this, i);
+            connected = AdmEdgeTo(conn);
+            if (ISVALID(IGet(discovered, (uint64_t)connected))) {
                 // circular dependency detected
                 continue;
+            } else {
+                ISet(discovered, (uint64_t)connected, newInt(1));
             }
             if (connVisitor) {
-                connVisitor(AdmEdge(this, i));
+                connVisitor(conn);
             }
             ISet(DFSState->DFSTree, (uint64_t)connected, newPointer(this));
-            AlEmplaceBack(discovered, newPointer(connected));
+            AlEmplaceBack(stackEarlyProcessing, newPointer(connected));
         }
-        AlEmplaceBack(toProcess, newPointer(this));
+
+        AlEmplaceBack(stackLateProcessing, newPointer(this));
     }
-    numToProcess = toProcess->size;
-    for (size_t i=numToProcess; i--; ) {
-        v = AlGet(toProcess, i);
-        this = GETPOINTER(v, admSimpleNode_t);
+
+    while(stackLateProcessing->size) {
+        this = GETPOINTER(AlPopBack(stackLateProcessing), admSimpleNode_t);
         if (nodeVisitor) {
             nodeVisitor(this);
         }
         ISet(DFSState->Exits, (uint64_t)this, newInt(DFSState->time++));
     }
 
-    AlDelete(toProcess);
-    AlDelete(discovered);
+    DeleteHashTable(discovered);
+    AlDelete(stackEarlyProcessing);
+    AlDelete(stackLateProcessing);
 }
 
 ///////////////////////////////////////////////

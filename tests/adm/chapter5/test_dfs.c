@@ -34,7 +34,7 @@ void test_minimalDFSExpectNodesVisited() {
     DeleteAdmSimpleGraph(G);
 }
 
-const char *s_dumbGraphCircularDependency = \
+const char *s_minimal = \
 "A->B\n"
 "B->C\n"
 "A->C\n"
@@ -47,7 +47,7 @@ const char *s_dumbGraphCircularDependency = \
 // A->C
 // A->D
 void test_expectEdgesVisited() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admDFSState_t *state = CreateDFSState(8);
     AdmGraphDFS(G, start, state, NULL, printConnectionVisitor);
@@ -56,7 +56,7 @@ void test_expectEdgesVisited() {
 }
 
 void test_expectDFSTreePopulated() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *sut = GetLabelledNode(G, "B");
     admDFSState_t *state = CreateDFSState(8);
@@ -80,7 +80,7 @@ void test_expectDFSTreePopulated() {
 }
 
 void test_expectEntriesMapPopulated() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *sut = GetLabelledNode(G, "B");
     admDFSState_t *state = CreateDFSState(8);
@@ -98,7 +98,7 @@ void test_expectEntriesMapPopulated() {
 }
 
 void test_expectExitsMapPopulated() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraphCircularDependency, 8);
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *sut = GetLabelledNode(G, "B");
     admDFSState_t *state = CreateDFSState(8);

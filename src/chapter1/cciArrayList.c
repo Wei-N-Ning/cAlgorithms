@@ -78,6 +78,9 @@ void AlReserve(cciArrayList_t *al, size_t newCapacity) {
 }
 
 cciValue_t AlPopBack(cciArrayList_t *al) {
+    if (! al->size) {
+        return invalid();
+    }
     return al->store[(al->size--) - 1];
 }
 // 0       4       8
