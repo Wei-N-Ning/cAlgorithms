@@ -245,6 +245,8 @@ admDFSState_t *CreateDFSState(size_t sz) {
     state->DFSTree = NewHashTable(sz);
     state->Entries = NewHashTable(sz);
     state->Exits = NewHashTable(sz);
+    state->TreeEdges = AlNew();
+    state->BackEdges = AlNew();
     state->time = 0;
     return state;
 }
@@ -253,6 +255,8 @@ void DeleteDFSState(admDFSState_t *state) {
     DeleteHashTable(state->DFSTree);
     DeleteHashTable(state->Entries);
     DeleteHashTable(state->Exits);
+    AlDelete(state->TreeEdges);
+    AlDelete(state->BackEdges);
     free(state);
 }
 
@@ -264,8 +268,10 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     admSimpleNode_t *this = NULL;
     admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
+    cciValue_t u, v;
     cciArrayList_t *earlyStack = AlNew();
     cciArrayList_t *lateStack = AlNew();
+    cciArrayList_t *nonTreeEdges = AlNew();
     AlEmplaceBack(earlyStack, newPointer(start));
     ISet(state->Entries, (uint64_t)start, newInt(state->time++));
     while (earlyStack->size) {
@@ -279,14 +285,25 @@ void AdmGraphDFS(admSimpleGraph_t *G,
             conn = AdmEdge(this, i);
             connected = AdmEdgeTo(conn);
             if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
+                AlEmplaceBack(nonTreeEdges, newPointer(conn));
                 continue;
             }
             if (connVisitor) {
                 connVisitor(conn);
             }
+            AlEmplaceBack(state->TreeEdges, newPointer(conn));
             ISet(state->Entries, (uint64_t)connected, newInt(state->time++));
             ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
             AlEmplaceBack(earlyStack, newPointer(connected));
+        }
+    }
+    for (size_t i=0; i<nonTreeEdges->size; ++i) {
+        u = AlGet(nonTreeEdges, i);
+        conn = GETPOINTER(u, admSimpleEdge_t);
+        v = IGet(state->DFSTree, (uint64_t)(conn->from));
+        this = GETPOINTER(v, admSimpleNode_t);
+        if (conn->to == this) {
+            AlEmplaceBack(state->BackEdges, u);
         }
     }
     for (size_t i=lateStack->size; i-- ; ) {
@@ -295,6 +312,7 @@ void AdmGraphDFS(admSimpleGraph_t *G,
         this = GETPOINTER(AlGet(lateStack, i), admSimpleNode_t);
         ISet(state->Exits, (uint64_t)this, newInt(state->time++));
     }
+    AlDelete(nonTreeEdges);
     AlDelete(lateStack);
     AlDelete(earlyStack);
 }

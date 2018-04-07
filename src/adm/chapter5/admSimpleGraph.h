@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include <cciHashTable.h>
+#include <cciArrayList.h>
 
 #define MAX_LABEL_LENGTH 16
 
@@ -75,6 +76,8 @@ struct AdmDFSState {
     cciHashTable_t *DFSTree;
     cciHashTable_t *Entries;
     cciHashTable_t *Exits;
+    cciArrayList_t *TreeEdges;
+    cciArrayList_t *BackEdges;
     size_t time;
 };
 
