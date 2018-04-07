@@ -92,6 +92,12 @@ void AdmGraphDFS(admSimpleGraph_t *G,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor);
 
+void AdmGraphRecurDFS(admSimpleGraph_t *G,
+                      admSimpleNode_t *start,
+                      admDFSState_t *state,
+                      admNodeVisitor_t nodeVisitor,
+                      admConnVisitor_t connVisitor);
+
 //////////////// utilities ///////////////////
 
 admSimpleGraph_t *CreateGraphFromString(const char *str, size_t sz);

@@ -317,6 +317,14 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     AlDelete(earlyStack);
 }
 
+void AdmGraphRecurDFS(admSimpleGraph_t *G,
+                      admSimpleNode_t *start,
+                      admDFSState_t *state,
+                      admNodeVisitor_t nodeVisitor,
+                      admConnVisitor_t connVisitor) {
+    ;
+}
+
 ///////////////////////////////////////////////
 
 static int extractLabels(const char *str, const char *token, char *o_first, char *o_second, int size) {
