@@ -157,6 +157,23 @@ cciValue_t IGet(cciHashTable_t *tb, uint64_t key) {
     return invalid();
 }
 
+cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
+    size_t index = hashInt(key) % tb->size;
+    cciList_t *l = tb->slots[index].l;
+    cciValue_t svalue;
+    if (l->size) {
+        for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
+            svalue = Get(l, slotPos);
+            if (key == GETINT(svalue)) {
+                return GetR(l, slotPos+1);
+            }
+        }
+    }
+    tb->nkeys += 1;
+    Append(l, newInt(key));
+    return AppendR(l, invalid());
+}
+
 cciValue_t IPop(cciHashTable_t *tb, uint64_t key) {
     size_t index = hashInt(key) % tb->size;
     cciList_t *l = tb->slots[index].l;

@@ -270,13 +270,19 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
     cciValue_t u, v;
+    cciValue_t *p;
     cciArrayList_t *earlyStack = AlNew();
     cciArrayList_t *lateStack = AlNew();
     cciArrayList_t *nonTreeEdges = AlNew();
     AlEmplaceBack(earlyStack, newPointer(start));
-    ISet(state->Entries, (uint64_t)start, newInt(state->time++));
+
     while (earlyStack->size) {
         this = GETPOINTER(AlPopBack(earlyStack), admSimpleNode_t);
+        p = IGetOrCreate(state->Entries, (uint64_t)this);
+        if (ISVALID((*p))) {
+            continue;
+        }
+        SETINT((*p), state->time++);
         // early processing
         if (nodeVisitor) {
             nodeVisitor(this);
@@ -293,7 +299,6 @@ void AdmGraphDFS(admSimpleGraph_t *G,
                 connVisitor(conn);
             }
             AlEmplaceBack(state->TreeEdges, newPointer(conn));
-            ISet(state->Entries, (uint64_t)connected, newInt(state->time++));
             ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
             AlEmplaceBack(earlyStack, newPointer(connected));
         }

@@ -99,6 +99,17 @@ void Append(cciList_t *l, cciValue_t v) {
     }
 }
 
+cciValue_t *AppendR(cciList_t *l, cciValue_t v) {
+    cciListNode_t *n = createNode();
+    n->value = v;
+    if (l->size == 0) {
+        insert(l, NULL, n, NULL);
+    } else {
+        insert(l, l->tail, n, NULL);
+    }
+    return &(n->value);
+}
+
 void Set(cciList_t *l, size_t index, cciValue_t value) {
     cciListNode_t *n = node(l, index);
     n->value = value;
@@ -110,6 +121,14 @@ cciValue_t Get(cciList_t *l, size_t index) {
         return node(l, index)->value;
     }
     return invalid();
+}
+
+cciValue_t *GetR(cciList_t *l, size_t index) {
+    l->errCode = validateIndex(l, index);
+    if (!l->errCode) {
+        return &(node(l, index)->value);
+    }
+    return NULL;
 }
 
 void Insert(cciList_t *l, size_t index, cciValue_t value) {

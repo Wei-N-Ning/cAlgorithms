@@ -118,10 +118,10 @@ void test_expectDFSTreePopulated() {
     assert(A == GETPOINTER(v, admSimpleNode_t));
 
     v = IGet(state->DFSTree, (uint64_t )C);
-    assert(A == GETPOINTER(v, admSimpleNode_t));
+    assert(B == GETPOINTER(v, admSimpleNode_t));
 
     v = IGet(state->DFSTree, (uint64_t )D);
-    assert(A == GETPOINTER(v, admSimpleNode_t));
+    assert(C == GETPOINTER(v, admSimpleNode_t));
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
@@ -141,10 +141,10 @@ void test_expectEntriesMapPopulated() {
     assert(GETINT(v) == 0);
 
     v = IGet(state->Entries, (uint64_t)B);
-    assert(GETINT(v) == 3);
+    assert(GETINT(v) == 1);
 
     v = IGet(state->Entries, (uint64_t)D);
-    assert(GETINT(v) == 1);
+    assert(GETINT(v) == 3);
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
@@ -164,10 +164,10 @@ void test_expectExitsMapPopulated() {
     admSimpleNode_t *D = GetLabelledNode(G, "D");
     admDFSState_t *state = CreateDFSState(8);
     AdmGraphDFS(G, A, state, NULL, NULL);
-    assert(1 == numDescendants(state, D));
+    assert(0 == numDescendants(state, D));
     assert(1 == numDescendants(state, C));
     assert(3 == numDescendants(state, A));
-    assert(1 == numDescendants(state, B));
+    assert(2 == numDescendants(state, B));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }

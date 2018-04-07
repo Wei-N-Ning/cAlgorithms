@@ -82,24 +82,23 @@ void test_simpleUndirectGraphExpectNodeOrder() {
 
 void test_proceduralGraphExpectNodeOrder() {
     admSimpleNode_t *start = NULL;
-    size_t size = 4;
+    size_t size = 184;
     admSimpleGraph_t *G = CreateProceduralGraph(size, &start);
     admDFSState_t *state = NULL;
 
     // iterative dfs
     state = CreateDFSState(size);
-    AdmGraphDFS(G, start, state, printNodeToBufA, printConnectionVisitor);
+    AdmGraphDFS(G, start, state, printNodeToBufA, NULL);
     DeleteDFSState(state);
 
     // recursive dfs
     state = CreateDFSState(size);
-    AdmGraphRecurDFS(G, start, state, printNodeToBufB, printConnectionVisitor);
+    AdmGraphRecurDFS(G, start, state, printNodeToBufB, NULL);
     DeleteDFSState(state);
 
     DeleteAdmSimpleGraph(G);
 
-    printf("(%s)(%s)", bufA, bufB);
-//    assert(0 == strcmp(bufA, bufB));
+    assert(0 == strcmp(bufA, bufB));
 }
 
 int main(int argc, char **argv) {

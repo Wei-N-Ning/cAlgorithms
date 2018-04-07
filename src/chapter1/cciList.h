@@ -26,7 +26,13 @@ void DeleteList(cciList_t *l);
 
 void Append(cciList_t *l, cciValue_t value);
 
+// returns a pointer to the value in the list
+cciValue_t *AppendR(cciList_t *l, cciValue_t value);
+
 cciValue_t Get(cciList_t *l, size_t index);
+
+// returns a pointer to the value in the list
+cciValue_t *GetR(cciList_t *l, size_t index);
 
 void Set(cciList_t *l, size_t index, cciValue_t value);
 

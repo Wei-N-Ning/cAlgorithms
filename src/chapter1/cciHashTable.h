@@ -19,6 +19,7 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key);
 
 void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value);
 cciValue_t IGet(cciHashTable_t *tb, uint64_t key);
+cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key);
 cciValue_t IPop(cciHashTable_t *tb, uint64_t key);
 
 size_t HashTableNumKeys(cciHashTable_t *tb);
