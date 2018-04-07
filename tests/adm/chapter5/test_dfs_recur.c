@@ -55,8 +55,16 @@ void printNodeToBufA(admSimpleNode_t *n) {
     bufACurr += sprintf(bufACurr, "%s, ", AdmNodeLabel(n));
 }
 
+void printEdgeToBufA(admSimpleEdge_t *e) {
+    bufACurr += sprintf(bufACurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
+}
+
 void printNodeToBufB(admSimpleNode_t *n) {
     bufBCurr += sprintf(bufBCurr, "%s, ", AdmNodeLabel(n));
+}
+
+void printEdgeToBufB(admSimpleEdge_t *e) {
+    bufBCurr += sprintf(bufBCurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
 
 void test_simpleUndirectGraphExpectNodeOrder() {
@@ -72,6 +80,27 @@ void test_simpleUndirectGraphExpectNodeOrder() {
     // recursive dfs
     state = CreateDFSState(10);
     AdmGraphRecurDFS(G, A, state, printNodeToBufB, NULL);
+    DeleteDFSState(state);
+
+    DeleteAdmSimpleGraph(G);
+    printf("(%s)(%s)", bufA, bufB);
+
+    assert(0 == strcmp(bufA, bufB));
+}
+
+void test_simpleUndirectGraphExpectEdgeOrder() {
+    admSimpleGraph_t *G = CreateGraphFromString(s_management, 10);
+    admSimpleNode_t *A = GetLabelledNode(G, "A");
+    admDFSState_t *state = NULL;
+
+    // iterative dfs
+    state = CreateDFSState(10);
+    AdmGraphDFS(G, A, state, NULL, printEdgeToBufA);
+    DeleteDFSState(state);
+
+    // recursive dfs
+    state = CreateDFSState(10);
+    AdmGraphRecurDFS(G, A, state, NULL, printEdgeToBufB);
     DeleteDFSState(state);
 
     DeleteAdmSimpleGraph(G);
