@@ -102,4 +102,6 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
 
 admSimpleGraph_t *CreateGraphFromString(const char *str, size_t sz);
 
+admSimpleGraph_t *CreateProceduralGraph(size_t size, admSimpleNode_t **start);
+
 #endif //CCISOLUTIONSC_ADMSIMPLEGRAPH_H

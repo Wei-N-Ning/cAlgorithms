@@ -2,9 +2,11 @@
 // Created by wein on 4/8/18.
 //
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <admSimpleGraph.h>
 
 void RunTinyTests();
@@ -45,6 +47,10 @@ void tearDown() {
     bufBCurr = NULL;
 }
 
+static void printConnectionVisitor(admSimpleEdge_t *e) {
+    printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
+}
+
 void printNodeToBufA(admSimpleNode_t *n) {
     bufACurr += sprintf(bufACurr, "%s, ", AdmNodeLabel(n));
 }
@@ -53,7 +59,7 @@ void printNodeToBufB(admSimpleNode_t *n) {
     bufBCurr += sprintf(bufBCurr, "%s, ", AdmNodeLabel(n));
 }
 
-void test_nothing() {
+void test_simpleUndirectGraphExpectNodeOrder() {
     admSimpleGraph_t *G = CreateGraphFromString(s_management, 10);
     admSimpleNode_t *A = GetLabelledNode(G, "A");
     admDFSState_t *state = NULL;
@@ -70,6 +76,30 @@ void test_nothing() {
 
     DeleteAdmSimpleGraph(G);
     printf("(%s)(%s)", bufA, bufB);
+
+    assert(0 == strcmp(bufA, bufB));
+}
+
+void test_proceduralGraphExpectNodeOrder() {
+    admSimpleNode_t *start = NULL;
+    size_t size = 4;
+    admSimpleGraph_t *G = CreateProceduralGraph(size, &start);
+    admDFSState_t *state = NULL;
+
+    // iterative dfs
+    state = CreateDFSState(size);
+    AdmGraphDFS(G, start, state, printNodeToBufA, printConnectionVisitor);
+    DeleteDFSState(state);
+
+    // recursive dfs
+    state = CreateDFSState(size);
+    AdmGraphRecurDFS(G, start, state, printNodeToBufB, printConnectionVisitor);
+    DeleteDFSState(state);
+
+    DeleteAdmSimpleGraph(G);
+
+    printf("(%s)(%s)", bufA, bufB);
+//    assert(0 == strcmp(bufA, bufB));
 }
 
 int main(int argc, char **argv) {

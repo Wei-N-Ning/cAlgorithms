@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <admToStr.h>
 #include <admReadline.h>
 #include <cciValue.h>
 #include <cciList.h>
@@ -322,7 +323,25 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
                       admDFSState_t *state,
                       admNodeVisitor_t nodeVisitor,
                       admConnVisitor_t connVisitor) {
-    ;
+    size_t nconns = AdmNumToNodes(start);
+    admSimpleNode_t *connected = NULL;
+    ISet(state->Entries, (uint64_t)start, newInt(state->time++));
+    if (nodeVisitor) {
+        nodeVisitor(start);
+    }
+    for (size_t i=0; i<nconns; ++i) {
+        connected = AdmToNode(start, i);
+        if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
+            // circular dependency detected
+            continue;
+        }
+        if (connVisitor) {
+            connVisitor(AdmEdge(start, i));
+        }
+        ISet(state->DFSTree, (uint64_t)connected, newPointer(start));
+        AdmGraphRecurDFS(G, connected, state, nodeVisitor, connVisitor);
+    }
+    ISet(state->Exits, (uint64_t)start, newInt(state->time++));
 }
 
 ///////////////////////////////////////////////
@@ -368,4 +387,25 @@ admSimpleGraph_t *CreateGraphFromString(const char *buf, size_t sz) {
     return G;
 }
 
-
+admSimpleGraph_t *CreateProceduralGraph(size_t size, admSimpleNode_t **start) {
+    size_t nbuf = 32;
+    admSimpleGraph_t *G = CreateAdmSimpleGraph(size);
+    admSimpleNode_t *n = NULL;
+    admSimpleNode_t **arr = malloc(size * sizeof(admSimpleNode_t *));
+    char buf[32];
+    memset(buf, 0, nbuf);
+    for (uint64_t i=0; i<size; ++i) {
+        BytesToUniqueString(i * 2 + 1, buf, nbuf);
+        n = GetOrCreateLabelledNode(G, buf);
+        arr[i] = n;
+    }
+    for (size_t i=0; i<size; ++i) {
+        n = arr[i];
+        for (size_t idx = 0; idx<size; idx = idx * 2 + 1) {
+            AdmConnectTo(n, arr[(idx + 1 + i) % size]);
+        }
+    }
+    (*start) = arr[0];
+    free(arr);
+    return G;
+}
