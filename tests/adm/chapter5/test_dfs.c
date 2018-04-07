@@ -55,8 +55,8 @@ void test_twoNodes() {
     // entry-exit stats
     assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
     assert(1 == GETINT(IGet(state->Entries, (uint64_t)B)));
-//    assert(2 == GETINT(IGet(state->Exits, (uint64_t)B)));
-//    assert(3 == GETINT(IGet(state->Exits, (uint64_t)A)));
+    assert(2 == GETINT(IGet(state->Exits, (uint64_t)B)));
+    assert(3 == GETINT(IGet(state->Exits, (uint64_t)A)));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
@@ -83,7 +83,7 @@ const char *s_minimal = \
 "D->B\n";
 
 
-void test_expectEdgesVisited() {
+void test_expectNodeVistingOrder() {
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admDFSState_t *state = CreateDFSState(8);
@@ -92,7 +92,16 @@ void test_expectEdgesVisited() {
     DeleteAdmSimpleGraph(G);
 }
 
-void xtest_expectDFSTreePopulated() {
+void test_expectEdgeVisitingOrder() {
+    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
+    admSimpleNode_t *start = GetLabelledNode(G, "A");
+    admDFSState_t *state = CreateDFSState(8);
+    AdmGraphDFS(G, start, state, NULL, printConnectionVisitor);
+    DeleteDFSState(state);
+    DeleteAdmSimpleGraph(G);
+}
+
+void test_expectDFSTreePopulated() {
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *A = GetLabelledNode(G, "A");
     admSimpleNode_t *B = GetLabelledNode(G, "B");
@@ -109,16 +118,16 @@ void xtest_expectDFSTreePopulated() {
     assert(A == GETPOINTER(v, admSimpleNode_t));
 
     v = IGet(state->DFSTree, (uint64_t )C);
-    assert(B == GETPOINTER(v, admSimpleNode_t));
+    assert(A == GETPOINTER(v, admSimpleNode_t));
 
     v = IGet(state->DFSTree, (uint64_t )D);
-    assert(C == GETPOINTER(v, admSimpleNode_t));
+    assert(A == GETPOINTER(v, admSimpleNode_t));
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
 
-void xtest_expectEntriesMapPopulated() {
+void test_expectEntriesMapPopulated() {
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *A = GetLabelledNode(G, "A");
     admSimpleNode_t *B = GetLabelledNode(G, "B");
@@ -135,7 +144,7 @@ void xtest_expectEntriesMapPopulated() {
     assert(GETINT(v) == 3);
 
     v = IGet(state->Entries, (uint64_t)D);
-    assert(GETINT(v) == 6);
+    assert(GETINT(v) == 1);
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
@@ -147,7 +156,7 @@ static int numDescendants(admDFSState_t *state, admSimpleNode_t *n) {
     return (GETINT(v) - GETINT(u)) / 2;
 }
 
-void xtest_expectExitsMapPopulated() {
+void test_expectExitsMapPopulated() {
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *A = GetLabelledNode(G, "A");
     admSimpleNode_t *B = GetLabelledNode(G, "B");
@@ -156,7 +165,9 @@ void xtest_expectExitsMapPopulated() {
     admDFSState_t *state = CreateDFSState(8);
     AdmGraphDFS(G, A, state, NULL, NULL);
     assert(1 == numDescendants(state, D));
-    assert(2 == numDescendants(state, C));
+    assert(1 == numDescendants(state, C));
+    assert(3 == numDescendants(state, A));
+    assert(1 == numDescendants(state, B));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }

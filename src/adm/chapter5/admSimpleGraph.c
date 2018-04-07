@@ -264,14 +264,17 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     admSimpleNode_t *this = NULL;
     admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
-    cciArrayList_t *stack = AlNew();
-    AlEmplaceBack(stack, newPointer(start));
+    cciArrayList_t *earlyStack = AlNew();
+    cciArrayList_t *lateStack = AlNew();
+    AlEmplaceBack(earlyStack, newPointer(start));
     ISet(state->Entries, (uint64_t)start, newInt(state->time++));
-    while (stack->size) {
-        this = GETPOINTER(AlPopBack(stack), admSimpleNode_t);
+    while (earlyStack->size) {
+        this = GETPOINTER(AlPopBack(earlyStack), admSimpleNode_t);
+        // early processing
         if (nodeVisitor) {
             nodeVisitor(this);
         }
+        AlEmplaceBack(lateStack, newPointer(this));
         for (size_t i=AdmNumToNodes(this); i--; ) {
             conn = AdmEdge(this, i);
             connected = AdmEdgeTo(conn);
@@ -283,12 +286,17 @@ void AdmGraphDFS(admSimpleGraph_t *G,
             }
             ISet(state->Entries, (uint64_t)connected, newInt(state->time++));
             ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
-            AlEmplaceBack(stack, newPointer(connected));
+            AlEmplaceBack(earlyStack, newPointer(connected));
         }
     }
-    ISet(state->Exits, (uint64_t)start, newInt(state->time++));
+    for (size_t i=lateStack->size; i-- ; ) {
+        // late processing
 
-    AlDelete(stack);
+        this = GETPOINTER(AlGet(lateStack, i), admSimpleNode_t);
+        ISet(state->Exits, (uint64_t)this, newInt(state->time++));
+    }
+    AlDelete(lateStack);
+    AlDelete(earlyStack);
 }
 
 ///////////////////////////////////////////////
