@@ -18,6 +18,10 @@ static void addWeightVisitor(admSimpleNode_t *n) {
     (*weightHandle)++;
 }
 
+static void printNodeVisitor(admSimpleNode_t *n) {
+    printf("%s ", AdmNodeLabel(n));
+}
+
 static void printConnectionVisitor(admSimpleEdge_t *e) {
     printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
@@ -32,7 +36,7 @@ void test_oneNode() {
     assert(1 == *AdmWeightHandle(A));
     // entry-exit stats
     assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
-//    assert(1 == GETINT(IGet(state->Exits, (uint64_t)A)));
+    assert(1 == GETINT(IGet(state->Exits, (uint64_t)A)));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
@@ -49,15 +53,15 @@ void test_twoNodes() {
     assert(1 == *AdmWeightHandle(A));
     assert(1 == *AdmWeightHandle(B));
     // entry-exit stats
-//    assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
-//    assert(1 == GETINT(IGet(state->Entries, (uint64_t)B)));
+    assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
+    assert(1 == GETINT(IGet(state->Entries, (uint64_t)B)));
 //    assert(2 == GETINT(IGet(state->Exits, (uint64_t)B)));
 //    assert(3 == GETINT(IGet(state->Exits, (uint64_t)A)));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
 
-void xtest_minimalDFSExpectNodesVisited() {
+void test_minimalDFSExpectNodesVisited() {
     admSimpleGraph_t *G = CreateGraphFromString(s_dumbGraph, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *sut = GetLabelledNode(G, "B");
@@ -79,11 +83,11 @@ const char *s_minimal = \
 "D->B\n";
 
 
-void xtest_expectEdgesVisited() {
+void test_expectEdgesVisited() {
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admDFSState_t *state = CreateDFSState(8);
-    AdmGraphDFS(G, start, state, NULL, printConnectionVisitor);
+    AdmGraphDFS(G, start, state, printNodeVisitor, NULL);
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }

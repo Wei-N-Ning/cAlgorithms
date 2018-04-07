@@ -266,24 +266,27 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     admSimpleEdge_t *conn = NULL;
     cciArrayList_t *stack = AlNew();
     AlEmplaceBack(stack, newPointer(start));
+    ISet(state->Entries, (uint64_t)start, newInt(state->time++));
     while (stack->size) {
         this = GETPOINTER(AlPopBack(stack), admSimpleNode_t);
-        ISet(state->Entries, (uint64_t)this, newInt(state->time++));
         if (nodeVisitor) {
             nodeVisitor(this);
         }
         for (size_t i=AdmNumToNodes(this); i--; ) {
             conn = AdmEdge(this, i);
             connected = AdmEdgeTo(conn);
-            if (! ISVALID(IGet(state->Entries, (uint64_t)connected))) {
-                if (connVisitor) {
-                    connVisitor(conn);
-                }
-                ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
-                AlEmplaceBack(stack, newPointer(connected));
+            if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
+                continue;
             }
+            if (connVisitor) {
+                connVisitor(conn);
+            }
+            ISet(state->Entries, (uint64_t)connected, newInt(state->time++));
+            ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
+            AlEmplaceBack(stack, newPointer(connected));
         }
     }
+    ISet(state->Exits, (uint64_t)start, newInt(state->time++));
 
     AlDelete(stack);
 }
