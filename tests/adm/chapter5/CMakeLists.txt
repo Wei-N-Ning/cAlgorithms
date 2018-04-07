@@ -10,9 +10,13 @@ add_test(NAME "ADM::Chapter5::SimpleGraphBFSTests" COMMAND admSimpleGraphBFSTest
 add_executable(admSimpleGraphBFSProf test_bfs_prof.c)
 target_link_libraries(admSimpleGraphBFSProf admChapter5)
 
-add_tinytest_executable(admSimpleGraphDFSTests test_dfs.c)
-target_link_libraries(admSimpleGraphDFSTests admChapter5)
-add_test(NAME "ADM::Chapter5::SimpleGraphDFSTests" COMMAND admSimpleGraphDFSTests)
+add_tinytest_executable(admSimpleGraphIterativeDFSTests test_dfs_iterative.c)
+target_link_libraries(admSimpleGraphIterativeDFSTests admChapter5)
+add_test(NAME "ADM::Chapter5::SimpleGraphIterativeDFSTests" COMMAND admSimpleGraphIterativeDFSTests)
+
+add_tinytest_executable(admSimpleGraphRecurDFSTests test_dfs_recur.c)
+target_link_libraries(admSimpleGraphRecurDFSTests admChapter5)
+add_test(NAME "ADM::Chapter5::SimpleGraphRecurDFSTests" COMMAND admSimpleGraphRecurDFSTests)
 
 add_executable(admSimpleGraphDFSProf test_dfs_prof.c)
 target_link_libraries(admSimpleGraphDFSProf admChapter5)
