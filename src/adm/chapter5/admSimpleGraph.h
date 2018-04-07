@@ -85,7 +85,7 @@ void DeleteDFSState(admDFSState_t *state);
 
 void AdmGraphDFS(admSimpleGraph_t *G,
                  admSimpleNode_t *start,
-                 admDFSState_t *DFSState,
+                 admDFSState_t *state,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor);
 
