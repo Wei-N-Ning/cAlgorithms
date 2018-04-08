@@ -20,3 +20,8 @@ add_test(NAME "ADM::Chapter5::SimpleGraphRecurDFSTests" COMMAND admSimpleGraphRe
 
 add_executable(admSimpleGraphDFSProf test_dfs_prof.c)
 target_link_libraries(admSimpleGraphDFSProf admChapter5)
+
+add_tinytest_executable(admTopologicalSortingTest test_topologicalSorting.c)
+target_link_libraries(admTopologicalSortingTest admChapter5)
+add_test(NAME "ADM::Chapter5::TopologicalSorting" COMMAND admTopologicalSortingTest)
+
