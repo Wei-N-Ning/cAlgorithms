@@ -76,6 +76,7 @@ struct AdmDFSState {
     cciHashTable_t *DFSTree;
     cciHashTable_t *Entries;
     cciHashTable_t *Exits;
+    cciArrayList_t *TreeNodes;
     cciArrayList_t *TreeEdges;
     cciArrayList_t *BackEdges;
     size_t time;
@@ -84,6 +85,7 @@ struct AdmDFSState {
 typedef struct AdmDFSState admDFSState_t;
 
 admDFSState_t *CreateDFSState(size_t sz);
+
 void DeleteDFSState(admDFSState_t *state);
 
 void AdmGraphDFS(admSimpleGraph_t *G,
@@ -97,6 +99,8 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
                       admDFSState_t *state,
                       admNodeVisitor_t nodeVisitor,
                       admConnVisitor_t connVisitor);
+
+int AdmTopoSort(admSimpleGraph_t *G, admSimpleNode_t *start, cciArrayList_t *o_nodes);
 
 //////////////// utilities ///////////////////
 

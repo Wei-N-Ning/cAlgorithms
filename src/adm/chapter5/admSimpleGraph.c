@@ -246,6 +246,7 @@ admDFSState_t *CreateDFSState(size_t sz) {
     state->DFSTree = NewHashTable(sz);
     state->Entries = NewHashTable(sz);
     state->Exits = NewHashTable(sz);
+    state->TreeNodes = AlNew();
     state->TreeEdges = AlNew();
     state->BackEdges = AlNew();
     state->time = 0;
@@ -256,6 +257,7 @@ void DeleteDFSState(admDFSState_t *state) {
     DeleteHashTable(state->DFSTree);
     DeleteHashTable(state->Entries);
     DeleteHashTable(state->Exits);
+    AlDelete(state->TreeNodes);
     AlDelete(state->TreeEdges);
     AlDelete(state->BackEdges);
     free(state);
@@ -303,6 +305,7 @@ void AdmGraphDFS(admSimpleGraph_t *G,
         if (nodeVisitor) {
             nodeVisitor(this);
         }
+        AlEmplaceBack(state->TreeNodes, newPointer(this));
         if (connVisitor && conn->from) {
             connVisitor(conn);
         }
@@ -356,6 +359,7 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
     if (nodeVisitor) {
         nodeVisitor(start);
     }
+    AlEmplaceBack(state->TreeNodes, newPointer(start));
     for (size_t i=0; i<nconns; ++i) {
         conn = AdmEdge(start, i);
         connected = AdmEdgeTo(conn);
@@ -376,6 +380,23 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
         AdmGraphRecurDFS(G, connected, state, nodeVisitor, connVisitor);
     }
     ISet(state->Exits, (uint64_t)start, newInt(state->time++));
+}
+
+
+int AdmTopoSort(admSimpleGraph_t *G, admSimpleNode_t *start, cciArrayList_t *o_nodes) {
+    admDFSState_t *state = CreateDFSState(AdmGraphSize(G));
+    int ok = 0;
+    AdmGraphDFS(G, start, state, NULL, NULL);
+    if (0 == state->BackEdges->size) {
+        ok = 1;
+        if (o_nodes) {
+            for (size_t i=0; i<state->TreeNodes->size; ++i) {
+                AlEmplaceBack(o_nodes, AlGet(state->TreeNodes, i));
+            }
+        }
+    }
+    DeleteDFSState(state);
+    return ok;
 }
 
 ///////////////////////////////////////////////
