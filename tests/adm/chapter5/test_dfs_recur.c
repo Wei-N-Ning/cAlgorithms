@@ -47,23 +47,23 @@ void tearDown() {
     bufBCurr = NULL;
 }
 
-static void printConnectionVisitor(admSimpleEdge_t *e) {
+static void printConnectionVisitor(admSimpleEdge_t *e, admDFSState_t *state) {
     printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
 
-void printNodeToBufA(admSimpleNode_t *n) {
+void printNodeToBufA(admSimpleNode_t *n, admDFSState_t *state) {
     bufACurr += sprintf(bufACurr, "%s, ", AdmNodeLabel(n));
 }
 
-void printEdgeToBufA(admSimpleEdge_t *e) {
+void printEdgeToBufA(admSimpleEdge_t *e, admDFSState_t *state) {
     bufACurr += sprintf(bufACurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
 
-void printNodeToBufB(admSimpleNode_t *n) {
+void printNodeToBufB(admSimpleNode_t *n, admDFSState_t *state) {
     bufBCurr += sprintf(bufBCurr, "%s, ", AdmNodeLabel(n));
 }
 
-void printEdgeToBufB(admSimpleEdge_t *e) {
+void printEdgeToBufB(admSimpleEdge_t *e, admDFSState_t *state) {
     bufBCurr += sprintf(bufBCurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
 

@@ -41,10 +41,6 @@ void tearDown() {
     bufCurr = NULL;
 }
 
-void printNodeVisitor(admSimpleNode_t *n) {
-    bufCurr += sprintf(bufCurr, "%s, ", AdmNodeLabel(n));
-}
-
 void test_expectTopoOrder() {
     size_t sz = 16;
     int ok = 0;

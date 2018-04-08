@@ -211,6 +211,18 @@ void Iterate(cciHashTable_t *tb, callback_t cb)  {
     }
 }
 
+void GetValues(cciHashTable_t *tb, cciArrayList_t *o_values) {
+    cciHashSlot_t *slot;
+    cciValue_t v;
+    for (size_t i=0; i<tb->size; ++i) {
+        slot = tb->slots + i;
+        for (size_t pos=0; pos<slot->l->size; pos+=2) {
+            v = Get(slot->l, pos+1);
+            AlEmplaceBack(o_values, v);
+        }
+    }
+}
+
 void Metrics(
     cciHashTable_t *tb,
     double *o_utilization,

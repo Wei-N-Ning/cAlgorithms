@@ -48,6 +48,8 @@ size_t AdmGraphSize(admSimpleGraph_t *G);
 
 void AdmGraphIter(admSimpleGraph_t *G, void *callback);
 
+void AdmGetNodes(admSimpleGraph_t *G, cciArrayList_t *o_nodes);
+
 //////////////// traversal ///////////////////
 
 typedef void (*admNodeVisitor_t)(admSimpleNode_t *n);
@@ -79,10 +81,15 @@ struct AdmDFSState {
     cciArrayList_t *TreeNodes;
     cciArrayList_t *TreeEdges;
     cciArrayList_t *BackEdges;
+    cciArrayList_t *StrongComponents;  // array of arrays
     size_t time;
 };
 
 typedef struct AdmDFSState admDFSState_t;
+
+typedef void (*admNodeDFSVisitor_t)(admSimpleNode_t *n, admDFSState_t *state);
+
+typedef void (*admConnDFSVisitor_t)(admSimpleEdge_t *e, admDFSState_t *state);
 
 admDFSState_t *CreateDFSState(size_t sz);
 
@@ -91,14 +98,14 @@ void DeleteDFSState(admDFSState_t *state);
 void AdmGraphDFS(admSimpleGraph_t *G,
                  admSimpleNode_t *start,
                  admDFSState_t *state,
-                 admNodeVisitor_t nodeVisitor,
-                 admConnVisitor_t connVisitor);
+                 admNodeDFSVisitor_t nodeVisitor,
+                 admConnDFSVisitor_t connVisitor);
 
 void AdmGraphRecurDFS(admSimpleGraph_t *G,
                       admSimpleNode_t *start,
                       admDFSState_t *state,
-                      admNodeVisitor_t nodeVisitor,
-                      admConnVisitor_t connVisitor);
+                      admNodeDFSVisitor_t nodeVisitor,
+                      admConnDFSVisitor_t connVisitor);
 
 int AdmTopoSort(admSimpleGraph_t *G, admSimpleNode_t *start, cciArrayList_t *o_nodes);
 

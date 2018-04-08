@@ -23,6 +23,7 @@ struct AdmSimpleNode {
     cciArrayList_t *to;
     cciValue_t value;
     uint64_t weight;
+    int componentId;
     void *preserved;
 };
 
@@ -38,6 +39,7 @@ admSimpleNode_t *CreateAdmSimpleNode() {
     n->to = AlNew();
     n->value = invalid();
     n->preserved = NULL;
+    n->componentId = -1;
     memset(n->label, 0, MAX_LABEL_LENGTH);
     return n;
 }
@@ -185,6 +187,10 @@ void AdmGraphIter(admSimpleGraph_t *G, void *callback) {
     Iterate(G->nodeByLabel, cb);
 }
 
+void AdmGetNodes(admSimpleGraph_t *G, cciArrayList_t *o_nodes) {
+    GetValues(G->nodeByLabel, o_nodes);
+}
+
 void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
     if (G->nodeByLabel) {
         Iterate(G->nodeByLabel, killerVisitor);
@@ -249,17 +255,26 @@ admDFSState_t *CreateDFSState(size_t sz) {
     state->TreeNodes = AlNew();
     state->TreeEdges = AlNew();
     state->BackEdges = AlNew();
+    state->StrongComponents = AlNew();
     state->time = 0;
     return state;
 }
 
 void DeleteDFSState(admDFSState_t *state) {
+    cciValue_t v;
+    cciArrayList_t *arr = NULL;
     DeleteHashTable(state->DFSTree);
     DeleteHashTable(state->Entries);
     DeleteHashTable(state->Exits);
     AlDelete(state->TreeNodes);
     AlDelete(state->TreeEdges);
     AlDelete(state->BackEdges);
+    for (size_t i=state->StrongComponents->size; i--; ) {
+        v = AlGet(state->StrongComponents, i);
+        arr = GETPOINTER(v, cciArrayList_t);
+        AlDelete(arr);
+    }
+    AlDelete(state->StrongComponents);
     free(state);
 }
 
@@ -272,8 +287,8 @@ static int isBackEdge(cciHashTable_t *Entries, admSimpleEdge_t *e) {
 void AdmGraphDFS(admSimpleGraph_t *G,
                  admSimpleNode_t *start,
                  admDFSState_t *state,
-                 admNodeVisitor_t nodeVisitor,
-                 admConnVisitor_t connVisitor) {
+                 admNodeDFSVisitor_t nodeVisitor,
+                 admConnDFSVisitor_t connVisitor) {
     admSimpleNode_t *this = NULL;
     admSimpleEdge_t *conn = NULL;
     admSimpleEdge_t tmp;
@@ -303,11 +318,11 @@ void AdmGraphDFS(admSimpleGraph_t *G,
 
         // processing (for node, it's equivalent to process_vertex_early() in ADM)
         if (nodeVisitor) {
-            nodeVisitor(this);
+            nodeVisitor(this, state);
         }
         AlEmplaceBack(state->TreeNodes, newPointer(this));
         if (connVisitor && conn->from) {
-            connVisitor(conn);
+            connVisitor(conn, state);
         }
 
         // tree edges discover new node
@@ -350,14 +365,14 @@ void AdmGraphDFS(admSimpleGraph_t *G,
 void AdmGraphRecurDFS(admSimpleGraph_t *G,
                       admSimpleNode_t *start,
                       admDFSState_t *state,
-                      admNodeVisitor_t nodeVisitor,
-                      admConnVisitor_t connVisitor) {
+                      admNodeDFSVisitor_t nodeVisitor,
+                      admConnDFSVisitor_t connVisitor) {
     size_t nconns = AdmNumToNodes(start);
     admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
     ISet(state->Entries, (uint64_t)start, newInt(state->time++));
     if (nodeVisitor) {
-        nodeVisitor(start);
+        nodeVisitor(start, state);
     }
     AlEmplaceBack(state->TreeNodes, newPointer(start));
     for (size_t i=0; i<nconns; ++i) {
@@ -373,7 +388,7 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
             continue;
         }
         if (connVisitor) {
-            connVisitor(conn);
+            connVisitor(conn, state);
         }
         AlEmplaceBack(state->TreeEdges, newPointer(conn));
         ISet(state->DFSTree, (uint64_t)connected, newPointer(start));

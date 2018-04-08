@@ -2,6 +2,8 @@
 // Created by wein on 4/8/18.
 //
 
+#include <stdio.h>
+
 #include <admSimpleGraph.h>
 
 void RunTinyTests();
@@ -21,10 +23,22 @@ static const char *s_components =\
 "8->6\n"
 ;
 
+void processNodeEarly(admSimpleNode_t *n, admDFSState_t *state) {
+    ;
+}
+
 void test_getComponents() {
     size_t sz = 16;
     admSimpleGraph_t *G = CreateGraphFromString(s_components, sz);
+    cciArrayList_t *nodes = AlNew();
+    admSimpleNode_t *n = NULL;
+    admSimpleEdge_t *e = NULL;
+    admDFSState_t *state = CreateDFSState(sz);
 
+    AdmGraphDFS(G, GetLabelledNode(G, "1"), state, NULL, NULL);
+
+    DeleteDFSState(state);
+    AlDelete(nodes);
     DeleteAdmSimpleGraph(G);
 }
 

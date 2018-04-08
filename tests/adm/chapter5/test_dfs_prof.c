@@ -31,11 +31,11 @@ static admSimpleGraph_t *createGraph(size_t workload, admSimpleNode_t **start) {
     return G;
 }
 
-static void _visitNode(admSimpleNode_t *n) {
+static void _visitNode(admSimpleNode_t *n, admDFSState_t *state) {
     ;
 }
 
-static void _visitConn(admSimpleEdge_t *e) {
+static void _visitConn(admSimpleEdge_t *e, admDFSState_t *state) {
     ;
 }
 

@@ -6,6 +6,7 @@
 #define CCISOLUTIONSC_CCIHASHTABLE_H
 
 #include "cciValue.h"
+#include "cciArrayList.h"
 
 typedef struct cciHashTable cciHashTable_t;
 
@@ -28,6 +29,8 @@ size_t HashTableSize(cciHashTable_t *tb);
 typedef void (*callback_t)(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v);
 
 void Iterate(cciHashTable_t *tb, callback_t cb);
+
+void GetValues(cciHashTable_t *tb, cciArrayList_t *o_values);
 
 //////// utility
 

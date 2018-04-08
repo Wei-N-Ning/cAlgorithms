@@ -13,16 +13,16 @@ const char *s_dumbGraph = \
 "A->B\n"
 "C->D\n";
 
-static void addWeightVisitor(admSimpleNode_t *n) {
+static void addWeightVisitor(admSimpleNode_t *n, admDFSState_t *state) {
     uint64_t *weightHandle = AdmWeightHandle(n);
     (*weightHandle)++;
 }
 
-static void printNodeVisitor(admSimpleNode_t *n) {
+static void printNodeVisitor(admSimpleNode_t *n, admDFSState_t *state) {
     printf("%s ", AdmNodeLabel(n));
 }
 
-static void printConnectionVisitor(admSimpleEdge_t *e) {
+static void printConnectionVisitor(admSimpleEdge_t *e, admDFSState_t *state) {
     printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
 }
 
