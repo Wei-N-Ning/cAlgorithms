@@ -261,6 +261,12 @@ void DeleteDFSState(admDFSState_t *state) {
     free(state);
 }
 
+static int isBackEdge(cciHashTable_t *Entries, admSimpleEdge_t *e) {
+    cciValue_t tFrom = IGet(Entries, (uint64_t)(e->from));
+    cciValue_t tTo = IGet(Entries, (uint64_t)(e->to));
+    return (GETINT(tFrom) > (GETINT(tTo))) ? 1: 0;
+}
+
 void AdmGraphDFS(admSimpleGraph_t *G,
                  admSimpleNode_t *start,
                  admDFSState_t *state,
@@ -323,9 +329,7 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     for (size_t i=0; i<nonTreeEdges->size; ++i) {
         u = AlGet(nonTreeEdges, i);
         conn = GETPOINTER(u, admSimpleEdge_t);
-        v = IGet(state->DFSTree, (uint64_t)(conn->from));
-        this = GETPOINTER(v, admSimpleNode_t);
-        if (conn->to == this) {
+        if (isBackEdge(state->Entries, conn)) {
             AlEmplaceBack(state->BackEdges, u);
         }
     }
