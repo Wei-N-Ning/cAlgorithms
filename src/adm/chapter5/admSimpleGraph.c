@@ -267,42 +267,59 @@ void AdmGraphDFS(admSimpleGraph_t *G,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor) {
     admSimpleNode_t *this = NULL;
-    admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
+    admSimpleEdge_t tmp;
     cciValue_t u, v;
     cciValue_t *p;
     cciArrayList_t *earlyStack = AlNew();
     cciArrayList_t *lateStack = AlNew();
     cciArrayList_t *nonTreeEdges = AlNew();
-    AlEmplaceBack(earlyStack, newPointer(start));
+
+    tmp.from = NULL;
+    tmp.to = start;
+    AlEmplaceBack(earlyStack, newPointer(&tmp));
 
     while (earlyStack->size) {
-        this = GETPOINTER(AlPopBack(earlyStack), admSimpleNode_t);
+        conn = GETPOINTER(AlPopBack(earlyStack), admSimpleEdge_t);
+        this = conn->to;
+
+        // "has it been discovered" test
         p = IGetOrCreate(state->Entries, (uint64_t)this);
         if (ISVALID((*p))) {
+            if (conn->from) {
+                AlEmplaceBack(nonTreeEdges, newPointer(conn));
+            }
             continue;
         }
         SETINT((*p), state->time++);
-        // early processing
+
+        // processing (for node, it's equivalent to process_vertex_early() in ADM)
         if (nodeVisitor) {
             nodeVisitor(this);
         }
+        if (connVisitor && conn->from) {
+            connVisitor(conn);
+        }
+
+        // tree edges discover new node
+        if (conn->from) {
+            AlEmplaceBack(state->TreeEdges, newPointer(conn));
+        }
+
+        // store nodes in another stack to be re-processed in a reverse order
         AlEmplaceBack(lateStack, newPointer(this));
+        if (conn->from) {
+            ISet(state->DFSTree, (uint64_t)conn->to, newPointer(conn->from));
+        }
+
+        // create new "stack frames"
         for (size_t i=AdmNumToNodes(this); i--; ) {
             conn = AdmEdge(this, i);
-            connected = AdmEdgeTo(conn);
-            if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
-                AlEmplaceBack(nonTreeEdges, newPointer(conn));
-                continue;
-            }
-            if (connVisitor) {
-                connVisitor(conn);
-            }
-            AlEmplaceBack(state->TreeEdges, newPointer(conn));
-            ISet(state->DFSTree, (uint64_t)connected, newPointer(this));
-            AlEmplaceBack(earlyStack, newPointer(connected));
+            AlEmplaceBack(earlyStack, newPointer(conn));
         }
     }
+
+    // back edges
     for (size_t i=0; i<nonTreeEdges->size; ++i) {
         u = AlGet(nonTreeEdges, i);
         conn = GETPOINTER(u, admSimpleEdge_t);
@@ -312,9 +329,9 @@ void AdmGraphDFS(admSimpleGraph_t *G,
             AlEmplaceBack(state->BackEdges, u);
         }
     }
-    for (size_t i=lateStack->size; i-- ; ) {
-        // late processing
 
+    // it is equivalent to process_vertex_late() in ADM
+    for (size_t i=lateStack->size; i-- ; ) {
         this = GETPOINTER(AlGet(lateStack, i), admSimpleNode_t);
         ISet(state->Exits, (uint64_t)this, newInt(state->time++));
     }

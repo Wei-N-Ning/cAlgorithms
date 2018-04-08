@@ -172,10 +172,22 @@ void test_expectExitsMapPopulated() {
     DeleteAdmSimpleGraph(G);
 }
 
+// see ADM P183 example
+const char *s_undirected = \
+"1--6\n"
+"1--2\n"
+"1--5\n"
+"2--3\n"
+"2--5\n"
+"3--4\n"
+"5--4\n"
+;
+
 void test_expectTreeEdgesCollected() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
-    admSimpleNode_t *A = GetLabelledNode(G, "A");
-    admDFSState_t *state = CreateDFSState(8);
+    size_t sz = 16;
+    admSimpleGraph_t *G = CreateGraphFromString(s_undirected, 16);
+    admSimpleNode_t *A = GetLabelledNode(G, "1");
+    admDFSState_t *state = CreateDFSState(16);
     admSimpleEdge_t *e = NULL;
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
@@ -189,32 +201,10 @@ void test_expectTreeEdgesCollected() {
 }
 
 void test_expectBackEdgesCollected() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
-    admSimpleNode_t *A = GetLabelledNode(G, "A");
-    admDFSState_t *state = CreateDFSState(8);
-    admSimpleEdge_t *e = NULL;
-    cciValue_t v;
-    AdmGraphDFS(G, A, state, NULL, NULL);
-    for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
-        printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
-    }
-    DeleteDFSState(state);
-    DeleteAdmSimpleGraph(G);
-}
-
-const char *s_directed = \
-"A->B\n"
-"B->C\n"
-"A->C\n"
-"C->D\n"
-;
-
-void test_expectNoBackEdges() {
-    admSimpleGraph_t *G = CreateGraphFromString(s_directed, 8);
-    admSimpleNode_t *A = GetLabelledNode(G, "A");
-    admDFSState_t *state = CreateDFSState(8);
+    size_t sz = 16;
+    admSimpleGraph_t *G = CreateGraphFromString(s_undirected, sz);
+    admSimpleNode_t *A = GetLabelledNode(G, "1");
+    admDFSState_t *state = CreateDFSState(sz);
     admSimpleEdge_t *e = NULL;
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
