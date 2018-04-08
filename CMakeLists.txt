@@ -11,6 +11,7 @@ include(cmake/tinyCUnit.cmake)
 add_subdirectory(src/chapter1)
 add_subdirectory(tests/chapter1)
 add_subdirectory(tests/chapter4)
+add_subdirectory(tests/chapter8)
 
 # ADM
 add_subdirectory(src/adm/utilities)
