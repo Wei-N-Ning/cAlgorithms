@@ -361,6 +361,11 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
         connected = AdmEdgeTo(conn);
         if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
             // circular dependency detected
+
+            if (GETINT(IGet(state->Entries, (uint64_t)(conn->from))) > \
+                GETINT(IGet(state->Entries, (uint64_t)(conn->to)))) {
+                AlEmplaceBack(state->BackEdges, newPointer(conn));
+            }
             continue;
         }
         if (connVisitor) {
