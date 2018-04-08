@@ -347,19 +347,22 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
                       admConnVisitor_t connVisitor) {
     size_t nconns = AdmNumToNodes(start);
     admSimpleNode_t *connected = NULL;
+    admSimpleEdge_t *conn = NULL;
     ISet(state->Entries, (uint64_t)start, newInt(state->time++));
     if (nodeVisitor) {
         nodeVisitor(start);
     }
     for (size_t i=0; i<nconns; ++i) {
-        connected = AdmToNode(start, i);
+        conn = AdmEdge(start, i);
+        connected = AdmEdgeTo(conn);
         if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
             // circular dependency detected
             continue;
         }
         if (connVisitor) {
-            connVisitor(AdmEdge(start, i));
+            connVisitor(conn);
         }
+        AlEmplaceBack(state->TreeEdges, newPointer(conn));
         ISet(state->DFSTree, (uint64_t)connected, newPointer(start));
         AdmGraphRecurDFS(G, connected, state, nodeVisitor, connVisitor);
     }

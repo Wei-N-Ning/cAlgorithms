@@ -200,6 +200,23 @@ void test_expectTreeEdgesCollected() {
     DeleteAdmSimpleGraph(G);
 }
 
+void test_expectTreeEdgesCollectedRecursiveModel() {
+    size_t sz = 16;
+    admSimpleGraph_t *G = CreateGraphFromString(s_undirected, 16);
+    admSimpleNode_t *A = GetLabelledNode(G, "1");
+    admDFSState_t *state = CreateDFSState(16);
+    admSimpleEdge_t *e = NULL;
+    cciValue_t v;
+    AdmGraphRecurDFS(G, A, state, NULL, NULL);
+    for (size_t i=0; i<state->TreeEdges->size; i++) {
+        v = AlGet(state->TreeEdges, i);
+        e = GETPOINTER(v, admSimpleEdge_t);
+        printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
+    }
+    DeleteDFSState(state);
+    DeleteAdmSimpleGraph(G);
+}
+
 void test_expectBackEdgesCollected() {
     size_t sz = 16;
     admSimpleGraph_t *G = CreateGraphFromString(s_undirected, sz);
