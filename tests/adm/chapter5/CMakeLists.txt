@@ -25,3 +25,6 @@ add_tinytest_executable(admTopologicalSortingTest test_topologicalSorting.c)
 target_link_libraries(admTopologicalSortingTest admChapter5)
 add_test(NAME "ADM::Chapter5::TopologicalSorting" COMMAND admTopologicalSortingTest)
 
+add_tinytest_executable(admStronglyConnectedTests test_stronglyConnected.c)
+target_link_libraries(admStronglyConnectedTests admChapter5)
+add_test(NAME "ADM::Chapter5::StronglyConnected" COMMAND admStronglyConnectedTests)
