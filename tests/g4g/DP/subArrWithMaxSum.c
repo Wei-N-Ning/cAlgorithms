@@ -4,13 +4,14 @@
 // post
 // https://www.geeksforgeeks.org/size-subarray-maximum-sum/
 //
-// observation shows that,
-// if all elements in the array are 0, the sub array with max sum
-// will contain each element only;
-// therefore the base comparison is:
-// sum[elem] < sum([elem + next_elem])
-// if so, the sub array is extended to [elem, next_elem]
-// otherwise it is reset to [next_elem]
+// max_sum = 0
+// record = 0
+// for elem in arr
+//    max_sum += elem
+//    if max_sum > record
+//       record = max_sum
+//    else
+//       max_sum = 0
 
 // time complexity is n
 
