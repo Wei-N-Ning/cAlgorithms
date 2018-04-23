@@ -143,6 +143,7 @@ struct Cell {
 typedef struct Cell Cell;
 
 static Cell *cells;
+static Cell nullCell = {0, STRCMP_NOOP, NULL};
 static int cells_h;
 static int cells_w;
 
@@ -156,12 +157,6 @@ void cellsSetUp(int w, int h) {
         cells[sz].op = STRCMP_NOOP;
         cells[sz].parent = NULL;
     }
-    for (int row = 0, column = 0; row < cells_h; ++row) {
-        cells[row * cells_w + column].cost = row;
-    }
-    for (int row = 0, column = 0; column < cells_w; ++column) {
-        cells[row * cells_w + column].cost = column;
-    }
 }
 
 void cellsTearDown() {
@@ -172,6 +167,9 @@ void cellsTearDown() {
 }
 
 static Cell *_getCell(int i, int j) {
+    if (i < 0 || j < 0) {
+        return &nullCell;
+    }
     return cells + i * cells_w + j;
 }
 
@@ -187,8 +185,8 @@ static int _strCmpDP(const char *s, const char *t, int s_idx, int t_idx) {
     Cell tmp;
     int i, j;
     int opt[3] = {0, 0, 0};
-    for (i = 1 ; i <= s_idx; ++i) {
-        for (j = 1 ; j <= t_idx; ++j) {
+    for (i = 0 ; i <= s_idx; ++i) {
+        for (j = 0 ; j <= t_idx; ++j) {
             opt[STRCMP_MATCH] = _getCell(i - 1, j - 1)->cost + match(s[i], t[j]);
             opt[STRCMP_INSERT] = _getCell(i, j - 1)->cost + indel(t[j]);
             opt[STRCMP_DELETE] = _getCell(i - 1, j)->cost + indel(s[i]);
@@ -225,10 +223,10 @@ int stringCompareDP(const char *s, const char *t, int toIdx) {
 void test_dynamicProgramming() {
     int r1 = stringCompareDP(
         //0123456789
-        // xx  xxxxx
-         " tHerEis acow 1337",
-         " There IS no spoon",
-        9
+        //xxx  xxxxx
+         "atHerEis acow 1337",
+         "AThere IS no spoon",
+        4
     );
     printf("min edits: (dp) %d, ", r1);
 }
