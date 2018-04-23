@@ -21,6 +21,7 @@ add_subdirectory(tests/adm/utilities)
 add_subdirectory(tests/adm/chapter3)
 add_subdirectory(tests/adm/chapter4)
 add_subdirectory(tests/adm/chapter5)
+add_subdirectory(tests/adm/chapter8)
 
 # geeksforgeeks
 add_subdirectory(tests/g4g)
