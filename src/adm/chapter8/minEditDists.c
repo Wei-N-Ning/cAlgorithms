@@ -40,7 +40,7 @@ static void default_columnInit( StrCmpState *state) {
     state->table->op = STRCMP_NOOP;
 }
 
-static void default_handleMatch( StrCmpState *state, int i, int j) {
+static void default_matchTraceback(StrCmpState *state, int i, int j) {
     if (state->s[i] == state->t[j]) {
         printf("M");
     } else {
@@ -48,17 +48,56 @@ static void default_handleMatch( StrCmpState *state, int i, int j) {
     }
 }
 
-static void default_handleInsert( StrCmpState *state, int j) {
+static void default_insertTraceback(StrCmpState *state, int j) {
     printf("I");
 }
 
-static void default_handleDelete( StrCmpState *state, int i) {
+static void default_deleteTraceback(StrCmpState *state, int i) {
     printf("D");
 }
 
 static void default_goalCell( StrCmpState *state, int *o_i, int *o_j) {
     *o_i = (int)state->sLen;
     *o_j = (int)state->tLen;
+}
+
+StrCmpState *createDefaultState(const char *s, size_t sLen, const char *t, size_t tLen) {
+    StrCmpState *state = malloc(sizeof(StrCmpState));
+    state->s = malloc(sizeof(char) * (sLen + 1));
+    state->s[0] = ' ';
+    strncpy(state->s + 1, s, sLen);
+    state->sLen = sLen;
+    state->t = malloc(sizeof(char) * (tLen + 1));
+    state->t[0] = ' ';
+    strncpy(state->t + 1, t, tLen);
+    state->tLen = tLen;
+    size_t width = sLen + 1;
+    if (width < tLen + 1) {
+        width = tLen + 1;
+    }
+    size_t sz = width * width;
+    state->table = malloc(sizeof(Cell) * sz);
+    for (; sz--; state->table[sz].op = STRCMP_NOOP, state->table[sz].cost = 0) ;
+    state->tableWidth = width; //sLen + 1;
+    state->tableHeight = width; //tLen + 1;
+
+    state->columnInit = default_columnInit;
+    state->rowInit = default_rowInit;
+    state->goalCell = default_goalCell;
+    state->deleteTraceback = default_deleteTraceback;
+    state->insertTraceback = default_insertTraceback;
+    state->matchTraceback = default_matchTraceback;
+    state->match = default_match;
+    state->indel = default_indel;
+
+    return state;
+}
+
+void deleteState(StrCmpState *state) {
+    free(state->s);
+    free(state->t);
+    free(state->table);
+    free(state);
 }
 
 int stringCompare(struct StrCmpState *state) {
@@ -92,41 +131,6 @@ int stringCompare(struct StrCmpState *state) {
     return _getCell(state, i_sel, j_sel)->cost;
 }
 
-StrCmpState *createDefaultState(const char *s, size_t sLen, const char *t, size_t tLen) {
-    StrCmpState *state = malloc(sizeof(StrCmpState));
-    state->s = malloc(sizeof(char) * (sLen + 1));
-    state->s[0] = ' ';
-    strncpy(state->s + 1, s, sLen);
-    state->sLen = sLen;
-    state->t = malloc(sizeof(char) * (tLen + 1));
-    state->t[0] = ' ';
-    strncpy(state->t + 1, t, tLen);
-    state->tLen = tLen;
-    size_t sz = (sLen + 1) * (tLen + 1);
-    state->table = malloc(sizeof(Cell) * sz);
-    for (; sz--; state->table[sz].op = STRCMP_NOOP, state->table[sz].cost = 0) ;
-    state->tableWidth = sLen + 1;
-    state->tableHeight = tLen + 1;
-
-    state->columnInit = default_columnInit;
-    state->rowInit = default_rowInit;
-    state->goalCell = default_goalCell;
-    state->handleDelete = default_handleDelete;
-    state->handleInsert = default_handleInsert;
-    state->handleMatch = default_handleMatch;
-    state->match = default_match;
-    state->indel = default_indel;
-
-    return state;
-}
-
-void deleteState(StrCmpState *state) {
-    free(state->s);
-    free(state->t);
-    free(state->table);
-    free(state);
-}
-
 static void _editSequence(StrCmpState *state, int i, int j) {
     Cell *cell = _getCell(state, i, j);
     if (cell->op == STRCMP_NOOP) {
@@ -134,13 +138,13 @@ static void _editSequence(StrCmpState *state, int i, int j) {
     }
     if (cell->op == STRCMP_MATCH) {
         _editSequence(state, i - 1, j - 1);
-        state->handleMatch(state, i, j);
+        state->matchTraceback(state, i, j);
     } else if (cell->op == STRCMP_INSERT) {
         _editSequence(state, i, j - 1);
-        state->handleInsert(state, j);
+        state->insertTraceback(state, j);
     } else if (cell->op == STRCMP_DELETE) {
         _editSequence(state, i - 1, j);
-        state->handleDelete(state, i);
+        state->deleteTraceback(state, i);
     }
 }
 

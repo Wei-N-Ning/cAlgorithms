@@ -30,9 +30,9 @@ typedef int (*MatchFunc)(StrCmpState *state, int i, int j);
 typedef int (*InsertDeleteFunc)( StrCmpState *state, int idx);
 typedef void (*RowInitFunc)( StrCmpState *state);
 typedef void (*ColumnInitFunc)( StrCmpState *state);
-typedef void (*MatchHandler)( StrCmpState *state, int i, int j);
-typedef void (*InsertHandler)( StrCmpState *state, int j);
-typedef void (*DeleteHandler)( StrCmpState *state, int i);
+typedef void (*MatchTraceback)( StrCmpState *state, int i, int j);
+typedef void (*InsertTraceback)( StrCmpState *state, int j);
+typedef void (*DeleteTraceback)( StrCmpState *state, int i);
 typedef void (*GoalCellFunc)( StrCmpState *state, int *o_i, int *o_j);
 
 struct StrCmpState {
@@ -41,9 +41,9 @@ struct StrCmpState {
     MatchFunc match;
     InsertDeleteFunc indel;
     GoalCellFunc goalCell;
-    MatchHandler handleMatch;
-    InsertHandler handleInsert;
-    DeleteHandler handleDelete;
+    MatchTraceback matchTraceback;
+    InsertTraceback insertTraceback;
+    DeleteTraceback deleteTraceback;
 
     char *s;
     size_t sLen;
@@ -61,6 +61,7 @@ void deleteState(StrCmpState *state);
 
 int stringCompare(StrCmpState *state);
 
+// traceback the edit sequence
 void editSequence(StrCmpState *state);
 
 #endif //CCISOLUTIONSC_MINEDITDISTS_H

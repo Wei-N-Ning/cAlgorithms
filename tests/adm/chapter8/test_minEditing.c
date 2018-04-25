@@ -68,8 +68,39 @@ void test_expectOperationMatrix() {
 }
 
 void test_expectEditSequence() {
+    // expect: DSMMMMMISMSMMMM
     const char *from = "thou shalt not";
     const char *to =   "you should not";
+    StrCmpState *state = createDefaultState(from, (int)strlen(from), to, (int)strlen(to));
+    stringCompare(state);
+    editSequence(state);
+    printf("\n");
+    deleteState(state);
+}
+
+void test_fromLongStringToShortString() {
+    const char *from = "this";
+    const char *to   = "t";
+    StrCmpState *state = createDefaultState(from, (int)strlen(from), to, (int)strlen(to));
+    stringCompare(state);
+    editSequence(state);
+    printf("\n");
+    deleteState(state);
+}
+
+void test_fromShortStringToLongString() {
+    const char *from = "t";
+    const char *to   = "this";
+    StrCmpState *state = createDefaultState(from, (int)strlen(from), to, (int)strlen(to));
+    stringCompare(state);
+    editSequence(state);
+    printf("\n");
+    deleteState(state);
+}
+
+void test_fromReallyLongStringToShortString() {
+    const char *from = "dude you should not do it, understand?";
+    const char *to =   "not";
     StrCmpState *state = createDefaultState(from, (int)strlen(from), to, (int)strlen(to));
     stringCompare(state);
     editSequence(state);
