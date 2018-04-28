@@ -82,9 +82,11 @@ void test_fromLongStringToShortString() {
     const char *from = "this";
     const char *to   = "t";
     StrCmpState *state = createDefaultState(from, (int)strlen(from), to, (int)strlen(to));
-    stringCompare(state);
-    editSequence(state);
+    int r1 = stringCompare(state);
     printf("\n");
+    visitCells(state, printCost, printNewline);
+    editSequence(state);
+    printf(" %d\n ", r1);
     deleteState(state);
 }
 

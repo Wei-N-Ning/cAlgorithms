@@ -58,7 +58,9 @@ static void default_deleteTraceback(StrCmpState *state, int i) {
 
 static void default_goalCell( StrCmpState *state, int *o_i, int *o_j) {
     *o_i = (int)state->sLen;
+    state->goal_i = *o_i;
     *o_j = (int)state->tLen;
+    state->goal_j = *o_j;
 }
 
 StrCmpState *createDefaultState(const char *s, size_t sLen, const char *t, size_t tLen) {
@@ -149,5 +151,5 @@ static void _editSequence(StrCmpState *state, int i, int j) {
 }
 
 void editSequence(StrCmpState *state) {
-    _editSequence(state, (int)state->sLen, (int)state->tLen);
+    _editSequence(state, state->goal_i, state->goal_j);
 }

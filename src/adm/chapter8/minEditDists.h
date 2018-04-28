@@ -47,8 +47,10 @@ struct StrCmpState {
 
     char *s;
     size_t sLen;
+    int goal_i;
     char *t;
     size_t tLen;
+    int goal_j;
 
     Cell *table;
     size_t tableWidth;

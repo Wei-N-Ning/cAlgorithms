@@ -15,3 +15,12 @@ add_test(
     COMMAND
     substringMatching
 )
+
+add_tinytest_executable(longestCommSub test_longestCommSub.c)
+target_link_libraries(longestCommSub admChapter8)
+add_test(
+    NAME
+    "ADM::Chapter8::LongestCommSub"
+    COMMAND
+    longestCommSub
+)
