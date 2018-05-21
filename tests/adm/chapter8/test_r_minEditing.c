@@ -12,13 +12,26 @@
  * @ @ t T h e r e   I s
  * @ 0 1 2 3 4 5 6 7 8 9
  * T 1 1 2
- * h 2
+ * h 2 *
  * e 3
  * r 4
  * e 5
  * i 6
  * s 7
  * */
+
+// at the cell marked *, there are the 3 PREVIOUS choices 
+// that lead to this state:
+// if the path came from the left adjacent cell, the choice 
+// was to delete - meaning that 't' had been deleted from
+// string s
+// if the path came from the top adjacent cell, the choice 
+// was to insert - meaning that 'h' had been inserted to 
+// string s
+// lastly if the path came from the top-left cell, the 
+// choice was to edit - meaning that 't' had been replaced 
+// by 'h'; if both characters were the same, there would be 
+// no change at all
 
 enum ACTION {
     AC_NULL,
