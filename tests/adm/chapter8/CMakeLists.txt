@@ -24,3 +24,7 @@ add_test(
     COMMAND
     longestCommSub
 )
+
+# 2nd revisions
+add_tinytest_executable(minEditingTestR test_r_minEditing.c)
+add_test(NAME "ADM::Chapter8::MinEditingRevision" COMMAND minEditingTestR)
