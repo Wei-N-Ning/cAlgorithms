@@ -25,6 +25,10 @@ add_test(
     longestCommSub
 )
 
-# 2nd revisions
+# 2nd revision
 add_tinytest_executable(minEditingTestR test_r_minEditing.c)
-add_test(NAME "ADM::Chapter8::MinEditingRevision" COMMAND minEditingTestR)
+add_test(NAME "ADM::Chapter8::MinEditing-2nd-Revision" COMMAND minEditingTestR)
+
+# 2nd revision
+add_tinytest_executable(linearPartitionR test_r_linearPartition.c)
+add_test(NAME "ADM::Chapter8::LinearPartition-2nd-Revision" COMMAND linearPartitionR)

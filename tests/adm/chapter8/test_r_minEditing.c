@@ -1,6 +1,7 @@
 //
 // Created by wein on 5/21/18.
 //
+// this is the second revision of the solution, inspired by the Python version
 
 #include <assert.h>
 #include <stdlib.h>
@@ -45,6 +46,13 @@
 // swap these two arrays, while still following the table-based 
 // logic
 
+// notes on retrieve the editing sequence
+// the cell, table[size - 1] stores the minimum editing cost
+// required to turn string s into t (why? because each cell
+// is local optimal)
+// one can implement a backtracking function to construct
+// the complete editing sequence
+
 enum ACTION {
     AC_NULL,
     AC_INSERT,
@@ -58,20 +66,20 @@ typedef struct __CELL {
 } Cell;
 
 typedef struct __TABLE {
-    int numRows;
+    int numElements;
     int numColumns;
     Cell *cells;
 } Table;
 
 Cell *GetCell(Table *tb, int row, int column) {
-    assert(row >= 0 && row < tb->numRows && column >= 0 && column < tb->numColumns);
+    assert(row >= 0 && row < tb->numElements && column >= 0 && column < tb->numColumns);
     return tb->cells + row * tb->numColumns + column;
 }
 
 Table *Create(int numRows, int numColumns) {
     Table *tb = malloc(sizeof(Table));
     tb->cells = malloc(sizeof(Cell) * numRows * numColumns);
-    tb->numRows = numRows;
+    tb->numElements = numRows;
     tb->numColumns = numColumns;
 
     // initialize all cell to be 0-cost and have NULL action type
@@ -88,7 +96,7 @@ void IterRow(Table *table, int row, IterCallback cb, void *state) {
 }
 
 void IterColumn(Table *table, int column, IterCallback cb, void *state) {
-    for (int row = 0; row < table->numRows; ++row) {
+    for (int row = 0; row < table->numElements; ++row) {
         cb(GetCell(table, row, column), row, column, state);
     }
 }
@@ -167,8 +175,9 @@ int solve(const char *s, const char *t, char *o_editSequence) {
         printf("\n");
     }
 
+    int cost = GetCell(table, numRows - 1, numColumns - 1)->cost;
     Delete(table);
-    return 0;
+    return cost;
 }
 
 void RunTinyTests();
@@ -180,7 +189,7 @@ void test_givenStringsExpectEditingSequence() {
     for (int i = 16; i--; editingSequence[i] = '\0') ;
 
     int num = solve(s, t, editingSequence);
-//    assert(num == 3);
+    assert(num == 3);
     printf("%s", editingSequence);
 }
 
