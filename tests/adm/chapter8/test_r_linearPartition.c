@@ -2,8 +2,29 @@
 /*
  * giving sequence:
  * a b c d e f g
+ *         ^
+ *     ^
+ * partition it to 3 sub sequences as fairly as possible
+ *
+ * strategy:
+ * iteratively compute the optimal solutions
+ *
+ * say the iteration reaches element e, compare:
+ * [a, b] [c, d, e]
+ * [a, b, c] [d, e]
+ * [a, b, c, d] [e]
+ *
+ * if the partition of [a, b, c] is not optimal, introducing [d, e]
+ * has the following consequences:
+ * > if sum([d, e]) is larger than the largest sub seq in [a, b, c]
+ * this will make it even more unfair
+ * > if sum([d, e]) is smaller than the smallest sub seq in [a, b, c]
+ * same result
+ * > if sum([d, e]) falls between the min and max sums, it does not
+ * make the game fairer
+ *
+ * therefore all the non-optimal solutions should be skipped
  */
-
 
 #include <assert.h>
 #include <stdio.h>
@@ -12,31 +33,19 @@
 #include <limits.h>
 
 typedef struct __CELL {
-    int diff;
-    int seqStart;
 } Cell;
 
 typedef struct __TABLE {
-    int numElements;
     Cell *cells;
 } Table;
 
 Cell *GetCell(Table *tb, int row, int column) {
-    assert(row >= 0 && row < tb->numElements && column >= 0 && column < tb->numElements);
-    return tb->cells + row * tb->numElements + column;
+    return NULL;
 }
 
 Table *Create(int numElements) {
     Table *tb = malloc(sizeof(Table));
     tb->cells = malloc(sizeof(Cell) * numElements * numElements);
-    tb->numElements = numElements;
-
-    // initialize all cells
-    memset(tb->cells, 0, sizeof(Cell) * numElements * numElements);
-    for (int i = 0; i < numElements; ++i) {
-        GetCell(tb, i, i)->diff = INT_MAX;
-        GetCell(tb, i, i)->seqStart = -1;
-    }
     return tb;
 }
 
@@ -50,15 +59,7 @@ void Delete(Table *tb) {
     free(tb);
 }
 
-
 int solve(int *arr, int sz, int numSeqs) {
-    Table *table = Create(sz);
-    for (int seqStart = 0; seqStart < sz; ++seqStart) {
-        for (int seqEnd = seqStart + 1; seqEnd < sz; ++seqEnd) {
-
-        }
-    }
-    Delete(table);
     return 0;
 }
 
