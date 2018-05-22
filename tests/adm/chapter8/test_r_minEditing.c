@@ -33,6 +33,18 @@
 // by 'h'; if both characters were the same, there would be 
 // no change at all
 
+// notes on space complexity
+// if the complete editing sequence is not required, one 
+// can use two arrays to book keep the current choice and 
+// the most recent choice:
+// n   x x x x . . . . .
+// n+1 *
+// because the algorithm always populates one row at a time 
+// (less optimal??) one can modify the GetCell() function 
+// and table constructor to carefully construct, modify and 
+// swap these two arrays, while still following the table-based 
+// logic
+
 enum ACTION {
     AC_NULL,
     AC_INSERT,
