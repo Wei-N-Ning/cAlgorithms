@@ -27,8 +27,21 @@ add_test(
 
 # 2nd revision
 add_tinytest_executable(minEditingTestR test_r_minEditing.c)
-add_test(NAME "ADM::Chapter8::MinEditing-2nd-Revision" COMMAND minEditingTestR)
+add_test(
+    NAME "ADM::Chapter8::MinEditing-2nd-Revision"
+    COMMAND minEditingTestR
+)
 
 # 2nd revision
 add_tinytest_executable(linearPartitionR test_r_linearPartition.c)
-add_test(NAME "ADM::Chapter8::LinearPartition-2nd-Revision" COMMAND linearPartitionR)
+add_test(
+    NAME "ADM::Chapter8::LinearPartition-2nd-Revision"
+    COMMAND linearPartitionR
+)
+
+# 2nd revision (using min editing 2nd revision)
+add_tinytest_executable(longestIncreasingSequenceR test_r_longestIncreasingSeq.c)
+add_test(
+    NAME "ADM::Chapter8::LongestIncreasingSequence-2nd-Revision"
+    COMMAND longestIncreasingSequenceR
+)

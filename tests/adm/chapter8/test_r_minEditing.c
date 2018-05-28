@@ -66,20 +66,20 @@ typedef struct __CELL {
 } Cell;
 
 typedef struct __TABLE {
-    int numElements;
+    int numRows;
     int numColumns;
     Cell *cells;
 } Table;
 
 Cell *GetCell(Table *tb, int row, int column) {
-    assert(row >= 0 && row < tb->numElements && column >= 0 && column < tb->numColumns);
+    assert(row >= 0 && row < tb->numRows && column >= 0 && column < tb->numColumns);
     return tb->cells + row * tb->numColumns + column;
 }
 
 Table *Create(int numRows, int numColumns) {
     Table *tb = malloc(sizeof(Table));
     tb->cells = malloc(sizeof(Cell) * numRows * numColumns);
-    tb->numElements = numRows;
+    tb->numRows = numRows;
     tb->numColumns = numColumns;
 
     // initialize all cell to be 0-cost and have NULL action type
@@ -96,7 +96,7 @@ void IterRow(Table *table, int row, IterCallback cb, void *state) {
 }
 
 void IterColumn(Table *table, int column, IterCallback cb, void *state) {
-    for (int row = 0; row < table->numElements; ++row) {
+    for (int row = 0; row < table->numRows; ++row) {
         cb(GetCell(table, row, column), row, column, state);
     }
 }
