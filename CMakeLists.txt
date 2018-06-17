@@ -26,3 +26,7 @@ add_subdirectory(tests/adm/chapter8)
 
 # geeksforgeeks
 add_subdirectory(tests/g4g)
+
+# general implementations
+add_subdirectory(tests/avl)
+add_subdirectory(tests/avl/others)
