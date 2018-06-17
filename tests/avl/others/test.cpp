@@ -81,6 +81,18 @@ void tearDown() {
     TEST = nullptr;
 }
 
+void test_RemoveRoot() {
+    auto& tree_ = TEST->tree();
+    tree_.Add(919, 2);
+    tree_.Add(915, 2);
+    tree_.Add(409, 409);
+
+    //   915
+    // 409 919
+    tree_.Remove(915);
+    assert(tree_.IsEmpty());
+}
+
 void test_AddOneNode() {
     auto& tree_ = TEST->tree();
     assert(! tree_.Get(1));
@@ -260,52 +272,49 @@ void test_DeleteOnlyOne() {
     assert(tree_.IsEmpty());
 }
 
-void xtest_RemoveMany() {
+void _failingTest_RemoveMany() {
     auto& tree_ = TEST->tree();
-//    tree_.Add(364, 2);
+    tree_.Add(364, 2);
     tree_.Add(919, 2);
     tree_.Add(915, 2);
-//    tree_.Add(825, 2);
-//    tree_.Add(560, 2);
-//    tree_.Add(449, 2);
-//    tree_.Add(425, 425);
-//    tree_.Add(160, 160);
+    tree_.Add(825, 2);
+    tree_.Add(560, 2);
+    tree_.Add(449, 2);
+    tree_.Add(425, 425);
+    tree_.Add(160, 160);
     tree_.Add(409, 409);
-//    tree_.Add(423, 423);
-//    tree_.Add(727, 727);
-//    assert(423 == tree_.GetLowerNearest(424)->Value());
-//    assert(425 == tree_.GetLowerNearest(425)->Value());
-//    assert(727 == tree_.GetLowerNearest(728)->Value());
-//    assert(! tree_.GetLowerNearest(2));
-
-//    tree_.Remove(9999);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(364);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(825);
-//    assert(tree_.IsBalanced());
+    tree_.Add(423, 423);
+    tree_.Add(727, 727);
+    assert(423 == tree_.GetLowerNearest(424)->Value());
+    assert(425 == tree_.GetLowerNearest(425)->Value());
+    assert(727 == tree_.GetLowerNearest(728)->Value());
+    assert(! tree_.GetLowerNearest(2));
+    tree_.Remove(9999);
+    assert(tree_.IsBalanced());
+    tree_.Remove(364);
+    assert(tree_.IsBalanced());
+    tree_.Remove(825);
+    assert(tree_.IsBalanced());
     tree_.Remove(915);
-
-
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(919);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(560);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(449);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(425);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(160);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(423);
-//    assert(tree_.IsBalanced());
-//    assert(409 == tree_.Get(409)->Value());
-//    tree_.Remove(409);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(727);
-//    assert(tree_.IsBalanced());
-//    tree_.Remove(727);
+    assert(tree_.IsBalanced());
+    tree_.Remove(919);
+    assert(tree_.IsBalanced());
+    tree_.Remove(560);
+    assert(tree_.IsBalanced());
+    tree_.Remove(449);
+    assert(tree_.IsBalanced());
+    tree_.Remove(425);
+    assert(tree_.IsBalanced());
+    tree_.Remove(160);
+    assert(tree_.IsBalanced());
+    tree_.Remove(423);
+    assert(tree_.IsBalanced());
+    assert(409 == tree_.Get(409)->Value());
+    tree_.Remove(409);
+    assert(tree_.IsBalanced());
+    tree_.Remove(727);
+    assert(tree_.IsBalanced());
+    tree_.Remove(727);
 }
 
 int main(int argc, char **argv) {

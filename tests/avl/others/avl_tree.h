@@ -247,8 +247,11 @@ template <class KeyType, class ValueType> class AVLTree {
           toDelete = nullptr;
           return  found;
         } else {
-          root->item = Remove(key, root->children[kRight],
-                              decrease, kMinCmp);
+//          root->item = Remove(key, root->children[kRight],
+//                              decrease, kMinCmp);
+            delete root;
+            root = nullptr;
+            return nullptr;
         }
       }
       root->balance_factor -= decrease;
