@@ -21,24 +21,24 @@ typedef struct {
     CCI_ARRAYLIST_ERRORS errCode;
 } cciArrayList_t;
 
-cciArrayList_t *AlNew();
+cciArrayList_t *CCI_AlNew();
 
-void AlDelete(cciArrayList_t *al);
+void CCI_AlDelete(cciArrayList_t *al);
 
-void AlSet(cciArrayList_t *al, size_t index, cciValue_t value);
+void CCI_AlSet(cciArrayList_t *al, size_t index, cciValue_t value);
 
-cciValue_t AlGet(cciArrayList_t *al, size_t index);
+cciValue_t CCI_AlGet(cciArrayList_t *al, size_t index);
 
-void AlEmplaceBack(cciArrayList_t *al, cciValue_t value);
+void CCI_AlEmplaceBack(cciArrayList_t *al, cciValue_t value);
 
-cciValue_t AlBack(cciArrayList_t *al);
+cciValue_t CCI_AlBack(cciArrayList_t *al);
 
-void AlReserve(cciArrayList_t *al, size_t newCapacity);
+void CCI_AlReserve(cciArrayList_t *al, size_t newCapacity);
 
-cciValue_t AlPopBack(cciArrayList_t *al);
+cciValue_t CCI_AlPopBack(cciArrayList_t *al);
 
-void AlInsert(cciArrayList_t *al, size_t index, cciValue_t value);
+void CCI_AlInsert(cciArrayList_t *al, size_t index, cciValue_t value);
 
-void AlPrint(cciArrayList_t *al);
+void CCI_AlPrint(cciArrayList_t *al);
 
 #endif //CCISOLUTIONSC_CCIARRAYLIST_H

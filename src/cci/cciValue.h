@@ -6,11 +6,11 @@
 #ifndef CCISOLUTIONSC_CCIVALUE_H
 #define CCISOLUTIONSC_CCIVALUE_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-#ifndef VTYPE
-#define VTYPE uint64_t
+#ifndef CCI_VALUETYPE
+#define CCI_VALUETYPE uint64_t
 #endif
 
 typedef enum {
@@ -33,32 +33,55 @@ typedef struct CCIValue {
     size_t sz;
 } cciValue_t;
 
-#define RESET(v) v.store.i=0;
-#define SETINT(v,x) v.store.i=0; v.store.i=x; v.type=CCI_INT;
-#define SETFLOAT(v,x) v.store.i=0; v.store.f=x; v.type=CCI_FLOAT;
-#define SETCHAR(v,x) v.store.i=0; v.store.c=x; v.type=CCI_CHAR;
-#define SETSTR(v,x) v.store.i=0; v.store.s=x; v.type=CCI_STR;
-#define SETPOINTER(v,x) v.store.i=0; v.store.i=(uint64_t)x; v.type=CCI_POINTER;
+#define CCIValue_RESET(v) v.store.i = 0;
+#define CCIValue_SETINT(v, x)                                                  \
+  v.store.i = 0;                                                               \
+  v.store.i = x;                                                               \
+  v.type = CCI_INT;
+#define CCIValue_SETFLOAT(v, x)                                                \
+  v.store.i = 0;                                                               \
+  v.store.f = x;                                                               \
+  v.type = CCI_FLOAT;
+#define CCIValue_SETCHAR(v, x)                                                 \
+  v.store.i = 0;                                                               \
+  v.store.c = x;                                                               \
+  v.type = CCI_CHAR;
+#define CCIValue_SETSTR(v, x)                                                  \
+  v.store.i = 0;                                                               \
+  v.store.s = x;                                                               \
+  v.type = CCI_STR;
+#define CCIValue_SETPOINTER(v, x)                                              \
+  v.store.i = 0;                                                               \
+  v.store.i = (uint64_t)x;                                                     \
+  v.type = CCI_POINTER;
 
-#define GETINT(v) (int)v.store.i
-#define GETFLOAT(v) v.store.f
-#define GETCHAR(v) v.store.c
-#define GETSTR(v) v.store.s
-#define GETPOINTER(v, t) (t *)(v.store.i)
-#define ISVALID(v) (v.type != CCI_INVALID)
+#define CCIValue_GETINT(v) (int)v.store.i
+#define CCIValue_GETFLOAT(v) v.store.f
+#define CCIValue_GETCHAR(v) v.store.c
+#define CCIValue_GETSTR(v) v.store.s
+#define CCIValue_GETPOINTER(v, t) (t *)(v.store.i)
+#define CCIValue_ISVALID(v) (v.type != CCI_INVALID)
 
-cciValue_t invalid();
-cciValue_t newInt(int x);
-cciValue_t newPointer(void *x);
-cciValue_t newFloat(float x);
-cciValue_t newChar(char x);
-cciValue_t newStr(char *s);
+cciValue_t CCIValue_invalid();
 
-typedef int (*CompareFunc)(cciValue_t lhs, cciValue_t rhs);
-int CompareI(cciValue_t lhs, cciValue_t rhs);
-int CompareF(cciValue_t lhs, cciValue_t rhs);
-int CompareS(cciValue_t lhs, cciValue_t rhs);
+cciValue_t CCIValue_newInt(int x);
 
-#define ICOMPARE(lhs,rhs) CompareI((lhs),(rhs))
+cciValue_t CCIValue_newPointer(void *x);
 
-#endif //CCISOLUTIONSC_CCIVALUE_H
+cciValue_t CCIValue_newFloat(float x);
+
+cciValue_t CCIValue_newChar(char x);
+
+cciValue_t CCIValue_newStr(char *s);
+
+typedef int (*CCIValue_CompareFunc)(cciValue_t lhs, cciValue_t rhs);
+
+int CCIValue_CompareI(cciValue_t lhs, cciValue_t rhs);
+
+int CCIValue_CompareF(cciValue_t lhs, cciValue_t rhs);
+
+int CCIValue_CompareS(cciValue_t lhs, cciValue_t rhs);
+
+#define CCIValue_ICOMPARE(lhs, rhs) CompareI((lhs), (rhs))
+
+#endif // CCISOLUTIONSC_CCIVALUE_H
