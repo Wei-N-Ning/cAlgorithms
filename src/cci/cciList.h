@@ -20,24 +20,24 @@ typedef struct cciList {
     CCILIST_ERROR errCode;
 } cciList_t;
 
-cciList_t *NewList();
+cciList_t *CCI_NewList();
 
-void DeleteList(cciList_t *l);
+void CCI_DeleteList(cciList_t *l);
 
-void Append(cciList_t *l, cciValue_t value);
-
-// returns a pointer to the value in the list
-cciValue_t *AppendR(cciList_t *l, cciValue_t value);
-
-cciValue_t Get(cciList_t *l, size_t index);
+void CCI_ListAppend(cciList_t *l, cciValue_t value);
 
 // returns a pointer to the value in the list
-cciValue_t *GetR(cciList_t *l, size_t index);
+cciValue_t *CCI_ListAppendR(cciList_t *l, cciValue_t value);
 
-void Set(cciList_t *l, size_t index, cciValue_t value);
+cciValue_t CCI_ListGet(cciList_t *l, size_t index);
 
-void Insert(cciList_t *l, size_t index, cciValue_t value);
+// returns a pointer to the value in the list
+cciValue_t *CCI_ListGetR(cciList_t *l, size_t index);
 
-void Remove(cciList_t *l, size_t index);
+void CCI_ListSet(cciList_t *l, size_t index, cciValue_t value);
+
+void CCI_ListInsert(cciList_t *l, size_t index, cciValue_t value);
+
+void CCI_ListRemove(cciList_t *l, size_t index);
 
 #endif //CCISOLUTIONSC_CCILIST_H

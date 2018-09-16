@@ -14,13 +14,13 @@ typedef struct cciListNode {
     cciValue_t value;
 } cciListNode_t;
 
-cciList_t *NewList() {
+cciList_t *CCI_NewList() {
     cciList_t *l = malloc(sizeof(cciList_t));
     memset(l, 0, sizeof(cciList_t));
     return l;
 }
 
-void DeleteList(cciList_t *l) {
+void CCI_DeleteList(cciList_t *l) {
     cciListNode_t *curr = l->head;
     while (curr) {
         l->head = l->head->next;
@@ -34,7 +34,7 @@ static cciListNode_t *createNode() {
     cciListNode_t *n = malloc(sizeof(cciListNode_t));
     n->prev = NULL;
     n->next = NULL;
-    n->value = invalid();
+    n->value = CCIValue_invalid();
     return n;
 }
 
@@ -89,7 +89,7 @@ static void insert(cciList_t *l, cciListNode_t *prev, cciListNode_t *newNode, cc
     l->size++;
 }
 
-void Append(cciList_t *l, cciValue_t v) {
+void CCI_ListAppend(cciList_t *l, cciValue_t v) {
     cciListNode_t *n = createNode();
     n->value = v;
     if (l->size == 0) {
@@ -99,7 +99,7 @@ void Append(cciList_t *l, cciValue_t v) {
     }
 }
 
-cciValue_t *AppendR(cciList_t *l, cciValue_t v) {
+cciValue_t *CCI_ListAppendR(cciList_t *l, cciValue_t v) {
     cciListNode_t *n = createNode();
     n->value = v;
     if (l->size == 0) {
@@ -110,20 +110,20 @@ cciValue_t *AppendR(cciList_t *l, cciValue_t v) {
     return &(n->value);
 }
 
-void Set(cciList_t *l, size_t index, cciValue_t value) {
+void CCI_ListSet(cciList_t *l, size_t index, cciValue_t value) {
     cciListNode_t *n = node(l, index);
     n->value = value;
 }
 
-cciValue_t Get(cciList_t *l, size_t index) {
+cciValue_t CCI_ListGet(cciList_t *l, size_t index) {
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {
         return node(l, index)->value;
     }
-    return invalid();
+    return CCIValue_invalid();
 }
 
-cciValue_t *GetR(cciList_t *l, size_t index) {
+cciValue_t *CCI_ListGetR(cciList_t *l, size_t index) {
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {
         return &(node(l, index)->value);
@@ -131,7 +131,7 @@ cciValue_t *GetR(cciList_t *l, size_t index) {
     return NULL;
 }
 
-void Insert(cciList_t *l, size_t index, cciValue_t value) {
+void CCI_ListInsert(cciList_t *l, size_t index, cciValue_t value) {
     cciListNode_t *prev = NULL;
     cciListNode_t *newNode = NULL;
     l->errCode = validateIndex(l, index);
@@ -143,7 +143,7 @@ void Insert(cciList_t *l, size_t index, cciValue_t value) {
     }
 }
 
-void Remove(cciList_t *l, size_t index) {
+void CCI_ListRemove(cciList_t *l, size_t index) {
     cciListNode_t *n = NULL;
     l->errCode = validateIndex(l, index);
     if (!l->errCode) {

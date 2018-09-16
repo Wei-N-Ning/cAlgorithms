@@ -2,9 +2,10 @@
 // Created by wein on 3/19/18.
 //
 
+#include <cci/cciArrayList.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <cciArrayList.h>
 #include <time.h>
 
 void appendToCArray(size_t workload, int *arr) {
@@ -15,13 +16,13 @@ void appendToCArray(size_t workload, int *arr) {
 
 void appendToArrayList(size_t workload, cciArrayList_t *al) {
     for (int i=0; i<workload; ++i) {
-        AlEmplaceBack(al, newInt(i));
+        CCI_AlEmplaceBack(al, CCIValue_newInt(i));
     }
 }
 
 void eachRound(size_t workload) {
     int *arr = malloc(sizeof(int) * workload);
-    cciArrayList_t *al = AlNew();
+    cciArrayList_t *al = CCI_AlNew();
     clock_t start, end;
     double msecArr = 0.0;
     double msecAl = 0.0;
@@ -36,7 +37,7 @@ void eachRound(size_t workload) {
     end = clock();
     msecAl = end -start;
 
-    AlDelete(al);
+    CCI_AlDelete(al);
     free(arr);
 
     printf("%d %f %f\n", (int)workload, msecArr, msecAl);

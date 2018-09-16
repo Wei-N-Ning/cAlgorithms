@@ -5,6 +5,10 @@ add_library(cciArrayList cciArrayList.c cciArrayList.h)
 target_link_libraries(cciArrayList PUBLIC cciValue)
 target_include_directories(cciArrayList PUBLIC ../)
 
+add_library(cciList cciList.c cciList.h)
+target_link_libraries(cciList PUBLIC cciValue)
+target_include_directories(cciList PUBLIC ../)
+
 #    cciStrings.c
 #    cciStrings.h
 #    cciHashTable.c

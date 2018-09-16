@@ -2,21 +2,25 @@ add_tinytest_executable(cciArrayListTests test_arrayList.c)
 target_link_libraries(cciArrayListTests PUBLIC cciArrayList)
 add_test(NAME "CCI::Chapter1::ArrayListTests" COMMAND cciArrayListTests)
 
+add_executable(cciArrayListPerf test_arrayList_perf.c)
+target_link_libraries(cciArrayListPerf PUBLIC cciArrayList)
+add_test(NAME "CCI::Chapter1::ArrayListPerf" COMMAND cciArrayListPerf)
+
+add_tinytest_executable(cciListTests test_list.c)
+target_link_libraries(cciListTests cciList)
+add_test(NAME "CCI::Chapter1::ListTests" COMMAND cciListTests)
+
+add_executable(cciListPerf test_list_perf.c)
+target_link_libraries(cciListPerf cciList)
+add_test(NAME "CCI:Chapter1::ListPerf" COMMAND cciListPerf)
+
 
 #add_tinytest_executable(cciStringsTests
 #    test_strings.c)
 #add_test(NAME "CCI::Chapter1::StringsTests" COMMAND cciStringsTests)
 #target_link_libraries(cciStringsTests cciChapter1)
 #
-#add_tinytest_executable(cciListTests
-#    test_list.c)
-#target_link_libraries(cciListTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::ListTests" COMMAND cciListTests)
-#
-#add_executable(cciListProf
-#    test_list_prof.c)
-#target_link_libraries(cciListProf cciChapter1)
-#
+
 
 #
 #add_tinytest_executable(cciBitArrayTests
@@ -41,12 +45,7 @@ add_test(NAME "CCI::Chapter1::ArrayListTests" COMMAND cciArrayListTests)
 #    PROPERTIES
 #    CMAKE_C_FLAGS "-pg")
 #
-#add_executable(cciArrayListPerf
-#    test_arrayList_perf.c)
-#target_link_libraries(cciArrayListPerf cciChapter1)
-#set_target_properties(cciArrayListPerf
-#    PROPERTIES
-#    CMAKE_C_FLAGS "-pg")
+
 #
 #add_tinytest_executable(cciStackTests
 #    test_stack.c)
