@@ -2,26 +2,27 @@
 // Created by wein on 3/4/18.
 //
 
-#include <cciArrayList.h>
+#include <cci/cciArrayList.h>
 
 #include <assert.h>
+#include <stdio.h>
 
-//void Prt(cciArrayList_t *al) {
-//    for (size_t i=0; i < al->size; ++i) {
-//        printf("%d, ", GETINT(AlGet(al, i)));
-//    }
-//    printf("\n");
-//}
-//
-//void AssertArrayList(cciArrayList_t *al, const int *expected) {
-//    for (size_t i=0; i < al->size; ++i) {
-//        if (GETINT(AlGet(al, i)) != expected[i]) {
-//            printf("Unexpected array list members:\n");
-//            Prt(al);
-//            assert(0);
-//        }
-//    }
-//}
+void Prt(cciArrayList_t *al) {
+    for (size_t i=0; i < al->size; ++i) {
+        printf("%d, ", GETINT(AlGet(al, i)));
+    }
+    printf("\n");
+}
+
+void AssertArrayList(cciArrayList_t *al, const int *expected) {
+    for (size_t i=0; i < al->size; ++i) {
+        if (GETINT(AlGet(al, i)) != expected[i]) {
+            printf("Unexpected array list members:\n");
+            Prt(al);
+            assert(0);
+        }
+    }
+}
 
 void RunTinyTests();
 
