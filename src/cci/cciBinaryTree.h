@@ -30,11 +30,11 @@ cciBinTreeNodeVisitor_t CreateBinTreeVisitor(VisitorFunc func, void *state);
 cciBinTreeNode_t *BinTreeSearch(
     cciBinTreeNode_t *aNode,
     cciValue_t v,
-    CompareFunc func  // typedef in cciValue.h
+    CCIValue_CompareFunc func  // typedef in cciValue.h
 );
 
-cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode, CompareFunc func);
-cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func);
+cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode, CCIValue_CompareFunc func);
+cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CCIValue_CompareFunc func);
 
 int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor);
 
@@ -46,20 +46,20 @@ int Height(cciBinTreeNode_t *aNode);
 cciBinTreeNode_t *BinTreeInsert(
     cciBinTreeNode_t *aNode,
     cciValue_t v,
-    CompareFunc func
+    CCIValue_CompareFunc func
 );
 
 int BinTreeInsertNode(
     cciBinTreeNode_t *aNode,
     cciBinTreeNode_t *newNode,
-    CompareFunc func
+    CCIValue_CompareFunc func
 );
 
 // return a new tree with the given node removed to the caller
 cciBinTreeNode_t *BinTreeRemove(
     cciBinTreeNode_t *top,
     cciValue_t v,
-    CompareFunc func
+    CCIValue_CompareFunc func
 );
 
 ////////////////// utilities //////////////////

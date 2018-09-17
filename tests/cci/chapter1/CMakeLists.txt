@@ -47,17 +47,11 @@ add_tinytest_executable(cciBitArrayTest test_bitArray.c)
 target_link_libraries(cciBitArrayTest PUBLIC cciBitArray)
 add_test(NAME "CCI::Chapter1::BitArrayTest" COMMAND cciBitArrayTest)
 
-#
-#add_tinytest_executable(cciBinaryTreeTests
-#    test_binaryTree.c)
-#target_link_libraries(cciBinaryTreeTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::BinaryTree" COMMAND cciBinaryTreeTests)
-#
-#add_executable(cciBinaryTreePerf
-#    test_binaryTree_perf.c)
-#target_link_libraries(cciBinaryTreePerf cciChapter1)
-#set_target_properties(cciBinaryTreePerf
-#    PROPERTIES
-#    CMAKE_C_FLAGS "-pg")
-#
+add_tinytest_executable(cciBinaryTreeTests test_binaryTree.c)
+target_link_libraries(cciBinaryTreeTests PUBLIC cciBinaryTree)
+add_test(NAME "CCI::Chapter1::BinaryTreeTests" COMMAND cciBinaryTreeTests)
+
+add_executable(cciBinaryTreePerf test_binaryTree_perf.c)
+target_link_libraries(cciBinaryTreePerf PUBLIC cciBinaryTree)
+add_test(NAME "CCI::Chapter1::BinaryTreePerf" COMMAND cciBinaryTreePerf)
 

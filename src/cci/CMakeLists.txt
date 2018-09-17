@@ -24,21 +24,6 @@ target_include_directories(cciHashTable PUBLIC ../)
 add_library(cciBitArray cciBitArray.c cciBitArray.h)
 target_include_directories(cciBitArray PUBLIC ../)
 
-#    cciHashTable.c
-#    cciHashTable.h
-#    cciList.c
-#    cciList.h
-#
-#    cciBitArray.c
-#    cciBitArray.h
-#    cciValue.c
-#    cciValue.h
-#    cciBinaryTree.c
-#    cciBinaryTree.h
-#    cciStack.c
-#    cciStack.h
-#    cciQueue.c
-#    cciQueue.h)
-#target_include_directories(cciChapter1
-#    PUBLIC
-#    .)
+add_library(cciBinaryTree cciBinaryTree.c cciBinaryTree.h)
+target_link_libraries(cciBinaryTree PUBLIC cciValue)
+target_include_directories(cciBinaryTree PUBLIC ../)

@@ -2,17 +2,17 @@
 // Created by wein on 3/19/18.
 //
 
+#include <cci/cciValue.h>
+#include <cci/cciBinaryTree.h>
+
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <cciValue.h>
-#include <cciBinaryTree.h>
-
 // generate num random integers in o_arr
 void generateWorkload(size_t num, cciValue_t *o_arr) {
     for (int i=0; i<num; ++i) {
-        o_arr[i] = newInt(rand());
+        o_arr[i] = CCIValue_newInt(rand());
     }
 }
 
@@ -20,7 +20,7 @@ void generateWorkload(size_t num, cciValue_t *o_arr) {
 // arr one by one
 void doInsert(cciValue_t *arr, size_t num, cciBinTreeNode_t *o_t) {
     for (int i=0; i<num; ++i) {
-        BinTreeInsert(o_t, arr[i], CompareI);
+        BinTreeInsert(o_t, arr[i], CCIValue_CompareI);
     }
 }
 

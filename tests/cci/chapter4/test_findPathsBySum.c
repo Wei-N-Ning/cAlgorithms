@@ -12,11 +12,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <cciBinaryTree.h>
-#include <cciQueue.h>
-#include <cciValue.h>
+#include <cci/cciBinaryTree.h>
+#include <cci/cciArrayList.h>
+#include <cci/cciQueue.h>
+#include <cci/cciValue.h>
+
 #include <stdlib.h>
-#include <cciArrayList.h>
+
 
 void RunTinyTests();
 
@@ -24,14 +26,14 @@ void RunTinyTests();
 
 static cciBinTreeNode_t *createNode(int x, cciBinTreeNode_t *parent) {
     cciBinTreeNode_t *n = CreateBinTreeNode(parent);
-    SETINT(n->value, x);
+    CCIValue_SETINT(n->value, x);
     return n;
 }
 
 static cciBinTreeNode_t *createMockTreeFromArray(const int *arr, size_t num) {
     cciBinTreeNode_t *top = createNode(arr[0], NULL);
     for (int i=1; i<num; ++i) {
-        BinTreeInsert(top, newInt(arr[i]), NULL);
+        BinTreeInsert(top, CCIValue_newInt(arr[i]), NULL);
     }
     return top;
 }
@@ -46,25 +48,25 @@ void TearDownGlobal() {
 
 void printPathBySum(cciBinTreeNode_t *n, int value) {
     // N LogN (for each N < Sum, traverse from N to its descendants until their sum is larger than or equal to Sum)
-    cciQueue_t *qu = CreateCCIQueue();
-    cciBinTreeNode_t *this = BinTreeSearch(n, newInt(value), NULL);
+    cciQueue_t *qu = CCI_CreateQueue();
+    cciBinTreeNode_t *this = BinTreeSearch(n, CCIValue_newInt(value), NULL);
     int sum = value;
     if (this) {
-        Enqueue(qu, newPointer(this->left));
+        CCI_Enqueue(qu, CCIValue_newPointer(this->left));
     }
-    while (!CCIQueueEmpty(qu)) {
-        this = GETPOINTER(Dequeue(qu), cciBinTreeNode_t);
+    while (!CCI_QueueEmpty(qu)) {
+        this = CCIValue_GETPOINTER(CCI_Dequeue(qu), cciBinTreeNode_t);
         if (!this) {
             break;
         }
-        sum -= GETINT(this->value);
+        sum -= CCIValue_GETINT(this->value);
         if (sum == 0) {
             printf("+ found\n");
         }
-        Enqueue(qu, newPointer(this->left));
-        Enqueue(qu, newPointer(this->parent));
+        CCI_Enqueue(qu, CCIValue_newPointer(this->left));
+        CCI_Enqueue(qu, CCIValue_newPointer(this->parent));
     }
-    DeleteCCIQueue(qu);
+    CCI_DeleteQueue(qu);
 }
 
 void test_printBinaryTree() {

@@ -7,23 +7,23 @@
 // both the ownership and connectivity - (ownership alone is
 // not enough to guarantee subtree is part of the host-tree)
 
-#include <cciBinaryTree.h>
-#include <cciQueue.h>
-#include <cciValue.h>
+#include <cci/cciBinaryTree.h>
+#include <cci/cciQueue.h>
+#include <cci/cciValue.h>
 #include <assert.h>
 
 void RunTinyTests();
 
 static cciBinTreeNode_t *createNode(int x, cciBinTreeNode_t *parent) {
     cciBinTreeNode_t *n = CreateBinTreeNode(parent);
-    SETINT(n->value, x);
+    CCIValue_SETINT(n->value, x);
     return n;
 }
 
 static cciBinTreeNode_t *createMockTreeFromArray(const int *arr, size_t num) {
     cciBinTreeNode_t *top = createNode(arr[0], NULL);
     for (int i=1; i<num; ++i) {
-        BinTreeInsert(top, newInt(arr[i]), NULL);
+        BinTreeInsert(top, CCIValue_newInt(arr[i]), NULL);
     }
     return top;
 }
@@ -32,10 +32,10 @@ int isSubtree(cciBinTreeNode_t *host, cciBinTreeNode_t *sub) {
     cciBinTreeNode_t *this;
     int sz = 0;
     int subtreeSize = Traverse(sub, NULL);
-    cciQueue_t *qu = CreateCCIQueue();
-    Enqueue(qu, newPointer(sub));
-    while (! CCIQueueEmpty(qu)) {
-        this = GETPOINTER(Dequeue(qu), cciBinTreeNode_t);
+    cciQueue_t *qu = CCI_CreateQueue();
+    CCI_Enqueue(qu, CCIValue_newPointer(sub));
+    while (! CCI_QueueEmpty(qu)) {
+        this = CCIValue_GETPOINTER(CCI_Dequeue(qu), cciBinTreeNode_t);
         if (! this) {
             break;
         }
@@ -44,13 +44,13 @@ int isSubtree(cciBinTreeNode_t *host, cciBinTreeNode_t *sub) {
         }
         sz++;
         if (this->left) {
-            Enqueue(qu, newPointer(this->left));
+            CCI_Enqueue(qu, CCIValue_newPointer(this->left));
         }
         if (this->right) {
-            Enqueue(qu, newPointer(this->right));
+            CCI_Enqueue(qu, CCIValue_newPointer(this->right));
         }
     }
-    DeleteCCIQueue(qu);
+    CCI_DeleteQueue(qu);
     return sz == subtreeSize;
 }
 
@@ -77,7 +77,7 @@ void test_expectSubtree() {
     //          37
     //        33
     cciBinTreeNode_t *root = createMockTreeFromArray(arr, 8);
-    cciBinTreeNode_t *sub = BinTreeSearch(root, newInt(26), NULL);
+    cciBinTreeNode_t *sub = BinTreeSearch(root, CCIValue_newInt(26), NULL);
     assert(isSubtree(root, sub));
 }
 

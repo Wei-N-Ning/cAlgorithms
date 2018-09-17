@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include <cciBinaryTree.h>
-#include <cciValue.h>
+#include <cci/cciBinaryTree.h>
+#include <cci/cciValue.h>
 #include <time.h>
 
 #define ARR_SIZE 255
@@ -21,7 +21,7 @@ void SetUpGlobal() {
     root = CreateBinTreeNode(NULL);
     arr = malloc(sizeof(int) * ARR_SIZE);
     for (int i=0; i<ARR_SIZE; ++i) {
-        arr[i] = GETINT(BinTreeInsert(root, newInt(rand()), NULL)->value);
+        arr[i] = CCIValue_GETINT(BinTreeInsert(root, CCIValue_newInt(rand()), NULL)->value);
     }
 }
 
@@ -32,14 +32,14 @@ void TearDownGlobal() {
 
 static cciBinTreeNode_t *createNode(int x, cciBinTreeNode_t *parent) {
     cciBinTreeNode_t *n = CreateBinTreeNode(parent);
-    SETINT(n->value, x);
+    CCIValue_SETINT(n->value, x);
     return n;
 }
 
 static cciBinTreeNode_t *createMockTreeFromArray(const int *arr, size_t num) {
     cciBinTreeNode_t *top = createNode(arr[0], NULL);
     for (int i=1; i<num; ++i) {
-        BinTreeInsert(top, newInt(arr[i]), NULL);
+        BinTreeInsert(top, CCIValue_newInt(arr[i]), NULL);
     }
     return top;
 }
@@ -90,9 +90,9 @@ void test_expectSuccessorFound() {
     //          37
     //        33
     cciBinTreeNode_t *r = createMockTreeFromArray(arr, 8);
-    assert(33 == GETINT(successor(r, newInt(26))->value));
-    assert(11 == GETINT(successor(r, newInt(1))->value));
-    assert(23 == GETINT(successor(r, newInt(11))->value));
+    assert(33 == CCIValue_GETINT(successor(r, CCIValue_newInt(26))->value));
+    assert(11 == CCIValue_GETINT(successor(r, CCIValue_newInt(1))->value));
+    assert(23 == CCIValue_GETINT(successor(r, CCIValue_newInt(11))->value));
 }
 
 void test_givenInvalidNodeExpectSuccessorNotFound() {
@@ -104,7 +104,7 @@ void test_givenInvalidNodeExpectSuccessorNotFound() {
     //          37
     //        33
     cciBinTreeNode_t *r = createMockTreeFromArray(arr, 8);
-    assert(! successor(r, newInt(234324)));
+    assert(! successor(r, CCIValue_newInt(234324)));
 }
 
 void test_givenLastNodeExpectSuccessorNotFound() {
@@ -116,22 +116,26 @@ void test_givenLastNodeExpectSuccessorNotFound() {
     //          37
     //        33
     cciBinTreeNode_t *r = createMockTreeFromArray(arr, 8);
-    assert(! successor(r, newInt(46)));
+    assert(! successor(r, CCIValue_newInt(46)));
 }
 
 static void profEach(cciBinTreeNode_t *r, int *workload, size_t szWorkload) {
     for (size_t i=0; i < szWorkload; ++i) {
-        successor(r, newInt(workload[i]));
+        successor(r, CCIValue_newInt(workload[i]));
     }
 }
 
 static void profAll() {
     InitFactory();
-    size_t szWorkloads[6] = {10, 100, 1000, 5000, 10000, 20000};
+    size_t szWorkloads[6] = {
+        0, 100, 1000,
+        //5000,
+        //10000, 20000
+    };
     root = CreateBinTreeNode(NULL);
     int *arr = malloc(sizeof(int) * 20000);
     for (int i=0; i<20000; ++i) {
-        arr[i] = GETINT(BinTreeInsert(root, newInt(rand()), NULL)->value);
+        arr[i] = CCIValue_GETINT(BinTreeInsert(root, CCIValue_newInt(rand()), NULL)->value);
     }
     time_t start, end;
     double msec;

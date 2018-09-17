@@ -2,17 +2,18 @@
 // Created by wein on 3/18/18.
 //
 
+#include <cci/cciBinaryTree.h>
+#include <cci/cciValue.h>
+
 #include <stdio.h>
 #include <string.h>
-#include <cciBinaryTree.h>
-#include <cciValue.h>
 #include <assert.h>
 
 void RunTinyTests();
 
 cciBinTreeNode_t *createNode(int x, cciBinTreeNode_t *parent) {
     cciBinTreeNode_t *n = CreateBinTreeNode(parent);
-    SETINT(n->value, x);
+    CCIValue_SETINT(n->value, x);
     return n;
 }
 
@@ -30,13 +31,13 @@ cciBinTreeNode_t *createMockTree() {
 cciBinTreeNode_t *createMockTreeFromArray(const int *arr, size_t num) {
     cciBinTreeNode_t *top = createNode(arr[0], NULL);
     for (int i=1; i<num; ++i) {
-        BinTreeInsert(top, newInt(arr[i]), NULL);
+        BinTreeInsert(top, CCIValue_newInt(arr[i]), NULL);
     }
     return top;
 }
 
 cciBinTreeNode_t *search(cciBinTreeNode_t *n, int x) {
-    return BinTreeSearch(n, newInt(x), NULL);
+    return BinTreeSearch(n, CCIValue_newInt(x), NULL);
 }
 
 cciBinTreeNode_t *findMin(cciBinTreeNode_t *n) {
@@ -48,18 +49,18 @@ cciBinTreeNode_t *findMax(cciBinTreeNode_t *n) {
 }
 
 cciBinTreeNode_t *insert(cciBinTreeNode_t *n, int x) {
-    return BinTreeInsert(n, newInt(x), NULL);
+    return BinTreeInsert(n, CCIValue_newInt(x), NULL);
 }
 
 cciBinTreeNode_t *batchInsert(cciBinTreeNode_t *n, const int *arr, size_t num) {
     for (int i=0; i<num; ++i) {
-        BinTreeInsert(n, newInt(arr[i]), NULL);
+        BinTreeInsert(n, CCIValue_newInt(arr[i]), NULL);
     }
 }
 
 void batchRemove(cciBinTreeNode_t *n, const int *arr, size_t num) {
     for (int i=0; i<num; ++i) {
-        BinTreeRemove(n, newInt(arr[i]), NULL);
+        BinTreeRemove(n, CCIValue_newInt(arr[i]), NULL);
     }
 }
 
@@ -94,28 +95,28 @@ void test_findMinExpectValue() {
     cciBinTreeNode_t *top = createMockTree();
     cciBinTreeNode_t *found = findMin(top);
     assert(found);
-    assert(-34 == GETINT(found->value));
+    assert(-34 == CCIValue_GETINT(found->value));
 }
 
 void test_findMinFromSubTree() {
     cciBinTreeNode_t *top = createMockTree();
     cciBinTreeNode_t *found = findMin(top->right);
     assert(found);
-    assert(45 == GETINT(found->value));
+    assert(45 == CCIValue_GETINT(found->value));
 }
 
 void test_findMaxExpectValue() {
     cciBinTreeNode_t *top = createMockTree();
     cciBinTreeNode_t *found = findMax(top);
     assert(found);
-    assert(145 == GETINT(found->value));
+    assert(145 == CCIValue_GETINT(found->value));
 }
 
 void test_findMaxFromSubTree() {
     cciBinTreeNode_t *top = createMockTree();
     cciBinTreeNode_t *found = findMax(top->left);
     assert(found);
-    assert(9 == GETINT(found->value));
+    assert(9 == CCIValue_GETINT(found->value));
 }
 
 void test_traverseExpectTotalNodesVisited() {
@@ -137,7 +138,7 @@ void test_traverseUseVisitorExpectTotalNodesVisited() {
 }
 
 static void collectNodeValue(cciBinTreeNode_t *n, void *state) {
-    int value = GETINT(n->value);
+    int value = CCIValue_GETINT(n->value);
     char *s = (char *)state;
     size_t len = strlen(s);
     s += len;
@@ -168,7 +169,7 @@ void test_insertExpectNewNode() {
     int num;
     num = toString(top, s);
     assert(n);
-    assert(31 == GETINT(n->value));
+    assert(31 == CCIValue_GETINT(n->value));
     assert(8 == num);
     assert(0 == strcmp("-34,2,9,13,31,45,114,145", s));
 }
@@ -180,7 +181,7 @@ void test_insertSameValueExpectNoNewNode() {
     int num;
     num = toString(top, s);
     assert(n);
-    assert(114 == GETINT(n->value));
+    assert(114 == CCIValue_GETINT(n->value));
     assert(7 == num);
     assert(0 == strcmp("-34,2,9,13,45,114,145", s));
 }
@@ -234,7 +235,7 @@ void test_removeValueExpectNewStructure() {
     toString(t1, s);
     assert(0 == strcmp("1,11,23,24,26,33,37,46", s));
     memset(s, 0, sizeof(s));
-    cciBinTreeNode_t *t2 = BinTreeRemove(t1, newInt(26), NULL);
+    cciBinTreeNode_t *t2 = BinTreeRemove(t1, CCIValue_newInt(26), NULL);
     toString(t2, s);
     assert(0 == strcmp("1,11,23,24,33,37,46", s));
 }

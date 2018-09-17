@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <cciBinaryTree.h>
+#include <cci/cciBinaryTree.h>
 
 void RunTinyTests();
 
@@ -141,14 +141,14 @@ void test_givenTwoJoinedBRanchesExpectCommonAncestor() {
 
 static cciBinTreeNode_t *createTreeNode(int x, cciBinTreeNode_t *parent) {
     cciBinTreeNode_t *n = CreateBinTreeNode(parent);
-    SETINT(n->value, x);
+    CCIValue_SETINT(n->value, x);
     return n;
 }
 
 static cciBinTreeNode_t *createMockTreeFromArray(const int *arr, size_t num) {
     cciBinTreeNode_t *top = createTreeNode(arr[0], NULL);
     for (int i=1; i<num; ++i) {
-        BinTreeInsert(top, newInt(arr[i]), NULL);
+        BinTreeInsert(top, CCIValue_newInt(arr[i]), NULL);
     }
     return top;
 }
@@ -172,9 +172,9 @@ void test_coverTest() {
     //          37
     //        33
     cciBinTreeNode_t *r = createMockTreeFromArray(arr, 8);
-    assert(! cover(BinTreeSearch(r, newInt(11), NULL), BinTreeSearch(r, newInt(37), NULL)));
-    assert(! cover(BinTreeSearch(r, newInt(23), NULL), BinTreeSearch(r, newInt(46), NULL)));
-    assert(cover(BinTreeSearch(r, newInt(23), NULL), BinTreeSearch(r, newInt(26), NULL)));
+    assert(! cover(BinTreeSearch(r, CCIValue_newInt(11), NULL), BinTreeSearch(r, CCIValue_newInt(37), NULL)));
+    assert(! cover(BinTreeSearch(r, CCIValue_newInt(23), NULL), BinTreeSearch(r, CCIValue_newInt(46), NULL)));
+    assert(cover(BinTreeSearch(r, CCIValue_newInt(23), NULL), BinTreeSearch(r, CCIValue_newInt(26), NULL)));
 }
 
 static cciBinTreeNode_t *findCommonAncestor(cciBinTreeNode_t *r, cciBinTreeNode_t *sub1, cciBinTreeNode_t *sub2) {
@@ -196,10 +196,10 @@ void test_findCommonAncestor() {
     //          37
     //        33
     cciBinTreeNode_t *r = createMockTreeFromArray(arr, 8);
-    assert(r == findCommonAncestor(r, BinTreeSearch(r, newInt(11), NULL), BinTreeSearch(r, newInt(46), NULL)));
+    assert(r == findCommonAncestor(r, BinTreeSearch(r, CCIValue_newInt(11), NULL), BinTreeSearch(r, CCIValue_newInt(46), NULL)));
     assert(
-        BinTreeSearch(r, newInt(23), NULL) == findCommonAncestor(
-            r, BinTreeSearch(r, newInt(11), NULL), BinTreeSearch(r, newInt(33), NULL)
+        BinTreeSearch(r, CCIValue_newInt(23), NULL) == findCommonAncestor(
+            r, BinTreeSearch(r, CCIValue_newInt(11), NULL), BinTreeSearch(r, CCIValue_newInt(33), NULL)
         )
     );
 }

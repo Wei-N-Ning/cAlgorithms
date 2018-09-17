@@ -4,8 +4,8 @@
 
 #include "cciBinaryTree.h"
 
-#include <stddef.h>
 #include <assert.h>
+#include <stddef.h>
 #include <stdlib.h>
 
 #define MAX_NUM_NODES 20000
@@ -14,15 +14,12 @@ static cciBinTreeNode_t *nodePool = NULL;
 static ssize_t nodeIndex = 0;
 
 cciBinTreeNode_t *CreateBinTreeNode(cciBinTreeNode_t *parent) {
-    assert(
-        nodePool &&
-        (nodeIndex != -1) &&
-        (nodeIndex <= MAX_NUM_NODES));
+    assert(nodePool && (nodeIndex != -1) && (nodeIndex <= MAX_NUM_NODES));
     cciBinTreeNode_t *n = nodePool + nodeIndex++;
     n->left = NULL;
     n->right = NULL;
     n->parent = parent;
-    RESET(n->value);
+    CCIValue_RESET(n->value);
     return n;
 }
 
@@ -33,12 +30,13 @@ cciBinTreeNodeVisitor_t CreateBinTreeVisitor(VisitorFunc func, void *state) {
     return v;
 }
 
-cciBinTreeNode_t *BinTreeSearch(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
+cciBinTreeNode_t *BinTreeSearch(cciBinTreeNode_t *aNode, cciValue_t v,
+                                CCIValue_CompareFunc func) {
     int cmp;
-    if (! func) {
-        func = CompareI;  // default comparison function
+    if (!func) {
+        func = CCIValue_CompareI; // default comparison function
     }
-    if (! aNode) {
+    if (!aNode) {
         return NULL;
     }
     cmp = func(v, aNode->value);
@@ -64,21 +62,23 @@ void CloseFactory() {
     nodeIndex = -1;
 }
 
-cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode, CompareFunc func) {
-    if (! func) {
-        func = CompareI;
+cciBinTreeNode_t *BinTreeMin(cciBinTreeNode_t *aNode,
+                             CCIValue_CompareFunc func) {
+    if (!func) {
+        func = CCIValue_CompareI;
     }
-    if (! aNode->left) {
+    if (!aNode->left) {
         return aNode;
     }
     return BinTreeMin(aNode->left, func);
 }
 
-cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode, CompareFunc func) {
-    if (! func) {
-        func = CompareI;
+cciBinTreeNode_t *BinTreeMax(cciBinTreeNode_t *aNode,
+                             CCIValue_CompareFunc func) {
+    if (!func) {
+        func = CCIValue_CompareI;
     }
-    if (! aNode->right) {
+    if (!aNode->right) {
         return aNode;
     }
     return BinTreeMax(aNode->right, func);
@@ -97,7 +97,9 @@ int Traverse(cciBinTreeNode_t *aNode, cciBinTreeNodeVisitor_t *visitor) {
     return total;
 }
 
-static cciBinTreeNode_t *_insert(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, cciValue_t v, CompareFunc func) {
+static cciBinTreeNode_t *_insert(cciBinTreeNode_t **slot,
+                                 cciBinTreeNode_t *parent, cciValue_t v,
+                                 CCIValue_CompareFunc func) {
     cciBinTreeNode_t *this = NULL;
     int cmp;
     // parent is a leaf; this is a new left OR right branch to be created
@@ -118,17 +120,19 @@ static cciBinTreeNode_t *_insert(cciBinTreeNode_t **slot, cciBinTreeNode_t *pare
     return _insert(&((*slot)->right), (*slot), v, func);
 }
 
-cciBinTreeNode_t *BinTreeInsert(cciBinTreeNode_t *aNode, cciValue_t v, CompareFunc func) {
-    if (! aNode) {
+cciBinTreeNode_t *BinTreeInsert(cciBinTreeNode_t *aNode, cciValue_t v,
+                                CCIValue_CompareFunc func) {
+    if (!aNode) {
         return NULL;
     }
-    if (! func) {
-        func = CompareI;
+    if (!func) {
+        func = CCIValue_CompareI;
     }
     return _insert(&aNode, aNode->parent, v, func);
 }
 
-static int _insertNode(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, cciBinTreeNode_t *newNode, CompareFunc func) {
+static int _insertNode(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent,
+                       cciBinTreeNode_t *newNode, CCIValue_CompareFunc func) {
     int cmp;
     if ((*slot) == NULL) {
         (*slot) = newNode;
@@ -145,14 +149,16 @@ static int _insertNode(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, cciBin
     return _insertNode((&(*slot)->right), (*slot), newNode, func);
 }
 
-int BinTreeInsertNode(cciBinTreeNode_t *aNode, cciBinTreeNode_t *newNode, CompareFunc func) {
-    if (! func) {
-        func = CompareI;
+int BinTreeInsertNode(cciBinTreeNode_t *aNode, cciBinTreeNode_t *newNode,
+                      CCIValue_CompareFunc func) {
+    if (!func) {
+        func = CCIValue_CompareI;
     }
     return _insertNode(&aNode, aNode->parent, newNode, func);
 }
 
-static void _remove(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, CompareFunc func) {
+static void _remove(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent,
+                    CCIValue_CompareFunc func) {
     cciBinTreeNode_t *right = (*slot)->right;
     cciBinTreeNode_t *left = (*slot)->left;
     (*slot) = NULL;
@@ -164,11 +170,12 @@ static void _remove(cciBinTreeNode_t **slot, cciBinTreeNode_t *parent, CompareFu
     }
 }
 
-cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *top, cciValue_t v, CompareFunc func) {
+cciBinTreeNode_t *BinTreeRemove(cciBinTreeNode_t *top, cciValue_t v,
+                                CCIValue_CompareFunc func) {
     int cmp;
     cciBinTreeNode_t *found = NULL;
-    if (! func) {
-        func = CompareI;
+    if (!func) {
+        func = CCIValue_CompareI;
     }
     cmp = func(v, top->value);
     if (cmp == 0) {
@@ -198,9 +205,7 @@ int Depth(cciBinTreeNode_t *aNode) {
 // if the macro is defined as MAXOF(x,y) ((x)>(y)?(x):(y)) THEN,
 // MAXOF(Height(aNode->left), Height(aNode->right)) is expanded to:
 // Height(aNode->left)>Height(aNode->right)?Height(aNode->left):Height(aNode->right)
-static int _maxof(int x, int y) {
-    return x>y?x:y;
-}
+static int _maxof(int x, int y) { return x > y ? x : y; }
 
 int Height(cciBinTreeNode_t *aNode) {
     if (aNode) {
