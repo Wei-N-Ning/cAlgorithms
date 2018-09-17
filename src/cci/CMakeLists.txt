@@ -21,8 +21,9 @@ add_library(cciHashTable cciHashTable.c cciHashTable.h)
 target_link_libraries(cciHashTable PUBLIC cciArrayList cciList)
 target_include_directories(cciHashTable PUBLIC ../)
 
-#    cciStrings.c
-#    cciStrings.h
+add_library(cciBitArray cciBitArray.c cciBitArray.h)
+target_include_directories(cciBitArray PUBLIC ../)
+
 #    cciHashTable.c
 #    cciHashTable.h
 #    cciList.c

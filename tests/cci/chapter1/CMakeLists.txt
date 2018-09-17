@@ -43,21 +43,10 @@ add_executable(cciHashTablePerf test_hashTable_perf.c)
 target_link_libraries(cciHashTablePerf PUBLIC cciHashTable)
 add_test(NAME "CCI::Chapter1::HashTablePerf" COMMAND cciHashTablePerf)
 
-#add_tinytest_executable(cciStringsTests
-#    test_strings.c)
-#add_test(NAME "CCI::Chapter1::StringsTests" COMMAND cciStringsTests)
-#target_link_libraries(cciStringsTests cciChapter1)
-#
-#
-#add_tinytest_executable(cciBitArrayTests
-#    test_bitArray.c)
-#target_link_libraries(cciBitArrayTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::BitArrayTests" COMMAND cciBitArrayTests)
-#
-#add_tinytest_executable(cciValueTests
-#    test_value.c)
-#target_link_libraries(cciValueTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::Value" COMMAND cciValueTests)
+add_tinytest_executable(cciBitArrayTest test_bitArray.c)
+target_link_libraries(cciBitArrayTest PUBLIC cciBitArray)
+add_test(NAME "CCI::Chapter1::BitArrayTest" COMMAND cciBitArrayTest)
+
 #
 #add_tinytest_executable(cciBinaryTreeTests
 #    test_binaryTree.c)
