@@ -18,7 +18,7 @@ target_link_libraries(cciQueue PUBLIC cciList)
 target_include_directories(cciQueue PUBLIC ../)
 
 add_library(cciHashTable cciHashTable.c cciHashTable.h)
-target_link_libraries(cciHashTable PUBLIC cciArrayList)
+target_link_libraries(cciHashTable PUBLIC cciArrayList cciList)
 target_include_directories(cciHashTable PUBLIC ../)
 
 #    cciStrings.c

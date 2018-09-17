@@ -37,9 +37,11 @@ add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
 
 add_executable(cciHashTableMetrics test_hashTable_metrics.c)
 target_link_libraries(cciHashTableMetrics PUBLIC cciHashTable)
+add_test(NAME "CCI::Chapter1::HashTableMetrics" COMMAND cciHashTableMetrics)
 
 add_executable(cciHashTablePerf test_hashTable_perf.c)
 target_link_libraries(cciHashTablePerf PUBLIC cciHashTable)
+add_test(NAME "CCI::Chapter1::HashTablePerf" COMMAND cciHashTablePerf)
 
 #add_tinytest_executable(cciStringsTests
 #    test_strings.c)

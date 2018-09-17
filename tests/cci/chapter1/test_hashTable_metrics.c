@@ -30,7 +30,7 @@ void populateTable(cciHashTable_t *tb) {
     struct token *tokens = malloc(sizeof(struct token) * size);
     for (size_t i=0; i<size; ++i) {
         randomSliceSUT(tokens[i].s, TOKEN_SIZE);
-        SSet(tb, tokens[i].s, newFloat(3.5));
+        SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
     }
     free(tokens);
 }

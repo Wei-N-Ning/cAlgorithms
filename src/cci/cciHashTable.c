@@ -3,12 +3,11 @@
 //
 
 #include "cciHashTable.h"
+#include "cciArrayList.h"
+#include "cciList.h"
 
 #include <stdlib.h>
 #include <string.h>
-
-#include "cciArrayList.h"
-#include "cciList.h"
 
 // each element in the array holds a cciHashSlot, which
 // encapsulates a cciList (doubly linked list)
@@ -83,8 +82,8 @@ void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
             }
         }
     }
-    Append(l, newStr(key));
-    Append(l, value);
+    CCI_ListAppend(l, CCIValue_newStr(key));
+    CCI_ListAppend(l, value);
     tb->nkeys++;
 }
 
