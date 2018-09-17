@@ -5,34 +5,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <cciArrayList.h>
-#include <cciHashTable.h>
+#include <cci/cciArrayList.h>
+#include <cci/cciHashTable.h>
 
 #define _MAX_VALUE 0xFFFF
 
 void RunTinyTests();
 
 void populateSet(cciArrayList_t *set, size_t num) {
-    cciHashTable_t *tb = NewHashTable(num);
+    cciHashTable_t *tb = CCI_NewHashTable(num);
     uint64_t v = 0;
     for (size_t _=num; _-- ; ) {
         v = (uint64_t)random() % _MAX_VALUE;
-        while (ISVALID(IGet(tb, (uint64_t)v))) {
+        while (CCIValue_ISVALID(CCI_IGet(tb, (uint64_t)v))) {
             v = (uint64_t)random() % _MAX_VALUE;
         }
-        ISet(tb, v, newInt(1));
-        AlEmplaceBack(set, newInt(v));
+        CCI_ISet(tb, v, CCIValue_newInt(1));
+        CCI_AlEmplaceBack(set, CCIValue_newInt(v));
     }
-    DeleteHashTable(tb);
+    CCI_DeleteHashTable(tb);
 }
 
 void test_nothing() {
-    cciArrayList_t *arr = AlNew();
+    cciArrayList_t *arr = CCI_AlNew();
     populateSet(arr, 7);
     for (size_t i=0; i<arr->size; ++i) {
-        printf("%d, ", GETINT(AlGet(arr, i)));
+        printf("%d, ", CCIValue_GETINT(CCI_AlGet(arr, i)));
     }
-    AlDelete(arr);
+    CCI_AlDelete(arr);
 }
 
 int main(int argc, char **argv) {

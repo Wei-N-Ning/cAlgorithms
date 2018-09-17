@@ -2,10 +2,10 @@
 // Created by wein on 4/9/18.
 //
 
+#include <cci/cciArrayList.h>
+
 #include <math.h>
 #include <stdio.h>
-
-#include <cciArrayList.h>
 
 void RunTinyTests();
 

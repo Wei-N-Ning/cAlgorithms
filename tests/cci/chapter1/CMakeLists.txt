@@ -12,7 +12,7 @@ add_test(NAME "CCI::Chapter1::ListTests" COMMAND cciListTests)
 
 add_executable(cciListPerf test_list_perf.c)
 target_link_libraries(cciListPerf cciList)
-add_test(NAME "CCI:Chapter1::ListPerf" COMMAND cciListPerf)
+add_test(NAME "CCI::Chapter1::ListPerf" COMMAND cciListPerf)
 
 
 add_tinytest_executable(cciStackTests test_stack.c)
