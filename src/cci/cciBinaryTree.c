@@ -11,7 +11,7 @@
 #define MAX_NUM_NODES 20000
 
 static cciBinTreeNode_t *nodePool = NULL;
-static ssize_t nodeIndex = 0;
+static int nodeIndex = 0;
 
 cciBinTreeNode_t *CreateBinTreeNode(cciBinTreeNode_t *parent) {
     assert(nodePool && (nodeIndex != -1) && (nodeIndex <= MAX_NUM_NODES));
