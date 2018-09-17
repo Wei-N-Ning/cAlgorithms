@@ -8,8 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <cciHashTable.h>
-#include <cciArrayList.h>
+#include <cci/cciHashTable.h>
+#include <cci/cciArrayList.h>
 
 #define MAX_LABEL_LENGTH 16
 

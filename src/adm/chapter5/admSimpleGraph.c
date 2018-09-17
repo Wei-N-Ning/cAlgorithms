@@ -11,12 +11,12 @@
 
 #include <admToStr.h>
 #include <admReadline.h>
-#include <cciValue.h>
-#include <cciList.h>
-#include <cciHashTable.h>
-#include <cciArrayList.h>
-#include <cciQueue.h>
-#include <cciStack.h>
+#include <cci/cciValue.h>
+#include <cci/cciList.h>
+#include <cci/cciHashTable.h>
+#include <cci/cciArrayList.h>
+#include <cci/cciQueue.h>
+#include <cci/cciStack.h>
 
 struct AdmSimpleNode {
     char label[MAX_LABEL_LENGTH];
@@ -36,8 +36,8 @@ struct AdmSimpleEdge {
 
 admSimpleNode_t *CreateAdmSimpleNode() {
     admSimpleNode_t *n = malloc(sizeof(admSimpleNode_t));
-    n->to = AlNew();
-    n->value = invalid();
+    n->to = CCI_AlNew();
+    n->value = CCIValue_invalid();
     n->preserved = NULL;
     n->componentId = -1;
     memset(n->label, 0, MAX_LABEL_LENGTH);
@@ -74,8 +74,8 @@ admSimpleEdge_t *AdmEdge(admSimpleNode_t *n, size_t idx) {
     if (idx > n->to->size - 1) {
         return NULL;
     }
-    v = AlGet(n->to, idx);
-    return GETPOINTER(v, admSimpleEdge_t);
+    v = CCI_AlGet(n->to, idx);
+    return CCIValue_GETPOINTER(v, admSimpleEdge_t);
 }
 
 admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx) {
@@ -88,7 +88,7 @@ admSimpleNode_t *AdmToNode(admSimpleNode_t *n, size_t idx) {
 
 int AdmConnectTo(admSimpleNode_t *this, admSimpleNode_t *to_) {
     admSimpleEdge_t *e = CreateAdmSimpleEdge(this, to_, 0);
-    AlEmplaceBack(this->to, newPointer(e));
+    CCI_AlEmplaceBack(this->to, CCIValue_newPointer(e));
     return 1;
 }
 
@@ -102,11 +102,11 @@ void DeleteAdmSimpleNode(admSimpleNode_t *n) {
     admSimpleEdge_t *e = NULL;
     if (n->to) {
         for (size_t i=0; i<sz; ++i) {
-            v = AlGet(n->to, i);
-            e = GETPOINTER(v, admSimpleEdge_t);
+            v = CCI_AlGet(n->to, i);
+            e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
             DeleteAdmSimpleEdge(e);
         }
-        AlDelete(n->to);
+        CCI_AlDelete(n->to);
     }
     free(n);
 }
@@ -128,7 +128,7 @@ struct AdmSimpleGraph {
 };
 
 static void killerVisitor(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
-    admSimpleNode_t *n = GETPOINTER((*v), admSimpleNode_t);
+    admSimpleNode_t *n = CCIValue_GETPOINTER((*v), admSimpleNode_t);
     if (n) {
         DeleteAdmSimpleNode(n);
     }
@@ -137,24 +137,24 @@ static void killerVisitor(size_t index, size_t slotPos, cciValue_t *k, cciValue_
 admSimpleGraph_t *CreateAdmSimpleGraph(size_t capacity) {
     admSimpleGraph_t *G = malloc(sizeof(admSimpleGraph_t));
     G->size = 0;
-    G->nodeByLabel = NewHashTable(capacity);
+    G->nodeByLabel = CCI_NewHashTable(capacity);
     return G;
 }
 
 admSimpleNode_t *GetOrCreateNode(admSimpleGraph_t *G, uint64_t k) {
-    admSimpleNode_t *n = GETPOINTER(IGet(G->nodeByLabel, k), admSimpleNode_t);
+    admSimpleNode_t *n = CCIValue_GETPOINTER(CCI_IGet(G->nodeByLabel, k), admSimpleNode_t);
     if (n) {
         return n;
     }
     n = CreateAdmSimpleNode();
     n->weight = k;
-    SSet(G->nodeByLabel, n->label, newPointer(n));
+    CCI_SSet(G->nodeByLabel, n->label, CCIValue_newPointer(n));
     G->size += 1;
     return n;
 }
 
 admSimpleNode_t * GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label) {
-    admSimpleNode_t *n = GETPOINTER(SGet(G->nodeByLabel, label), admSimpleNode_t);
+    admSimpleNode_t *n = CCIValue_GETPOINTER(CCI_SGet(G->nodeByLabel, label), admSimpleNode_t);
     if (n) {
         return n;
     }
@@ -165,17 +165,17 @@ admSimpleNode_t * GetOrCreateLabelledNode(admSimpleGraph_t *G, const char *label
     }
     memcpy(n->label, label, sz);
     n->weight = 0;
-    SSet(G->nodeByLabel, n->label, newPointer(n));
+    CCI_SSet(G->nodeByLabel, n->label, CCIValue_newPointer(n));
     G->size += 1;
     return n;
 }
 
 admSimpleNode_t *GetAdmNode(admSimpleGraph_t *G, uint64_t k) {
-    return GETPOINTER(IGet(G->nodeByLabel, k), admSimpleNode_t);
+    return CCIValue_GETPOINTER(CCI_IGet(G->nodeByLabel, k), admSimpleNode_t);
 }
 
 admSimpleNode_t *GetLabelledNode(admSimpleGraph_t *G, const char *label) {
-    return GETPOINTER(SGet(G->nodeByLabel, label), admSimpleNode_t);
+    return CCIValue_GETPOINTER(CCI_SGet(G->nodeByLabel, label), admSimpleNode_t);
 }
 
 size_t AdmGraphSize(admSimpleGraph_t *G) {
@@ -183,18 +183,18 @@ size_t AdmGraphSize(admSimpleGraph_t *G) {
 }
 
 void AdmGraphIter(admSimpleGraph_t *G, void *callback) {
-    callback_t cb = (callback_t)callback;
-    Iterate(G->nodeByLabel, cb);
+    cci_ht_callback_t cb = (cci_ht_callback_t)callback;
+    CCI_HTIterate(G->nodeByLabel, cb);
 }
 
 void AdmGetNodes(admSimpleGraph_t *G, cciArrayList_t *o_nodes) {
-    GetValues(G->nodeByLabel, o_nodes);
+    CCI_HTGetValues(G->nodeByLabel, o_nodes);
 }
 
 void DeleteAdmSimpleGraph(admSimpleGraph_t *G) {
     if (G->nodeByLabel) {
-        Iterate(G->nodeByLabel, killerVisitor);
-        DeleteHashTable(G->nodeByLabel);
+        CCI_HTIterate(G->nodeByLabel, killerVisitor);
+        CCI_DeleteHashTable(G->nodeByLabel);
     }
     free(G);
 }
@@ -206,21 +206,21 @@ void AdmGraphBFS(admSimpleGraph_t *G,
                  cciHashTable_t *BFSTree,
                  admNodeVisitor_t nodeVisitor,
                  admConnVisitor_t connVisitor) {
-    cciQueue_t *Q =  CreateCCIQueue();
-    cciHashTable_t *discovered = NewHashTable(AdmGraphSize(G));
+    cciQueue_t *Q =  CCI_CreateQueue();
+    cciHashTable_t *discovered = CCI_NewHashTable(AdmGraphSize(G));
     cciValue_t v;
     admSimpleNode_t *this = NULL;
     admSimpleEdge_t *conn = NULL;
     admSimpleNode_t *connected = NULL;
     size_t nconns = 0;
-    Enqueue(Q, newPointer(n));
-    ISet(discovered, (uint64_t)n, newPointer(n));
+    CCI_Enqueue(Q, CCIValue_newPointer(n));
+    CCI_ISet(discovered, (uint64_t)n, CCIValue_newPointer(n));
     if (BFSTree) {
-        ISet(BFSTree, (uint64_t)n, invalid());
+        CCI_ISet(BFSTree, (uint64_t)n, CCIValue_invalid());
     }
-    while (! CCIQueueEmpty(Q)) {
-        v = Dequeue(Q);
-        this = GETPOINTER(v, admSimpleNode_t);
+    while (! CCI_QueueEmpty(Q)) {
+        v = CCI_Dequeue(Q);
+        this = CCIValue_GETPOINTER(v, admSimpleNode_t);
         if (nodeVisitor) {
             nodeVisitor(this);
         }
@@ -228,34 +228,34 @@ void AdmGraphBFS(admSimpleGraph_t *G,
         for (size_t i=0; i<nconns; ++i) {
             conn = AdmEdge(this, i);
             connected = AdmEdgeTo(conn);
-            if (ISVALID(IGet(discovered, (uint64_t)connected))) {
+            if (CCIValue_ISVALID(CCI_IGet(discovered, (uint64_t)connected))) {
                 // circular dependency detected
                 continue;
             } else {
-                ISet(discovered, (uint64_t)connected, newInt(1));
+                CCI_ISet(discovered, (uint64_t)connected, CCIValue_newInt(1));
             }
             if (connVisitor) {
                 connVisitor(conn);
             }
-            Enqueue(Q, newPointer(connected));
+            CCI_Enqueue(Q, CCIValue_newPointer(connected));
             if (BFSTree) {
-                ISet(BFSTree, (uint64_t)connected, newPointer(this));
+                CCI_ISet(BFSTree, (uint64_t)connected, CCIValue_newPointer(this));
             }
         }
     }
-    DeleteCCIQueue(Q);
-    DeleteHashTable(discovered);
+    CCI_DeleteQueue(Q);
+    CCI_DeleteHashTable(discovered);
 }
 
 admDFSState_t *CreateDFSState(size_t sz) {
     admDFSState_t *state = malloc(sizeof(admDFSState_t));
-    state->DFSTree = NewHashTable(sz);
-    state->Entries = NewHashTable(sz);
-    state->Exits = NewHashTable(sz);
-    state->TreeNodes = AlNew();
-    state->TreeEdges = AlNew();
-    state->BackEdges = AlNew();
-    state->StrongComponents = AlNew();
+    state->DFSTree = CCI_NewHashTable(sz);
+    state->Entries = CCI_NewHashTable(sz);
+    state->Exits = CCI_NewHashTable(sz);
+    state->TreeNodes = CCI_AlNew();
+    state->TreeEdges = CCI_AlNew();
+    state->BackEdges = CCI_AlNew();
+    state->StrongComponents = CCI_AlNew();
     state->time = 0;
     return state;
 }
@@ -263,25 +263,25 @@ admDFSState_t *CreateDFSState(size_t sz) {
 void DeleteDFSState(admDFSState_t *state) {
     cciValue_t v;
     cciArrayList_t *arr = NULL;
-    DeleteHashTable(state->DFSTree);
-    DeleteHashTable(state->Entries);
-    DeleteHashTable(state->Exits);
-    AlDelete(state->TreeNodes);
-    AlDelete(state->TreeEdges);
-    AlDelete(state->BackEdges);
+    CCI_DeleteHashTable(state->DFSTree);
+    CCI_DeleteHashTable(state->Entries);
+    CCI_DeleteHashTable(state->Exits);
+    CCI_AlDelete(state->TreeNodes);
+    CCI_AlDelete(state->TreeEdges);
+    CCI_AlDelete(state->BackEdges);
     for (size_t i=state->StrongComponents->size; i--; ) {
-        v = AlGet(state->StrongComponents, i);
-        arr = GETPOINTER(v, cciArrayList_t);
-        AlDelete(arr);
+        v = CCI_AlGet(state->StrongComponents, i);
+        arr = CCIValue_GETPOINTER(v, cciArrayList_t);
+        CCI_AlDelete(arr);
     }
-    AlDelete(state->StrongComponents);
+    CCI_AlDelete(state->StrongComponents);
     free(state);
 }
 
 static int isBackEdge(cciHashTable_t *Entries, admSimpleEdge_t *e) {
-    cciValue_t tFrom = IGet(Entries, (uint64_t)(e->from));
-    cciValue_t tTo = IGet(Entries, (uint64_t)(e->to));
-    return (GETINT(tFrom) > (GETINT(tTo))) ? 1: 0;
+    cciValue_t tFrom = CCI_IGet(Entries, (uint64_t)(e->from));
+    cciValue_t tTo = CCI_IGet(Entries, (uint64_t)(e->to));
+    return (CCIValue_GETINT(tFrom) > (CCIValue_GETINT(tTo))) ? 1: 0;
 }
 
 void AdmGraphDFS(admSimpleGraph_t *G,
@@ -294,72 +294,72 @@ void AdmGraphDFS(admSimpleGraph_t *G,
     admSimpleEdge_t tmp;
     cciValue_t u, v;
     cciValue_t *p;
-    cciArrayList_t *earlyStack = AlNew();
-    cciArrayList_t *lateStack = AlNew();
-    cciArrayList_t *nonTreeEdges = AlNew();
+    cciArrayList_t *earlyStack = CCI_AlNew();
+    cciArrayList_t *lateStack = CCI_AlNew();
+    cciArrayList_t *nonTreeEdges = CCI_AlNew();
 
     tmp.from = NULL;
     tmp.to = start;
-    AlEmplaceBack(earlyStack, newPointer(&tmp));
+    CCI_AlEmplaceBack(earlyStack, CCIValue_newPointer(&tmp));
 
     while (earlyStack->size) {
-        conn = GETPOINTER(AlPopBack(earlyStack), admSimpleEdge_t);
+        conn = CCIValue_GETPOINTER(CCI_AlPopBack(earlyStack), admSimpleEdge_t);
         this = conn->to;
 
         // "has it been discovered" test
-        p = IGetOrCreate(state->Entries, (uint64_t)this);
-        if (ISVALID((*p))) {
+        p = CCI_IGetOrCreate(state->Entries, (uint64_t)this);
+        if (CCIValue_ISVALID((*p))) {
             if (conn->from) {
-                AlEmplaceBack(nonTreeEdges, newPointer(conn));
+                CCI_AlEmplaceBack(nonTreeEdges, CCIValue_newPointer(conn));
             }
             continue;
         }
-        SETINT((*p), state->time++);
+        CCIValue_SETINT((*p), state->time++);
 
         // processing (for node, it's equivalent to process_vertex_early() in ADM)
         if (nodeVisitor) {
             nodeVisitor(this, state);
         }
-        AlEmplaceBack(state->TreeNodes, newPointer(this));
+        CCI_AlEmplaceBack(state->TreeNodes, CCIValue_newPointer(this));
         if (connVisitor && conn->from) {
             connVisitor(conn, state);
         }
 
         // tree edges discover new node
         if (conn->from) {
-            AlEmplaceBack(state->TreeEdges, newPointer(conn));
+            CCI_AlEmplaceBack(state->TreeEdges, CCIValue_newPointer(conn));
         }
 
         // store nodes in another stack to be re-processed in a reverse order
-        AlEmplaceBack(lateStack, newPointer(this));
+        CCI_AlEmplaceBack(lateStack, CCIValue_newPointer(this));
         if (conn->from) {
-            ISet(state->DFSTree, (uint64_t)conn->to, newPointer(conn->from));
+            CCI_ISet(state->DFSTree, (uint64_t)conn->to, CCIValue_newPointer(conn->from));
         }
 
         // create new "stack frames"
         for (size_t i=AdmNumToNodes(this); i--; ) {
             conn = AdmEdge(this, i);
-            AlEmplaceBack(earlyStack, newPointer(conn));
+            CCI_AlEmplaceBack(earlyStack, CCIValue_newPointer(conn));
         }
     }
 
     // back edges
     for (size_t i=0; i<nonTreeEdges->size; ++i) {
-        u = AlGet(nonTreeEdges, i);
-        conn = GETPOINTER(u, admSimpleEdge_t);
+        u = CCI_AlGet(nonTreeEdges, i);
+        conn = CCIValue_GETPOINTER(u, admSimpleEdge_t);
         if (isBackEdge(state->Entries, conn)) {
-            AlEmplaceBack(state->BackEdges, u);
+            CCI_AlEmplaceBack(state->BackEdges, u);
         }
     }
 
     // it is equivalent to process_vertex_late() in ADM
     for (size_t i=lateStack->size; i-- ; ) {
-        this = GETPOINTER(AlGet(lateStack, i), admSimpleNode_t);
-        ISet(state->Exits, (uint64_t)this, newInt(state->time++));
+        this = CCIValue_GETPOINTER(CCI_AlGet(lateStack, i), admSimpleNode_t);
+        CCI_ISet(state->Exits, (uint64_t)this, CCIValue_newInt(state->time++));
     }
-    AlDelete(nonTreeEdges);
-    AlDelete(lateStack);
-    AlDelete(earlyStack);
+    CCI_AlDelete(nonTreeEdges);
+    CCI_AlDelete(lateStack);
+    CCI_AlDelete(earlyStack);
 }
 
 void AdmGraphRecurDFS(admSimpleGraph_t *G,
@@ -370,31 +370,31 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
     size_t nconns = AdmNumToNodes(start);
     admSimpleNode_t *connected = NULL;
     admSimpleEdge_t *conn = NULL;
-    ISet(state->Entries, (uint64_t)start, newInt(state->time++));
+    CCI_ISet(state->Entries, (uint64_t)start, CCIValue_newInt(state->time++));
     if (nodeVisitor) {
         nodeVisitor(start, state);
     }
-    AlEmplaceBack(state->TreeNodes, newPointer(start));
+    CCI_AlEmplaceBack(state->TreeNodes, CCIValue_newPointer(start));
     for (size_t i=0; i<nconns; ++i) {
         conn = AdmEdge(start, i);
         connected = AdmEdgeTo(conn);
-        if (ISVALID(IGet(state->Entries, (uint64_t)connected))) {
+        if (CCIValue_ISVALID(CCI_IGet(state->Entries, (uint64_t)connected))) {
             // circular dependency detected
 
             if (GETINT(IGet(state->Entries, (uint64_t)(conn->from))) > \
                 GETINT(IGet(state->Entries, (uint64_t)(conn->to)))) {
-                AlEmplaceBack(state->BackEdges, newPointer(conn));
+                CCI_AlEmplaceBack(state->BackEdges, CCIValue_newPointer(conn));
             }
             continue;
         }
         if (connVisitor) {
             connVisitor(conn, state);
         }
-        AlEmplaceBack(state->TreeEdges, newPointer(conn));
-        ISet(state->DFSTree, (uint64_t)connected, newPointer(start));
+        CCI_AlEmplaceBack(state->TreeEdges, CCIValue_newPointer(conn));
+        CCI_ISet(state->DFSTree, (uint64_t)connected, CCIValue_newPointer(start));
         AdmGraphRecurDFS(G, connected, state, nodeVisitor, connVisitor);
     }
-    ISet(state->Exits, (uint64_t)start, newInt(state->time++));
+    CCI_ISet(state->Exits, (uint64_t)start, CCIValue_newInt(state->time++));
 }
 
 
@@ -406,7 +406,7 @@ int AdmTopoSort(admSimpleGraph_t *G, admSimpleNode_t *start, cciArrayList_t *o_n
         ok = 1;
         if (o_nodes) {
             for (size_t i=0; i<state->TreeNodes->size; ++i) {
-                AlEmplaceBack(o_nodes, AlGet(state->TreeNodes, i));
+                CCI_AlEmplaceBack(o_nodes, CCI_AlGet(state->TreeNodes, i));
             }
         }
     }
