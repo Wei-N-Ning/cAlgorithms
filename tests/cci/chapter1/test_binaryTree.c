@@ -53,9 +53,11 @@ cciBinTreeNode_t *insert(cciBinTreeNode_t *n, int x) {
 }
 
 cciBinTreeNode_t *batchInsert(cciBinTreeNode_t *n, const int *arr, size_t num) {
+    cciBinTreeNode_t* newNode = NULL;
     for (int i=0; i<num; ++i) {
-        BinTreeInsert(n, CCIValue_newInt(arr[i]), NULL);
+        newNode = BinTreeInsert(n, CCIValue_newInt(arr[i]), NULL);
     }
+    return newNode;
 }
 
 void batchRemove(cciBinTreeNode_t *n, const int *arr, size_t num) {

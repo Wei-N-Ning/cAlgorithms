@@ -22,7 +22,7 @@ void CCI_AlDelete(cciArrayList_t *al) {
 }
 
 static int validateIndex(cciArrayList_t *al, size_t index) {
-    if (index >= al->size || index < 0) {
+    if (index >= al->size) {
         return 0;
     }
     return 1;
