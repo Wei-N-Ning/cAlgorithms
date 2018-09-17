@@ -6,18 +6,18 @@
 #include <stdio.h>
 
 #include <admMergesort.h>
-#include <cciArrayList.h>
+#include <cci/cciArrayList.h>
 
 void RunTinyTests();
 
 void test_sortExpectNewSequence() {
-    cciArrayList_t *al = AlNew();
+    cciArrayList_t *al = CCI_AlNew();
     int arr[8] = {3, 1, 4, 15, 9, 26, 5, 35};
     int expected[8] = {1, 3, 4, 5, 9, 15, 26, 35};
-    for (int i=8; i--; AlEmplaceBack(al, newInt(arr[i]))) ;
+    for (int i=8; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(arr[i]))) ;
     Mergesort(al);
-    for (size_t i=8; i--; assert(GETINT(AlGet(al, i)) == expected[i])) ;
-    AlDelete(al);
+    for (size_t i=8; i--; assert(CCIValue_GETINT(CCI_AlGet(al, i)) == expected[i])) ;
+    CCI_AlDelete(al);
 }
 
 int main(int argc, char **argv) {

@@ -8,9 +8,9 @@ static void _swap(cciArrayList_t *al, int from, int to) {
     if (from == to) {
         return;
     }
-    cciValue_t tmp = AlGet(al, from);
-    AlSet(al, from, AlGet(al, to));
-    AlSet(al, to, tmp);
+    cciValue_t tmp = CCI_AlGet(al, from);
+    CCI_AlSet(al, from, CCI_AlGet(al, to));
+    CCI_AlSet(al, to, tmp);
 }
 
 // .........pivot
@@ -18,10 +18,10 @@ static void _swap(cciArrayList_t *al, int from, int to) {
 // --> i (placing the values lower than "pivot")
 // ..pivot
 int LomutoPartition(cciArrayList_t *al, int lo, int hi) {
-    cciValue_t toCompare = AlGet(al, hi);
+    cciValue_t toCompare = CCI_AlGet(al, hi);
     int i = lo - 1;
     for (int j=lo; j < hi; ++j) {
-        if (GETINT(AlGet(al, j)) < GETINT(toCompare)) {
+        if (CCIValue_GETINT(CCI_AlGet(al, j)) < CCIValue_GETINT(toCompare)) {
             i += 1;
             _swap(al, i, j);
         }
@@ -31,14 +31,14 @@ int LomutoPartition(cciArrayList_t *al, int lo, int hi) {
 }
 
 int HoarePartition(cciArrayList_t *al, int lo, int hi) {
-    cciValue_t toCompare = AlGet(al, lo);
+    cciValue_t toCompare = CCI_AlGet(al, lo);
     int lhs = lo;
     int rhs = hi;
     while (1) {
-        while (lhs < rhs && GETINT(AlGet(al, lhs)) < GETINT(toCompare)) {
+        while (lhs < rhs && CCIValue_GETINT(CCI_AlGet(al, lhs)) < CCIValue_GETINT(toCompare)) {
             lhs += 1;
         }
-        while (lhs < rhs && GETINT(AlGet(al, rhs)) > GETINT(toCompare)) {
+        while (lhs < rhs && CCIValue_GETINT(CCI_AlGet(al, rhs)) > CCIValue_GETINT(toCompare)) {
             rhs -= 1;
         }
         if (lhs == rhs) {

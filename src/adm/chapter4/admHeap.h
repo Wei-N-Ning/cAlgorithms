@@ -5,9 +5,10 @@
 #ifndef CCISOLUTIONSC_ADMHEAP_H
 #define CCISOLUTIONSC_ADMHEAP_H
 
+#include <cci/cciValue.h>
+#include <cci/cciArrayList.h>
+
 #include <stddef.h>
-#include <cciValue.h>
-#include <cciArrayList.h>
 
 #define ADM_HP_INVALID_INDEX (-1)
 

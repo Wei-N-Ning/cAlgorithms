@@ -2,7 +2,7 @@
 // Created by wein on 4/1/18.
 //
 
-#include <cciArrayList.h>
+#include <cci/cciArrayList.h>
 
 #ifndef CCISOLUTIONSC_ADMQUICKSORT_H
 #define CCISOLUTIONSC_ADMQUICKSORT_H

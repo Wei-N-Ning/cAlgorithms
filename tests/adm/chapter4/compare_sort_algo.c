@@ -6,17 +6,18 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <cciArrayList.h>
 #include <admHeap.h>
 #include <admMergesort.h>
 #include <admQuicksort.h>
 
+#include <cci/cciArrayList.h>
+
 void populateAl(cciArrayList_t *al, size_t sz) {
-    for (size_t i=sz; i--; AlEmplaceBack(al, newInt(random()))) ;
+    for (size_t i=sz; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(random()))) ;
 }
 
 void resetAl(cciArrayList_t *al, size_t sz) {
-    for (size_t i=sz; i--; AlSet(al, i, newInt(random()))) ;
+    for (size_t i=sz; i--; CCI_AlSet(al, i, CCIValue_newInt(random()))) ;
 }
 
 double doMergesort(cciArrayList_t *al) {
@@ -44,11 +45,11 @@ double doQuicksortHoarse(cciArrayList_t *al) {
 }
 
 void oneRound(size_t workload) {
-    cciArrayList_t *al = AlNew();
+    cciArrayList_t *al = CCI_AlNew();
     double mHeap;
     double mMerge;
     double mQuick;
-    AlReserve(al, workload);
+    CCI_AlReserve(al, workload);
     populateAl(al, workload);
     mMerge = doMergesort(al);
 

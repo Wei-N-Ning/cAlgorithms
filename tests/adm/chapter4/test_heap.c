@@ -47,8 +47,8 @@ void test_insertExpectNewSequence() {
     int out[16];
     for (size_t workload=4; workload < 14; ++workload) {
         hp = CreateAdmHeap(workload);
-        for (size_t i=workload; i--; AdmHeapInsert(hp, newInt(arr[i]))) ;
-        for (size_t i=workload; i--; out[workload - 1 - i] = GETINT(AdmHeapPop(hp))) ;
+        for (size_t i=workload; i--; AdmHeapInsert(hp, CCIValue_newInt(arr[i]))) ;
+        for (size_t i=workload; i--; out[workload - 1 - i] = CCIValue_GETINT(AdmHeapPop(hp))) ;
         DeleteAdmHeap(hp);
         assert(intSeqSorted(out, workload));
     }
@@ -66,37 +66,37 @@ void test_heapsortInts() {
 }
 
 void test_heapify() {
-    cciArrayList_t *al = AlNew();
+    cciArrayList_t *al = CCI_AlNew();
     int arr[7] = {3, 1, 4, 15, 9, 26, 53};
-    for (size_t i=7; i--; AlEmplaceBack(al, newInt(arr[i]))) ;
+    for (size_t i=7; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(arr[i]))) ;
     Heapify(al);
-    for (size_t i=0; i < 7; printf("%d ", GETINT(AlGet(al, i))), i++) ;
-    AlDelete(al);
+    for (size_t i=0; i < 7; printf("%d ", CCIValue_GETINT(CCI_AlGet(al, i))), i++) ;
+    CCI_AlDelete(al);
 }
 
 static int assertAlAscendingOrder(cciArrayList_t *al) {
-    for (size_t i=0; i<al->size - 1; assert(GETINT(AlGet(al, i)) <= GETINT(AlGet(al, i + 1))), i++) ;
+    for (size_t i=0; i<al->size - 1; assert(CCIValue_GETINT(CCI_AlGet(al, i)) <= CCIValue_GETINT(CCI_AlGet(al, i + 1))), i++) ;
 }
 
 void test_heapsortArrayList() {
-    cciArrayList_t *al = AlNew();
+    cciArrayList_t *al = CCI_AlNew();
     // empty
     AdmHeapsortAl(al, AdmHeapDirection_Ascending);
     assert(0 == al->size);
 
     // one element
-    AlEmplaceBack(al, newInt(1));
+    CCI_AlEmplaceBack(al, CCIValue_newInt(1));
     AdmHeapsortAl(al, AdmHeapDirection_Ascending);
     assert(1 == al->size);
-    assert(ISVALID(AlGet(al, 0)));
-    AlPopBack(al);
+    assert(CCIValue_ISVALID(CCI_AlGet(al, 0)));
+    CCI_AlPopBack(al);
 
     // many element
     int arr[7] = {3, 1, 4, 15, 9, 26, 53};
-    for (size_t i=7; i--; AlEmplaceBack(al, newInt(arr[i]))) ;
+    for (size_t i=7; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(arr[i]))) ;
     AdmHeapsortAl(al, AdmHeapDirection_Ascending);
     assertAlAscendingOrder(al);
-    AlDelete(al);
+    CCI_AlDelete(al);
 }
 
 int main(int argc, char **argv) {

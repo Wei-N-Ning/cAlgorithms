@@ -37,18 +37,18 @@ void heapCreationTime() {
 
         hp = CreateAdmHeap(16);
         start = clock();
-        for (size_t i=workload; i--; AdmHeapInsert(hp, newInt(random()))) ;
+        for (size_t i=workload; i--; AdmHeapInsert(hp, CCIValue_newInt(random()))) ;
         end = clock();
         timeInsert = end - start;
         DeleteAdmHeap(hp);
 
-        al = AlNew();
-        for (size_t i=workload; i--; AlEmplaceBack(al, newInt(random()))) ;
+        al = CCI_AlNew();
+        for (size_t i=workload; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(random()))) ;
         start = clock();
         Heapify(al);
         end = clock();
         timeHeapify = end - start;
-        AlDelete(al);
+        CCI_AlDelete(al);
 
         printf("%d %f %f\n", (int)workload, timeInsert, timeHeapify);
     }

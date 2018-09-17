@@ -10,5 +10,6 @@ target_include_directories(admChapter4
     .)
 target_link_libraries(admChapter4
     PUBLIC
-    cciChapter1
+    cciArrayList
+    cciQueue
     )

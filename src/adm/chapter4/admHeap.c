@@ -4,10 +4,10 @@
 
 #include "admHeap.h"
 
+#include <cci/cciArrayList.h>
+
 #include <stdlib.h>
 #include <stdio.h>
-
-#include <cciArrayList.h>
 #include <assert.h>
 
 struct AdmHeap {
@@ -17,9 +17,9 @@ struct AdmHeap {
 
 admHeap_t *CreateAdmHeap(size_t capacity) {
     admHeap_t *hp = malloc(sizeof(admHeap_t));
-    hp->al = AlNew();
+    hp->al = CCI_AlNew();
     hp->size = 0;
-    AlReserve(hp->al, capacity);
+    CCI_AlReserve(hp->al, capacity);
     return hp;
 }
 
@@ -28,7 +28,7 @@ void DeleteAdmHeap(admHeap_t *hp) {
         return;
     }
     if (hp->al) {
-        AlDelete(hp->al);
+        CCI_AlDelete(hp->al);
     }
     free(hp);
 }
@@ -50,14 +50,14 @@ int AdmLeftChildIndex(const admHeap_t *pq, int idx) {
 }
 
 cciValue_t AdmHeapGet(const admHeap_t *pq, int idx) {
-    return AlGet(pq->al, idx);
+    return CCI_AlGet(pq->al, idx);
 }
 
 static void _swap(admHeap_t *pq, int from, int to) {
     cciValue_t tmp = AdmHeapGet(pq, from);
-    assert(ISVALID(tmp));
-    AlSet(pq->al, from, AlGet(pq->al, to));
-    AlSet(pq->al, to, tmp);
+    assert(CCIValue_ISVALID(tmp));
+    CCI_AlSet(pq->al, from, CCI_AlGet(pq->al, to));
+    CCI_AlSet(pq->al, to, tmp);
 }
 
 static void bubbleUp(admHeap_t *pq, int idx) {
@@ -65,7 +65,8 @@ static void bubbleUp(admHeap_t *pq, int idx) {
     if (ADM_HP_INVALID_INDEX == parentIndex) {
         return;
     }
-    if (GETINT(AdmHeapGet(pq, parentIndex)) > GETINT(AdmHeapGet(pq, idx))) {
+    if (CCIValue_GETINT(AdmHeapGet(pq, parentIndex)) >
+        CCIValue_GETINT(AdmHeapGet(pq, idx))) {
         _swap(pq, parentIndex, idx);
         bubbleUp(pq, parentIndex);
     }
@@ -76,14 +77,15 @@ static void bubbleUp_max(admHeap_t *pq, int idx) {
     if (ADM_HP_INVALID_INDEX == parentIndex) {
         return;
     }
-    if (GETINT(AdmHeapGet(pq, parentIndex)) < GETINT(AdmHeapGet(pq, idx))) {
+    if (CCIValue_GETINT(AdmHeapGet(pq, parentIndex)) <
+        CCIValue_GETINT(AdmHeapGet(pq, idx))) {
         _swap(pq, parentIndex, idx);
         bubbleUp(pq, parentIndex);
     }
 }
 
 void AdmHeapInsert(admHeap_t *pq, cciValue_t v) {
-    AlEmplaceBack(pq->al, v);
+    CCI_AlEmplaceBack(pq->al, v);
     pq->size += 1;
     bubbleUp(pq, pq->size - 1);
 }
@@ -94,7 +96,7 @@ static int _min(admHeap_t *pq, int lhs, int rhs) {
     if (rhs > pq->size - 1) {
         return lhs;
     }
-    if (GETINT(l) < GETINT(r)) {
+    if (CCIValue_GETINT(l) < CCIValue_GETINT(r)) {
         return lhs;
     }
     return rhs;
@@ -106,7 +108,7 @@ static int _max(admHeap_t *pq, int lhs, int rhs) {
     if (rhs > pq->size - 1) {
         return lhs;
     }
-    if (GETINT(l) > GETINT(r)) {
+    if (CCIValue_GETINT(l) > CCIValue_GETINT(r)) {
         return lhs;
     }
     return rhs;
@@ -140,7 +142,7 @@ static void bubbleDown_max(admHeap_t *pq, int parentIdx) {
 
 cciValue_t AdmHeapPop(admHeap_t *pq) {
     if (pq->size <= 0) {
-        return invalid();
+        return CCIValue_invalid();
     }
     cciValue_t r = AdmHeapGet(pq, 0);
     _swap(pq, 0, pq->size - 1);
@@ -158,7 +160,7 @@ cciValue_t AdmHeapPop(admHeap_t *pq) {
 
 cciValue_t AdmHeapPop_max(admHeap_t *pq) {
     if (pq->size <= 0) {
-        return invalid();
+        return CCIValue_invalid();
     }
     cciValue_t r = AdmHeapGet(pq, 0);
     _swap(pq, 0, pq->size - 1);
@@ -169,8 +171,8 @@ cciValue_t AdmHeapPop_max(admHeap_t *pq) {
 
 void AdmHeapsortInts(int *ins, size_t sz) {
     admHeap_t *hp = CreateAdmHeap(sz);
-    for (size_t i=sz; i--; AdmHeapInsert(hp, newInt(ins[i]))) ;
-    for (size_t i=sz; i--; ins[sz - 1 - i] = GETINT(AdmHeapPop(hp))) ;
+    for (size_t i=sz; i--; AdmHeapInsert(hp, CCIValue_newInt(ins[i]))) ;
+    for (size_t i=sz; i--; ins[sz - 1 - i] = CCIValue_GETINT(AdmHeapPop(hp))) ;
     DeleteAdmHeap(hp);
 }
 
