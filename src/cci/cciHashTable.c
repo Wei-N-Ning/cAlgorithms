@@ -27,7 +27,7 @@ struct cciHashTable {
     size_t nkeys;
 };
 
-cciHashTable_t *NewHashTable(size_t size) {
+cciHashTable_t *CCI_NewHashTable(size_t size) {
     cciHashTable_t *tb = malloc(sizeof(cciHashTable_t));
     tb->slots = malloc(sizeof(cciHashSlot_t) * size);
     for (size_t i=0; i<size; ++i) {
@@ -38,7 +38,7 @@ cciHashTable_t *NewHashTable(size_t size) {
     return tb;
 }
 
-void DeleteHashTable(cciHashTable_t *tb) {
+void CCI_DeleteHashTable(cciHashTable_t *tb) {
     for (size_t i=0; i<tb->size; ++i) {
         CCI_DeleteList(tb->slots[i].l);
     }
@@ -61,15 +61,15 @@ static unsigned int hashString(const char *s) {
     return h;
 }
 
-size_t HashTableSize(cciHashTable_t *tb) {
+size_t CCI_HashTableSize(cciHashTable_t *tb) {
     return tb->size;
 }
 
-size_t HashTableNumKeys(cciHashTable_t *tb) {
+size_t CCI_HashTableNumKeys(cciHashTable_t *tb) {
     return tb->nkeys;
 }
 
-void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
+void CCI_SSet(cciHashTable_t *tb, char *key, cciValue_t value) {
     size_t index = hashString(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
@@ -87,7 +87,7 @@ void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
     tb->nkeys++;
 }
 
-cciValue_t SGet(cciHashTable_t *tb, const char *key) {
+cciValue_t CCI_SGet(cciHashTable_t *tb, const char *key) {
     size_t index = hashString(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
@@ -103,7 +103,7 @@ cciValue_t SGet(cciHashTable_t *tb, const char *key) {
 }
 
 // similar to Python's dict.pop() method
-cciValue_t SPop(cciHashTable_t *tb, const char *key) {
+cciValue_t CCI_SPop(cciHashTable_t *tb, const char *key) {
     size_t index = hashString(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t k;
@@ -123,7 +123,7 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key) {
     return CCIValue_invalid();
 }
 
-void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value) {
+void CCI_ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value) {
     size_t index = hashInt(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
@@ -141,7 +141,7 @@ void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value) {
     tb->nkeys += 1;
 }
 
-cciValue_t IGet(cciHashTable_t *tb, uint64_t key) {
+cciValue_t CCI_IGet(cciHashTable_t *tb, uint64_t key) {
     size_t index = hashInt(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
@@ -156,7 +156,7 @@ cciValue_t IGet(cciHashTable_t *tb, uint64_t key) {
     return CCIValue_invalid();
 }
 
-cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
+cciValue_t *CCI_IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
     size_t index = hashInt(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t svalue;
@@ -173,7 +173,7 @@ cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
     return CCI_ListAppendR(l, CCIValue_invalid());
 }
 
-cciValue_t IPop(cciHashTable_t *tb, uint64_t key) {
+cciValue_t CCI_IPop(cciHashTable_t *tb, uint64_t key) {
     size_t index = hashInt(key) % tb->size;
     cciList_t *l = tb->slots[index].l;
     cciValue_t k;
@@ -193,7 +193,7 @@ cciValue_t IPop(cciHashTable_t *tb, uint64_t key) {
     return CCIValue_invalid();
 }
 
-void Iterate(cciHashTable_t *tb, callback_t cb)  {
+void CCI_HTIterate(cciHashTable_t *tb, cci_ht_callback_t cb)  {
     cciHashSlot_t *slot;
     cciValue_t k;
     cciValue_t v;
@@ -210,7 +210,7 @@ void Iterate(cciHashTable_t *tb, callback_t cb)  {
     }
 }
 
-void GetValues(cciHashTable_t *tb, cciArrayList_t *o_values) {
+void CCI_HTGetValues(cciHashTable_t *tb, cciArrayList_t *o_values) {
     cciHashSlot_t *slot;
     cciValue_t v;
     for (size_t i=0; i<tb->size; ++i) {
@@ -222,13 +222,13 @@ void GetValues(cciHashTable_t *tb, cciArrayList_t *o_values) {
     }
 }
 
-void Metrics(
+void CCI_HTMetrics(
     cciHashTable_t *tb,
     double *o_utilization,
     double *o_chainFactor,
     double *o_collisionRate
 ) {
-    size_t sizeTotal = HashTableSize(tb);
+    size_t sizeTotal = CCI_HashTableSize(tb);
     size_t sizeUtilized = 0;
     size_t sizeCollision = 0;
     size_t longestChain = 0;

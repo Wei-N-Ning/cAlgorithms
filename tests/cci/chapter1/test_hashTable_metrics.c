@@ -26,21 +26,21 @@ struct token {
 };
 
 void populateTable(cciHashTable_t *tb) {
-    size_t size = HashTableSize(tb);
+    size_t size = CCI_HashTableSize(tb);
     struct token *tokens = malloc(sizeof(struct token) * size);
     for (size_t i=0; i<size; ++i) {
         randomSliceSUT(tokens[i].s, TOKEN_SIZE);
-        SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
+        CCI_SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
     }
     free(tokens);
 }
 
 void printMetrics(cciHashTable_t *tb) {
-    size_t size = HashTableSize(tb);
+    size_t size = CCI_HashTableSize(tb);
     double utilization = 0.0;
     double chainFactor = 0.0;
     double collisionRate = 0.0;
-    Metrics(tb, &utilization, &chainFactor, &collisionRate);
+    CCI_HTMetrics(tb, &utilization, &chainFactor, &collisionRate);
     printf("%d %f %f %f\n", (int)size, utilization, chainFactor, collisionRate);
 }
 
@@ -55,10 +55,10 @@ int main(int argc, char **argv) {
     };
     cciHashTable_t *tb = NULL;
     for (int i=0; i<numWorkloads; ++i) {
-        tb = NewHashTable(workloads[i]);
+        tb = CCI_NewHashTable(workloads[i]);
         populateTable(tb);
         printMetrics(tb);
-        DeleteHashTable(tb);
+        CCI_DeleteHashTable(tb);
     }
     return 0;
 }

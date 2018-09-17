@@ -34,13 +34,13 @@ struct token {
 // think about a better solution
 void populateTable(cciHashTable_t *tb, struct token *tokens, size_t size) {
     for (size_t i=0; i<size; ++i) {
-        SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
+        CCI_SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
     }
 }
 
 void readTable(cciHashTable_t *tb, struct token *tokens, size_t size) {
     for (size_t i=0; i<size; ++i) {
-        SGet(tb, tokens[i].s);
+        CCI_SGet(tb, tokens[i].s);
     }
 }
 
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     struct token *tokensGet = NULL;
 
     for (int i=0; i<numWorkloads; ++i) {
-        tb = NewHashTable(workloads[i]);
+        tb = CCI_NewHashTable(workloads[i]);
 
         tokensSet = malloc(sizeof(struct token) * workloads[i]);
         generateTokens(tokensSet, workloads[i]);        
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
         msecGet = end - start;
 
         printf("%d %f %f\n", (int)workloads[i], msecSet, msecGet);
-        DeleteHashTable(tb);
+        CCI_DeleteHashTable(tb);
         free(tokensGet);
         free(tokensSet);
     }
