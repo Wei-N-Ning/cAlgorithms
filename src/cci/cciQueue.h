@@ -12,16 +12,16 @@ typedef struct CCIQueue {
     cciList_t *l;
 } cciQueue_t;
 
-cciQueue_t *CreateCCIQueue();
+cciQueue_t *CCI_CreateQueue();
 
-void DeleteCCIQueue(cciQueue_t *qu);
+void CCI_DeleteQueue(cciQueue_t *qu);
 
-void Enqueue(cciQueue_t *qu, cciValue_t value);
+void CCI_Enqueue(cciQueue_t *qu, cciValue_t value);
 
-cciValue_t Dequeue(cciQueue_t *qu);
+cciValue_t CCI_Dequeue(cciQueue_t *qu);
 
-cciValue_t CCIQueueFront(cciQueue_t *qu);
+cciValue_t CCI_QueueFront(cciQueue_t *qu);
 
-int CCIQueueEmpty(cciQueue_t *qu);
+int CCI_QueueEmpty(cciQueue_t *qu);
 
 #endif //CCISOLUTIONSC_CCIQUEUE_H

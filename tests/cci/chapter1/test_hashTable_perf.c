@@ -2,7 +2,7 @@
 // Created by wein on 3/21/18.
 //
 
-#include <cciHashTable.h>
+#include <cci/cciHashTable.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,7 +34,7 @@ struct token {
 // think about a better solution
 void populateTable(cciHashTable_t *tb, struct token *tokens, size_t size) {
     for (size_t i=0; i<size; ++i) {
-        SSet(tb, tokens[i].s, newFloat(3.5));
+        SSet(tb, tokens[i].s, CCIValue_newFloat(3.5));
     }
 }
 

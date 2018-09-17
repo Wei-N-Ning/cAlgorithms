@@ -2,8 +2,8 @@
 solution 1
 
 create k Queues, 
-for each integer, Enqueue it to the corresponding Queue;
-call Dequeue in the order
+for each integer, CCI_Enqueue it to the corresponding Queue;
+call CCI_Dequeue in the order
 
 (this yields O(n) complexity, but require that k is not too large)
 

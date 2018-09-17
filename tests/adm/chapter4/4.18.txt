@@ -4,8 +4,8 @@ solution 1
 create three Queues for those colors
 for each Element:
     Examine() the color of the Element;
-    Enqueue() the element to the Queue representing its color
-call Dequeue() from red-white-blue queues
+    CCI_Enqueue() the element to the Queue representing its color
+call CCI_Dequeue() from red-white-blue queues
 
 (this will preserve the relative order within each color group)
 

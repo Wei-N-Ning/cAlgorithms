@@ -2,21 +2,21 @@
 // Created by wein on 3/20/18.
 //
 
+#include <cci/cciStack.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include <cciStack.h>
-
 void doPush(cciStack_t *st, size_t num) {
     for (int i=0; i<num; ++i) {
-        CCIStackPush(st, newInt(i));
+        CCI_StackPush(st, CCIValue_newInt(i));
     }
 }
 
 void doPop(cciStack_t *st, size_t num) {
     for (size_t i=0; i<num; ++i) {
-        CCIStackPop(st);
+        CCI_StackPop(st);
     }
 }
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     for (size_t i=0; i<num; ++i) {
 
-        st = CreateCCIStack(0);
+        st = CCI_CreateStack(0);
         start = clock();
         doPush(st, workloads[i]);
         end = clock();
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         doPop(st, workloads[i]);
         end = clock();
         msecPop = end - start;
-        DeleteCCIStack(st);
+        CCI_DeleteStack(st);
 
         printf("%d %f %f\n", (int)workloads[i], msecPush, msecPop);
     }

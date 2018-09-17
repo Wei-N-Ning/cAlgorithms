@@ -2,21 +2,21 @@
 // Created by wein on 3/20/18.
 //
 
+#include <cci/cciQueue.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include <cciQueue.h>
-
-void doEnqueue(cciQueue_t *qu, size_t num) {
+static void _Enqueue(cciQueue_t *qu, size_t num) {
     for (int i=0; i<num; ++i) {
-        Enqueue(qu, newInt(i));
+        CCI_Enqueue(qu, CCIValue_newInt(i));
     }
 }
 
-void doDequeue(cciQueue_t *qu, size_t num) {
+static void _Dequeue(cciQueue_t *qu, size_t num) {
     for (size_t i=0; i<num; ++i) {
-        Dequeue(qu);
+        CCI_Dequeue(qu);
     }
 }
 
@@ -31,17 +31,17 @@ int main(int argc, char **argv) {
 
     for (size_t i=0; i<num; ++i) {
 
-        qu = CreateCCIQueue();
+        qu = CCI_CreateQueue();
         start = clock();
-        doEnqueue(qu, workloads[i]);
+        _Enqueue(qu, workloads[i]);
         end = clock();
         msecPush = end - start;
 
         start = clock();
-        doDequeue(qu, workloads[i]);
+        _Dequeue(qu, workloads[i]);
         end = clock();
         msecPop = end - start;
-        DeleteCCIQueue(qu);
+        CCI_DeleteQueue(qu);
 
         printf("%d %f %f\n", (int)workloads[i], msecPush, msecPop);
     }

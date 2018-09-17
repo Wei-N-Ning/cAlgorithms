@@ -32,7 +32,7 @@ cciHashTable_t *NewHashTable(size_t size) {
     cciHashTable_t *tb = malloc(sizeof(cciHashTable_t));
     tb->slots = malloc(sizeof(cciHashSlot_t) * size);
     for (size_t i=0; i<size; ++i) {
-        tb->slots[i].l = NewList();
+        tb->slots[i].l = CCI_NewList();
     }
     tb->size = size;
     tb->nkeys = 0;
@@ -41,7 +41,7 @@ cciHashTable_t *NewHashTable(size_t size) {
 
 void DeleteHashTable(cciHashTable_t *tb) {
     for (size_t i=0; i<tb->size; ++i) {
-        DeleteList(tb->slots[i].l);
+        CCI_DeleteList(tb->slots[i].l);
     }
     free(tb->slots);
     free(tb);
@@ -76,9 +76,9 @@ void SSet(cciHashTable_t *tb, const char *key, cciValue_t value) {
     cciValue_t svalue;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            svalue = Get(l, slotPos);
-            if (strcmp(GETSTR(svalue), key) == 0) {
-                Set(l, slotPos + 1, value);
+            svalue = CCI_ListGet(l, slotPos);
+            if (strcmp(CCIValue_GETSTR(svalue), key) == 0) {
+                CCI_ListSet(l, slotPos + 1, value);
                 return;
             }
         }
@@ -94,13 +94,13 @@ cciValue_t SGet(cciHashTable_t *tb, const char *key) {
     cciValue_t svalue;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            svalue = Get(l, slotPos);
-            if (strcmp(GETSTR(svalue), key) == 0) {
-                return Get(l, slotPos+1);
+            svalue = CCI_ListGet(l, slotPos);
+            if (strcmp(CCIValue_GETSTR(svalue), key) == 0) {
+                return CCI_ListGet(l, slotPos+1);
             }
         }
     }
-    return invalid();
+    return CCIValue_invalid();
 }
 
 // similar to Python's dict.pop() method
@@ -111,17 +111,17 @@ cciValue_t SPop(cciHashTable_t *tb, const char *key) {
     cciValue_t v;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            k = Get(l, slotPos);
-            if (strcmp(GETSTR(k), key) == 0) {
-                v = Get(l, slotPos+1);
-                Remove(l, slotPos);
-                Remove(l, slotPos); // slotPos now holds the value
+            k = CCI_ListGet(l, slotPos);
+            if (strcmp(CCIValue_GETSTR(k), key) == 0) {
+                v = CCI_ListGet(l, slotPos+1);
+                CCI_ListRemove(l, slotPos);
+                CCI_ListRemove(l, slotPos); // slotPos now holds the value
                 tb->nkeys--;
                 return v;
             }
         }
     }
-    return invalid();
+    return CCIValue_invalid();
 }
 
 void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value) {
@@ -130,15 +130,15 @@ void ISet(cciHashTable_t *tb, uint64_t key, cciValue_t value) {
     cciValue_t svalue;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            svalue = Get(l, slotPos);
-            if (key == GETINT(svalue)) {
-                Set(l, slotPos + 1, value);
+            svalue = CCI_ListGet(l, slotPos);
+            if (key == CCIValue_GETINT(svalue)) {
+                CCI_ListSet(l, slotPos + 1, value);
                 return;
             }
         }
     }
-    Append(l, newInt(key));
-    Append(l, value);
+    CCI_ListAppend(l, CCIValue_newInt(key));
+    CCI_ListAppend(l, value);
     tb->nkeys += 1;
 }
 
@@ -148,13 +148,13 @@ cciValue_t IGet(cciHashTable_t *tb, uint64_t key) {
     cciValue_t svalue;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            svalue = Get(l, slotPos);
-            if (key == GETINT(svalue)) {
-                return Get(l, slotPos+1);
+            svalue = CCI_ListGet(l, slotPos);
+            if (key == CCIValue_GETINT(svalue)) {
+                return CCI_ListGet(l, slotPos+1);
             }
         }
     }
-    return invalid();
+    return CCIValue_invalid();
 }
 
 cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
@@ -163,15 +163,15 @@ cciValue_t *IGetOrCreate(cciHashTable_t *tb, uint64_t key) {
     cciValue_t svalue;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            svalue = Get(l, slotPos);
-            if (key == GETINT(svalue)) {
-                return GetR(l, slotPos+1);
+            svalue = CCI_ListGet(l, slotPos);
+            if (key == CCIValue_GETINT(svalue)) {
+                return CCI_ListGetR(l, slotPos+1);
             }
         }
     }
     tb->nkeys += 1;
-    Append(l, newInt(key));
-    return AppendR(l, invalid());
+    CCI_ListAppend(l, CCIValue_newInt(key));
+    return CCI_ListAppendR(l, CCIValue_invalid());
 }
 
 cciValue_t IPop(cciHashTable_t *tb, uint64_t key) {
@@ -181,17 +181,17 @@ cciValue_t IPop(cciHashTable_t *tb, uint64_t key) {
     cciValue_t v;
     if (l->size) {
         for (size_t slotPos = 0; slotPos < l->size; slotPos += 2) {
-            k = Get(l, slotPos);
-            if (key == GETINT(k)) {
-                v = Get(l, slotPos+1);
-                Remove(l, slotPos);
-                Remove(l, slotPos); // slotPos now holds the value
+            k = CCI_ListGet(l, slotPos);
+            if (key == CCIValue_GETINT(k)) {
+                v = CCI_ListGet(l, slotPos+1);
+                CCI_ListRemove(l, slotPos);
+                CCI_ListRemove(l, slotPos); // slotPos now holds the value
                 tb->nkeys--;
                 return v;
             }
         }
     }
-    return invalid();
+    return CCIValue_invalid();
 }
 
 void Iterate(cciHashTable_t *tb, callback_t cb)  {
@@ -204,8 +204,8 @@ void Iterate(cciHashTable_t *tb, callback_t cb)  {
     for (size_t i=0; i<tb->size; ++i) {
         slot = tb->slots + i;
         for (size_t pos=0; pos<slot->l->size; pos+=2) {
-            k = Get(slot->l, pos);
-            v = Get(slot->l, pos+1);
+            k = CCI_ListGet(slot->l, pos);
+            v = CCI_ListGet(slot->l, pos+1);
             cb(i, pos, &k, &v);
         }
     }
@@ -217,8 +217,8 @@ void GetValues(cciHashTable_t *tb, cciArrayList_t *o_values) {
     for (size_t i=0; i<tb->size; ++i) {
         slot = tb->slots + i;
         for (size_t pos=0; pos<slot->l->size; pos+=2) {
-            v = Get(slot->l, pos+1);
-            AlEmplaceBack(o_values, v);
+            v = CCI_ListGet(slot->l, pos+1);
+            CCI_AlEmplaceBack(o_values, v);
         }
     }
 }

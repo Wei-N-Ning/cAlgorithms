@@ -2,7 +2,7 @@
 // Created by wein on 3/21/18.
 //
 
-#include <cciHashTable.h>
+#include <cci/cciHashTable.h>
 
 #include <stdio.h>
 #include <stdlib.h>

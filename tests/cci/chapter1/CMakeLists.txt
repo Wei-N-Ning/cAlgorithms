@@ -15,13 +15,37 @@ target_link_libraries(cciListPerf cciList)
 add_test(NAME "CCI:Chapter1::ListPerf" COMMAND cciListPerf)
 
 
+add_tinytest_executable(cciStackTests test_stack.c)
+target_link_libraries(cciStackTests PUBLIC cciStack)
+add_test(NAME "CCI::Chapter1::StackTest" COMMAND cciStackTests)
+
+add_executable(cciStackPerf test_stack_perf.c)
+target_link_libraries(cciStackPerf PUBLIC cciStack)
+add_test(NAME "CCI::Chapter1::StackPerf" COMMAND cciStackPerf)
+
+add_tinytest_executable(cciQueueTests test_queue.c)
+target_link_libraries(cciQueueTests PUBLIC cciQueue)
+add_test(NAME "CCI::Chapter1::QueueTests" COMMAND cciQueueTests)
+
+add_executable(cciQueuePerf test_queue_perf.c)
+target_link_libraries(cciQueuePerf PUBLIC cciQueue)
+add_test(NAME "CCI::Chapter1::QueuePerf" COMMAND cciQueuePerf)
+
+add_tinytest_executable(cciHashTableTests test_hashTable.c)
+target_link_libraries(cciHashTableTests cciHashTable)
+add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
+
+add_executable(cciHashTableMetrics test_hashTable_metrics.c)
+target_link_libraries(cciHashTableMetrics PUBLIC cciHashTable)
+
+add_executable(cciHashTablePerf test_hashTable_perf.c)
+target_link_libraries(cciHashTablePerf PUBLIC cciHashTable)
+
 #add_tinytest_executable(cciStringsTests
 #    test_strings.c)
 #add_test(NAME "CCI::Chapter1::StringsTests" COMMAND cciStringsTests)
 #target_link_libraries(cciStringsTests cciChapter1)
 #
-
-
 #
 #add_tinytest_executable(cciBitArrayTests
 #    test_bitArray.c)
@@ -46,40 +70,3 @@ add_test(NAME "CCI:Chapter1::ListPerf" COMMAND cciListPerf)
 #    CMAKE_C_FLAGS "-pg")
 #
 
-#
-#add_tinytest_executable(cciStackTests
-#    test_stack.c)
-#target_link_libraries(cciStackTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::Stack" COMMAND cciStackTests)
-#
-#add_executable(cciStackPerf
-#    test_stack_perf.c)
-#target_link_libraries(cciStackPerf cciChapter1)
-#set_target_properties(cciStackPerf
-#    PROPERTIES
-#    CMAKE_C_FLAGS "-pg")
-#
-#add_tinytest_executable(cciQueueTests
-#    test_queue.c)
-#target_link_libraries(cciQueueTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::Queue" COMMAND cciQueueTests)
-#
-#add_executable(cciQueuePerf
-#    test_queue_perf.c)
-#target_link_libraries(cciQueuePerf cciChapter1)
-#set_target_properties(cciQueuePerf
-#    PROPERTIES
-#    CMAKE_C_FLAGS "-pg")
-#
-#add_tinytest_executable(cciHashTableTests
-#    test_hashTable.c)
-#target_link_libraries(cciHashTableTests cciChapter1)
-#add_test(NAME "CCI::Chapter1::HashTableTests" COMMAND cciHashTableTests)
-#
-#add_executable(cciHashTableMetrics
-#    test_hashTable_metrics.c)
-#target_link_libraries(cciHashTableMetrics cciChapter1)
-#
-#add_executable(cciHashTablePerf
-#    test_hashTable_perf.c)
-#target_link_libraries(cciHashTablePerf cciChapter1)
