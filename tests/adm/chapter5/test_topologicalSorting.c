@@ -46,15 +46,15 @@ void test_expectTopoOrder() {
     int ok = 0;
     admSimpleGraph_t *G = CreateGraphFromString(s_dag, sz);
     admSimpleNode_t *n = GetLabelledNode(G, "G");
-    cciArrayList_t *arr = AlNew();
+    cciArrayList_t *arr = CCI_AlNew();
     ok = AdmTopoSort(G, n, arr);
     for (size_t i=0; i<arr->size; ++i) {
-        n = GETPOINTER(AlGet(arr, i), admSimpleNode_t);
+        n = CCIValue_GETPOINTER(CCI_AlGet(arr, i), admSimpleNode_t);
         bufCurr += sprintf(bufCurr, "%s, ", AdmNodeLabel(n));
     }
     assert(1 == ok);
     assert(0 == strcmp("G, A, B, C, F, E, D, ", buf));
-    AlDelete(arr);
+    CCI_AlDelete(arr);
     DeleteAdmSimpleGraph(G);
 }
 

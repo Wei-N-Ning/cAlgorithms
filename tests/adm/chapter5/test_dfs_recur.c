@@ -153,8 +153,8 @@ void test_expectBackEdges() {
     state = CreateDFSState(sz);
     AdmGraphDFS(G, A, state, NULL, NULL);
     for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->BackEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         bufACurr += sprintf(bufACurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);
@@ -163,8 +163,8 @@ void test_expectBackEdges() {
     state = CreateDFSState(sz);
     AdmGraphRecurDFS(G, A, state, NULL, NULL);
     for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->BackEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         bufBCurr += sprintf(bufBCurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);
@@ -186,8 +186,8 @@ void test_proceduralGraphExpectBackEdges() {
     state = CreateDFSState(sz);
     AdmGraphDFS(G, start, state, NULL, NULL);
     for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->BackEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         bufACurr += sprintf(bufACurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);
@@ -196,8 +196,8 @@ void test_proceduralGraphExpectBackEdges() {
     state = CreateDFSState(sz);
     AdmGraphRecurDFS(G, start, state, NULL, NULL);
     for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->BackEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         bufBCurr += sprintf(bufBCurr, "%s->%s, ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);

@@ -30,7 +30,7 @@ void processNodeEarly(admSimpleNode_t *n, admDFSState_t *state) {
 void test_getComponents() {
     size_t sz = 16;
     admSimpleGraph_t *G = CreateGraphFromString(s_components, sz);
-    cciArrayList_t *nodes = AlNew();
+    cciArrayList_t *nodes = CCI_AlNew();
     admSimpleNode_t *n = NULL;
     admSimpleEdge_t *e = NULL;
     admDFSState_t *state = CreateDFSState(sz);
@@ -38,7 +38,7 @@ void test_getComponents() {
     AdmGraphDFS(G, GetLabelledNode(G, "1"), state, NULL, NULL);
 
     DeleteDFSState(state);
-    AlDelete(nodes);
+    CCI_AlDelete(nodes);
     DeleteAdmSimpleGraph(G);
 }
 

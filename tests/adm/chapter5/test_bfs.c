@@ -62,15 +62,15 @@ void test_expectAllNodesVisitedOnlyOnce() {
 void test_expectShortestPathViaBFSTree() {
     // expecting A->D
     admSimpleGraph_t *G = CreateGraphFromString(s_minimal, 8);
-    cciHashTable_t *BFSTree = NewHashTable(8);
+    cciHashTable_t *BFSTree = CCI_NewHashTable(8);
     admSimpleNode_t *start = GetLabelledNode(G, "A");
     admSimpleNode_t *expected = GetLabelledNode(G, "D");
     cciValue_t v;
     AdmGraphBFS(G, start, BFSTree, NULL, NULL);
-    v = IGet(BFSTree, (uint64_t)expected);
-    assert(ISVALID(v));
-    assert(start == GETPOINTER(v, admSimpleNode_t));
-    DeleteHashTable(BFSTree);
+    v = CCI_IGet(BFSTree, (uint64_t)expected);
+    assert(CCIValue_ISVALID(v));
+    assert(start == CCIValue_GETPOINTER(v, admSimpleNode_t));
+    CCI_DeleteHashTable(BFSTree);
     DeleteAdmSimpleGraph(G);
 }
 
@@ -102,10 +102,10 @@ static admSimpleGraph_t *createGraph(size_t workload, admSimpleNode_t **start) {
 void test_getConnectedComponent() {
     admSimpleNode_t *start = NULL;
     admSimpleGraph_t *G = createGraph(0x34, &start);
-    cciHashTable_t *BFSTree = NewHashTable(0x34);
+    cciHashTable_t *BFSTree = CCI_NewHashTable(0x34);
     AdmGraphBFS(G, start, BFSTree, NULL, NULL);
-    assert(0x34 == HashTableNumKeys(BFSTree));
-    DeleteHashTable(BFSTree);
+    assert(0x34 == CCI_HashTableNumKeys(BFSTree));
+    CCI_DeleteHashTable(BFSTree);
     DeleteAdmSimpleGraph(G);
 }
 

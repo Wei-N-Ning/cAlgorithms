@@ -9,8 +9,8 @@
 
 #include <admSimpleGraph.h>
 #include <admToStr.h>
-#include <cciValue.h>
-#include <cciHashTable.h>
+#include <cci/cciValue.h>
+#include <cci/cciHashTable.h>
 
 void RunTinyTests();
 
@@ -111,7 +111,7 @@ static const char *buildGraph = \
 "libalgor->libstring\n";
 
 static void printKV(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
-    admSimpleNode_t *n = GETPOINTER((*v), admSimpleNode_t);
+    admSimpleNode_t *n = CCIValue_GETPOINTER((*v), admSimpleNode_t);
     printf("%s: ", AdmNodeLabel(n));
     for (size_t conn=0; conn<AdmNumToNodes(n); ++conn) {
         printf("%s, ", AdmNodeLabel(AdmToNode(n, conn)));
@@ -120,7 +120,7 @@ static void printKV(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) 
 }
 
 static void assertNumConns(size_t index, size_t slotPos, cciValue_t *k, cciValue_t *v) {
-    admSimpleNode_t *n = GETPOINTER((*v), admSimpleNode_t);
+    admSimpleNode_t *n = CCIValue_GETPOINTER((*v), admSimpleNode_t);
     assert(n);
     assert(9 == AdmNumToNodes(n));
 }

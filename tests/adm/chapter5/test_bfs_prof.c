@@ -43,18 +43,18 @@ static void _visitConn(admSimpleEdge_t *e) {
 }
 
 static void _BFS(admSimpleGraph_t *G, admSimpleNode_t *start) {
-    cciHashTable_t *BFSTree = NewHashTable(AdmGraphSize(G));
+    cciHashTable_t *BFSTree = CCI_NewHashTable(AdmGraphSize(G));
     AdmGraphBFS(G, start, BFSTree, _visitNode, _visitConn);
-    DeleteHashTable(BFSTree);
+    CCI_DeleteHashTable(BFSTree);
 }
 
 int main(int argc, char **argv) {
     size_t workloads[] = {
         100, 500, 1000, 5000,
-        10000,
-        50000,
-        100000,
-        500000
+//        10000,
+//        50000,
+//        100000,
+//        500000
     };
     size_t workload = 0;
     admSimpleGraph_t *G = NULL;

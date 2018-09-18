@@ -54,10 +54,10 @@
 // the complete editing sequence
 
 enum ACTION {
-    AC_NULL,
-    AC_INSERT,
-    AC_DELETE,
-    AC_EDIT,
+    AC_NULL = -1,
+    AC_INSERT = 0,
+    AC_DELETE = 1,
+    AC_EDIT = 2,
 };
 
 typedef struct __CELL {

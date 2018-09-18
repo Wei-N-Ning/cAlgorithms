@@ -35,8 +35,8 @@ void test_oneNode() {
     // node is visited
     assert(1 == *AdmWeightHandle(A));
     // entry-exit stats
-    assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
-    assert(1 == GETINT(IGet(state->Exits, (uint64_t)A)));
+    assert(0 == CCIValue_GETINT(CCI_IGet(state->Entries, (uint64_t)A)));
+    assert(1 == CCIValue_GETINT(CCI_IGet(state->Exits, (uint64_t)A)));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
@@ -53,10 +53,10 @@ void test_twoNodes() {
     assert(1 == *AdmWeightHandle(A));
     assert(1 == *AdmWeightHandle(B));
     // entry-exit stats
-    assert(0 == GETINT(IGet(state->Entries, (uint64_t)A)));
-    assert(1 == GETINT(IGet(state->Entries, (uint64_t)B)));
-    assert(2 == GETINT(IGet(state->Exits, (uint64_t)B)));
-    assert(3 == GETINT(IGet(state->Exits, (uint64_t)A)));
+    assert(0 == CCIValue_GETINT(CCI_IGet(state->Entries, (uint64_t)A)));
+    assert(1 == CCIValue_GETINT(CCI_IGet(state->Entries, (uint64_t)B)));
+    assert(2 == CCIValue_GETINT(CCI_IGet(state->Exits, (uint64_t)B)));
+    assert(3 == CCIValue_GETINT(CCI_IGet(state->Exits, (uint64_t)A)));
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
@@ -111,17 +111,17 @@ void test_expectDFSTreePopulated() {
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
 
-    v = IGet(state->DFSTree, (uint64_t)A);
-    assert(! ISVALID(v));
+    v = CCI_IGet(state->DFSTree, (uint64_t)A);
+    assert(! CCIValue_ISVALID(v));
 
-    v = IGet(state->DFSTree, (uint64_t )B);
-    assert(A == GETPOINTER(v, admSimpleNode_t));
+    v = CCI_IGet(state->DFSTree, (uint64_t )B);
+    assert(A == CCIValue_GETPOINTER(v, admSimpleNode_t));
 
-    v = IGet(state->DFSTree, (uint64_t )C);
-    assert(B == GETPOINTER(v, admSimpleNode_t));
+    v = CCI_IGet(state->DFSTree, (uint64_t )C);
+    assert(B == CCIValue_GETPOINTER(v, admSimpleNode_t));
 
-    v = IGet(state->DFSTree, (uint64_t )D);
-    assert(C == GETPOINTER(v, admSimpleNode_t));
+    v = CCI_IGet(state->DFSTree, (uint64_t )D);
+    assert(C == CCIValue_GETPOINTER(v, admSimpleNode_t));
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
@@ -137,23 +137,23 @@ void test_expectEntriesMapPopulated() {
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
 
-    v = IGet(state->Entries, (uint64_t)A);
-    assert(GETINT(v) == 0);
+    v = CCI_IGet(state->Entries, (uint64_t)A);
+    assert(CCIValue_GETINT(v) == 0);
 
-    v = IGet(state->Entries, (uint64_t)B);
-    assert(GETINT(v) == 1);
+    v = CCI_IGet(state->Entries, (uint64_t)B);
+    assert(CCIValue_GETINT(v) == 1);
 
-    v = IGet(state->Entries, (uint64_t)D);
-    assert(GETINT(v) == 3);
+    v = CCI_IGet(state->Entries, (uint64_t)D);
+    assert(CCIValue_GETINT(v) == 3);
 
     DeleteDFSState(state);
     DeleteAdmSimpleGraph(G);
 }
 
 static int numDescendants(admDFSState_t *state, admSimpleNode_t *n) {
-    cciValue_t u = IGet(state->Entries, (uint64_t)n);
-    cciValue_t v = IGet(state->Exits, (uint64_t)n);
-    return (GETINT(v) - GETINT(u)) / 2;
+    cciValue_t u = CCI_IGet(state->Entries, (uint64_t)n);
+    cciValue_t v = CCI_IGet(state->Exits, (uint64_t)n);
+    return (CCIValue_GETINT(v) - CCIValue_GETINT(u)) / 2;
 }
 
 void test_expectExitsMapPopulated() {
@@ -192,8 +192,8 @@ void test_expectTreeEdgesCollected() {
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
     for (size_t i=0; i<state->TreeEdges->size; i++) {
-        v = AlGet(state->TreeEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->TreeEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);
@@ -209,8 +209,8 @@ void test_expectTreeEdgesCollectedRecursiveModel() {
     cciValue_t v;
     AdmGraphRecurDFS(G, A, state, NULL, NULL);
     for (size_t i=0; i<state->TreeEdges->size; i++) {
-        v = AlGet(state->TreeEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->TreeEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);
@@ -226,8 +226,8 @@ void test_expectBackEdgesCollected() {
     cciValue_t v;
     AdmGraphDFS(G, A, state, NULL, NULL);
     for (size_t i=0; i<state->BackEdges->size; i++) {
-        v = AlGet(state->BackEdges, i);
-        e = GETPOINTER(v, admSimpleEdge_t);
+        v = CCI_AlGet(state->BackEdges, i);
+        e = CCIValue_GETPOINTER(v, admSimpleEdge_t);
         printf("%s->%s; ", AdmNodeLabel(AdmEdgeFrom(e)), AdmNodeLabel(AdmEdgeTo(e)));
     }
     DeleteDFSState(state);

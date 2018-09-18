@@ -381,8 +381,8 @@ void AdmGraphRecurDFS(admSimpleGraph_t *G,
         if (CCIValue_ISVALID(CCI_IGet(state->Entries, (uint64_t)connected))) {
             // circular dependency detected
 
-            if (GETINT(IGet(state->Entries, (uint64_t)(conn->from))) > \
-                GETINT(IGet(state->Entries, (uint64_t)(conn->to)))) {
+            if (CCIValue_GETINT(CCI_IGet(state->Entries, (uint64_t)(conn->from))) > \
+                CCIValue_GETINT(CCI_IGet(state->Entries, (uint64_t)(conn->to)))) {
                 CCI_AlEmplaceBack(state->BackEdges, CCIValue_newPointer(conn));
             }
             continue;
