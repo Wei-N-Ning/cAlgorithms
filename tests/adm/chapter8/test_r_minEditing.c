@@ -196,10 +196,30 @@ void test_givenStringsExpectEditingSequence() {
 }
 
 void test_longerSequence() {
-    const char* s = " many moaning men make music to the moon. ";
-    const char* t = "many moan-=nGmenmakem  e musictotheMoon";
+    const char *s = ".many moaning men make music to the moon..";
+    const char *t = "many moan-=nGmenmakem  e musictotheMoon";
     int num = solve(s, t, NULL, 0);
-    printf("%d\n", num);
+    printf("%d ", num);
+
+    s = "'Horse! A horse! My kingdom for a horse!' Says the telepathic soothsayer.";
+    t = "\"A house! A house! My kingdom for a house!\" Said athletic soothsayer;";
+    num = solve(s, t, NULL, 0);
+    printf("%d ", num);
+}
+
+void test_longRidiculousSequence() {
+    const char*
+    s = "we want to see the pride of ownership here "
+        "'I wrote this, and I stood before my work.' "
+        "Your name should come to be recognized as "
+        "the identifier of quality";
+    const char*
+    t = "I do not care about the meaning of my work "
+        "'I fucking wrote this, you had better fucking use this'"
+        "My name is the symbol of terror. You ought to be afraid of me."
+        "I call this fear driven development";
+    int num = solve(s, t, NULL, 0);
+    printf("%d ", num);
 }
 
 int main(int argc, char **argv) {
