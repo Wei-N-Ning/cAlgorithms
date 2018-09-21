@@ -14,4 +14,5 @@ add_test(NAME "GeeksForGeeks::DP::SubArrayWithMaxSum" COMMAND subArrWithMaxSum)
 add_tinytest_executable(minJumpsToReachEnd DP/minJumpsToReachEnd.c)
 add_test(NAME "GeeksForGeeks::DP::MinimumNumberOfJumpsToReachEnd" COMMAND minJumpsToReachEnd)
 
-
+add_tinytest_executable(palindrome DP/palindrome.c)
+add_test(NAME "GeeksForGeeks::DP::Palindrome" COMMAND palindrome)
