@@ -137,7 +137,7 @@ int CostEdit(const char lhs, const char rhs) {
     return (lhs != rhs) ? 1 : 0;
 }
 
-int solve(const char *s, const char *t, char *o_editSequence) {
+int solve(const char *s, const char *t, char *o_editSequence, int debug) {
     int s_length = (int)strlen(s);  // size of the row - 1
     int t_length = (int)strlen(t);  // size of the column - 1
     int numColumns = s_length + 1;
@@ -169,10 +169,12 @@ int solve(const char *s, const char *t, char *o_editSequence) {
         }
     }
 
-    printf("\n");
-    for (int row = 0; row < numRows; ++row) {
-        IterRow(table, row, PrintCell, NULL);
-        printf("\n");
+    if (debug) {
+        printf("cost table: \n");
+        for (int row = 0; row < numRows; ++row) {
+            IterRow(table, row, PrintCell, NULL);
+            printf("\n");
+        }
     }
 
     int cost = GetCell(table, numRows - 1, numColumns - 1)->cost;
@@ -188,9 +190,16 @@ void test_givenStringsExpectEditingSequence() {
     char editingSequence[16];
     for (int i = 16; i--; editingSequence[i] = '\0') ;
 
-    int num = solve(s, t, editingSequence);
+    int num = solve(s, t, editingSequence, 0);
     assert(num == 3);
     printf("%s", editingSequence);
+}
+
+void test_longerSequence() {
+    const char* s = " many moaning men make music to the moon. ";
+    const char* t = "many moan-=nGmenmakem  e musictotheMoon";
+    int num = solve(s, t, NULL, 0);
+    printf("%d\n", num);
 }
 
 int main(int argc, char **argv) {
