@@ -44,6 +44,26 @@ void test_quickSortLomutoExpectNewSequence() {
     CCI_AlDelete(al);
 }
 
+void test_quickSortLomutoIdenticalSequence() {
+    cciArrayList_t *al = CCI_AlNew();
+    int arr[6] = {3, 3, 3, 3, 3, 3};
+    size_t sz = 6;
+    for (size_t i=sz; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(arr[sz - i - 1]))) ;
+    AdmQuicksort(al, PartitionScheme_Lomuto);
+    assertAscendingOrder(al);
+    CCI_AlDelete(al);
+}
+
+void test_quickSortDescendingSequence() {
+    cciArrayList_t *al = CCI_AlNew();
+    int arr[6] = {3333, 333, 33, 30, 13, 3};
+    size_t sz = 6;
+    for (size_t i=sz; i--; CCI_AlEmplaceBack(al, CCIValue_newInt(arr[sz - i - 1]))) ;
+    AdmQuicksort(al, PartitionScheme_Lomuto);
+    assertAscendingOrder(al);
+    CCI_AlDelete(al);
+}
+
 void test_quickSortHoare() {
     cciArrayList_t *al = CCI_AlNew();
     int arr[8] = {31, 41, 59, 2, 6, 53, 58, 97};
